@@ -1,8 +1,5 @@
 import sympy
-from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, pi
-from math import isclose
-from functools import cached_property
 
 class LBO(Medium):
     """
@@ -76,6 +73,10 @@ class LBO(Medium):
         self._C_z = 0.01223
         self._D_z = 0.01861
     
+    def clear(self):
+        """ clear cached """
+        self.__init__()
+    
     @property
     def property(self):
         msg =  ["A_x = %.4f" % self._A_x]
@@ -93,17 +94,15 @@ class LBO(Medium):
         print("\n".join(msg))
     
     # sympy expressions for each case
-    @cached_property
+    
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
         return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2)
     
-    @cached_property
     def n_y_expr(self):
         """ sympy expresssion, dispersion formula of y-axis (principal dielectric axis) """
         return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) - self._D_y * wl**2)
 
-    @cached_property
     def n_z_expr(self):
         """ sympy expresssion, dispersion formula of z-axis (principal dielectric axis) """
         return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2)
@@ -125,19 +124,17 @@ class LBO_xy(LBO):
         msg += ["phi_rad = %s" % self._LBO_xy__phi_rad]
         print("\n".join(msg))
 
-    @cached_property
     def n_o_expr(self):
         """ sympy expresssion, 
         dispersion formula for o-ray polarization for a given principal plane """
         return super().n_z_expr()
     
-    @cached_property
+    
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for a given principal plane """
         return super().n_x_expr() * super().n_y_expr() / sympy.sqrt( super().n_x_expr()**2 * sympy.cos(phi)**2 + super().n_y_expr()**2 * sympy.sin(phi)**2 )
 
-    @cached_property
     def n_expr(self, pol):
         """ sympy expresssion, 
         dispersion formula for a given polarization """
@@ -165,14 +162,14 @@ class LBO_xy(LBO):
         """
         return super().n(wl_um, pol, 0.5*pi, phi_rad)
 
-    def dn(self, wl_um, pol, phi_rad):
-        return super().dn(wl_um, pol, 0.5*pi, phi_rad)
+    def dn_wl(self, wl_um, pol, phi_rad):
+        return super().dn_wl(wl_um, pol, 0.5*pi, phi_rad)
     
-    def dn2(self, wl_um, pol, phi_rad):
-        return super().dn2(wl_um, pol, 0.5*pi, phi_rad)
+    def d2n_wl(self, wl_um, pol, phi_rad):
+        return super().d2n_wl(wl_um, pol, 0.5*pi, phi_rad)
 
-    def dn3(self, wl_um, pol, phi_rad):
-        return super().dn3(wl_um, pol, 0.5*pi, phi_rad)
+    def d3n_wl(self, wl_um, pol, phi_rad):
+        return super().d3n_wl(wl_um, pol, 0.5*pi, phi_rad)
 
     def GD(self, wl_um, pol, phi_rad):
         """Group Delay [fs/mm]"""
@@ -211,19 +208,16 @@ class LBO_yz(LBO):
         msg += ["phi_rad = %s" % self._LBO_yz__phi_rad]
         print("\n".join(msg))
 
-    @cached_property
     def n_o_expr(self):
         """ sympy expresssion, 
         dispersion formula for o-ray polarization for yx principal plane """
         return super().n_x_expr()
     
-    @cached_property
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for yz principal plane """
         return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.cos(phi)**2 + super().n_z_expr()**2 * sympy.sin(phi)**2 )
 
-    @cached_property
     def n_expr(self, pol):
         """ sympy expresssion, 
         dispersion formula for a given polarization """
@@ -251,14 +245,14 @@ class LBO_yz(LBO):
         """
         return super().n(wl_um, pol, theta_rad, 0.5*pi)
 
-    def dn(self, wl_um, pol, theta_rad):
-        return super().dn(wl_um, pol, theta_rad, 0.5*pi)
+    def dn_wl(self, wl_um, pol, theta_rad):
+        return super().dn_wl(wl_um, pol, theta_rad, 0.5*pi)
     
-    def dn2(self, wl_um, pol, theta_rad):
-        return super().dn2(wl_um, pol, theta_rad, 0.5*pi)
+    def d2n_wl(self, wl_um, pol, theta_rad):
+        return super().d2n_wl(wl_um, pol, theta_rad, 0.5*pi)
 
-    def dn3(self, wl_um, pol, theta_rad):
-        return super().dn3(wl_um, pol, theta_rad, 0.5*pi)
+    def d3n_wl(self, wl_um, pol, theta_rad):
+        return super().d3n_wl(wl_um, pol, theta_rad, 0.5*pi)
 
     def GD(self, wl_um, pol, theta_rad):
         """Group Delay [fs/mm]"""
@@ -297,19 +291,16 @@ class LBO_zx(LBO):
         msg += ["phi_rad = %s" % self._LBO_zx__phi_rad]
         print("\n".join(msg))
 
-    @cached_property
     def n_o_expr(self):
         """ sympy expresssion, 
         dispersion formula for o-ray polarization for zx principal plane """
         return super().n_y_expr()
     
-    @cached_property
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for zx principal plane """
         return super().n_z_expr() * super().n_z_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(phi)**2 + super().n_x_expr()**2 * sympy.sin(phi)**2 )
 
-    @cached_property
     def n_expr(self, pol):
         """ sympy expresssion, 
         dispersion formula for a given polarization """
@@ -337,14 +328,14 @@ class LBO_zx(LBO):
         """
         return super().n(wl_um, pol, theta_rad, 0.5*pi)
 
-    def dn(self, wl_um, pol, theta_rad):
-        return super().dn(wl_um, pol, theta_rad, 0.5*pi)
+    def dn_wl(self, wl_um, pol, theta_rad):
+        return super().dn_wl(wl_um, pol, theta_rad, 0.5*pi)
     
-    def dn2(self, wl_um, pol, theta_rad):
-        return super().dn2(wl_um, pol, theta_rad, 0.5*pi)
+    def d2n_wl(self, wl_um, pol, theta_rad):
+        return super().d2n_wl(wl_um, pol, theta_rad, 0.5*pi)
 
-    def dn3(self, wl_um, pol, theta_rad):
-        return super().dn3(wl_um, pol, theta_rad, 0.5*pi)
+    def d3n_wl(self, wl_um, pol, theta_rad):
+        return super().d3n_wl(wl_um, pol, theta_rad, 0.5*pi)
 
     def GD(self, wl_um, pol, theta_rad):
         """Group Delay [fs/mm]"""

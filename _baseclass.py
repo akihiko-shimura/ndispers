@@ -7,11 +7,10 @@ from sympy.utilities import lambdify
 wl = sympy.Symbol('wl')
 phi = sympy.Symbol('phi')
 theta = sympy.Symbol('theta')
-import physcon
-pi = physcon.pi
-c = physcon.c * 1e-9  # um/fs, speed of light in vacuum
-
-from functools import cached_property
+from math import pi
+c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
+c_umfs = c_ms * 1e-9  #(um/fs)
+import numpy
 
 class Medium:
     """
@@ -19,9 +18,24 @@ class Medium:
 
     @author: Akihiko Shimura
     """
-    __slots__ = ["__plane"]
+    __slots__ = ["__plane", 
+                 "_cached_n_func", "_cached_dn_wl_func", "_cached_d2n_wl_func", "_cached_d3n_wl_func",
+                 "_cached_GD_func", "_cached_ng_func", "_cached_ng_func", "_cached_GV_func", "_cached_GVD_func", "_cached_TOD_func"]
     def __init__(self):
         self.__plane = 'arb'
+        self._cached_n_func = {'o': 0, 'e': 0}
+        self._cached_dn_wl_func = {'o': 0, 'e': 0}
+        self._cached_d2n_wl_func = {'o': 0, 'e': 0}
+        self._cached_d3n_wl_func = {'o': 0, 'e': 0}
+        self._cached_GD_func = {'o': 0, 'e': 0}
+        self._cached_ng_func = {'o': 0, 'e': 0}
+        self._cached_GV_func = {'o': 0, 'e': 0}
+        self._cached_GVD_func = {'o': 0, 'e': 0}
+        self._cached_TOD_func = {'o': 0, 'e': 0}
+    
+    def clear(self):
+        """ clear cached """
+        self.__init__()
 
     @property
     def help(self):
@@ -31,76 +45,105 @@ class Medium:
         return 1.0
 
     """ Derivative expressions """
-    @cached_property
-    def dn_expr(self, pol):
+    def dn_wl_expr(self, pol):
         """ Sympy expression for first derivative of n with respect to wl """
-        return sympy.diff(self.n_expr(pol=pol), wl)
-
-    @cached_property
-    def dn2_expr(self, pol):
+        return sympy.diff(self.n_expr(pol), wl)
+    
+    def d2n_wl_expr(self, pol):
         """ Sympy expression for second derivative of n with respect to wl """
-        return sympy.diff(self.dn_expr(pol=pol), wl)
+        return sympy.diff(self.dn_wl_expr(pol), wl)
 
-    @cached_property
-    def dn3_expr(self, pol):
+    def d3n_wl_expr(self, pol):
         """ Sympy expression for third derivative of n with respect to wl """
-        return sympy.diff(self.dn2_expr(pol=pol), wl)
+        return sympy.diff(self.d2n_wl_expr(pol), wl)
 
-    @cached_property
     def GD_expr(self, pol):
         """ Sympy expression for group delay """
-        return (self.n_expr(pol=pol) - wl * self.dn_expr(pol=pol)) * 1e3 / c
+        return (self.n_expr(pol) - wl * self.dn_expr(pol)) * 1e3 / c_umfs
     
-    @cached_property
     def GV_expr(self, pol):
         """ Sympy expression for group velocity """
-        return (c/self.n_expr(pol=pol)) / (1 - (wl/self.n_expr(pol=pol)) * self.dn_expr(pol=pol))
+        return (c_umfs/self.n_expr(pol)) / (1 - (wl/self.n_expr(pol)) * self.dn_wl_expr(pol))
     
-    @cached_property
     def ng_expr(self, pol):
         """ Sympy expression for group index """
-        n_expr = self.n_expr(pol=pol)
-        return n_expr * (1 - wl/n_expr * self.dn_expr(pol=pol))
+        n_expr = self.n_expr(pol)
+        return n_expr * (1 - wl/n_expr * self.dn_wl_expr(pol))
     
-    @cached_property
     def GVD_expr(self, pol):
         """ Sympy expression for Group Delay Dispersion """
-        return wl**3/(2*pi*c**2) * self.dn2_expr(pol=pol) * 1e3
+        return wl**3/(2*pi*c_umfs**2) * self.d2n_wl_expr(pol) * 1e3
     
-    @cached_property
     def TOD_expr(self, pol):
         """ Sympy expression for Third Order Dispersion """
-        return - wl**4/(4*pi**2*c**3) * (3*self.dn2_expr(pol=pol) + wl * self.dn3_expr(pol=pol)) * 1e3
+        return - wl**4/(4*pi**2*c_umfs**3) * (3*self.d2n_wl_expr(pol) + wl * self.d3n_wl_expr(pol)) * 1e3
 
     """ Functions """
     def n(self, wl_um, pol, theta_rad, phi_rad):
-        return lambdify([wl, theta, phi], self.n_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+        """ n, refractive index of a medium """
+        if self._cached_n_func[pol]:
+            return self._cached_n_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_n_func[pol] = lambdify([wl, theta, phi], self.n_expr(pol), 'numpy')
+            return self._cached_n_func[pol](wl_um, theta_rad, phi_rad)
+    
+    def dn_wl(self, wl_um, pol, theta_rad, phi_rad):
+        if self._cached_dn_wl_func[pol]:
+            return self._cached_dn_wl_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_dn_wl_func[pol] = lambdify([wl, theta, phi], self.dn_wl_expr(pol), 'numpy')
+        return self._cached_dn_wl_func[pol](wl_um, theta_rad, phi_rad)
 
-    def dn(self, wl_um, pol, theta_rad, phi_rad):
-        return lambdify([wl, theta, phi], self.dn_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+    def d2n_wl(self, wl_um, pol, theta_rad, phi_rad):
+        if self._cached_d2n_wl_func[pol]:
+            return self._cached_d2n_wl_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_d2n_wl_func[pol] = lambdify([wl, theta, phi], self.d2n_wl_expr(pol), 'numpy')
+        return self._cached_d2n_wl_func[pol](wl_um, theta_rad, phi_rad)
 
-    def dn2(self, wl_um, pol, theta_rad, phi_rad):
-        return lambdify([wl, theta, phi], self.dn2_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
-
-    def dn3(self, wl_um, pol, theta_rad, phi_rad):
-        return lambdify([wl, theta, phi], self.dn3_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+    def d3n_wl(self, wl_um, pol, theta_rad, phi_rad):
+        if self._cached_d3n_wl_func[pol]:
+            return self._cached_d3n_wl_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_d3n_wl_func[pol] = lambdify([wl, theta, phi], self.d3n_wl_expr(pol), 'numpy')
+        return self._cached_d3n_wl_func[pol](wl_um, theta_rad, phi_rad)
 
     def GD(self, wl_um, pol, theta_rad, phi_rad):
         """ Group Delay [fs/mm] """
-        return lambdify([wl, theta, phi], self.GD_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+        if self._cached_GD_func[pol]:
+            return self._cached_GD_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_GD_func[pol] = lambdify([wl, theta, phi], self.GD_expr(pol), 'numpy')
+        return self._cached_GD_func[pol](wl_um, theta_rad, phi_rad)
     
     def GV(self, wl_um, pol, theta_rad, phi_rad):
         """ Group Velocity [um/fs] """
-        return lambdify([wl, theta, phi], self.GV_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+        if self._cached_GV_func[pol]:
+            return self._cached_GV_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_GV_func[pol] = lambdify([wl, theta, phi], self.GV_expr(pol), 'numpy')
+        return self._cached_GV_func[pol](wl_um, theta_rad, phi_rad)
     
     def ng(self, wl_um, pol, theta_rad, phi_rad):
-        """ Group index, c/Group velocity """
-        return lambdify([wl, theta, phi], self.ng_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+        """ Group index, c/Group velocity [] """
+        if self._cached_ng_func[pol]:
+            return self._cached_ng_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_ng_func[pol] = lambdify([wl, theta, phi], self.ng_expr(pol), 'numpy')
+        return self._cached_ng_func[pol](wl_um, theta_rad, phi_rad)
 
     def GVD(self, wl_um, pol, theta_rad, phi_rad):
         """ Group Delay Dispersion [fs^2/mm] """
-        return lambdify([wl, theta, phi], self.GVD_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+        if self._cached_GVD_func[pol]:
+            return self._cached_GVD_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_GVD_func[pol] = lambdify([wl, theta, phi], self.GVD_expr(pol), 'numpy')
+        return self._cached_GVD_func[pol](wl_um, theta_rad, phi_rad)
 
     def TOD(self, wl_um, pol, theta_rad, phi_rad):
         """ Third Order Dispersion [fs^3/mm] """
-        return lambdify([wl, theta, phi], self.TOD_expr(pol=pol), 'numpy')(wl_um, theta_rad, phi_rad)
+        if self._cached_TOD_func[pol]:
+            return self._cached_TOD_func[pol](wl_um, theta_rad, phi_rad)
+        else:
+            self._cached_TOD_func[pol] = lambdify([wl, theta, phi], self.TOD_expr(pol), 'numpy')
+            return self._cached_TOD_func[pol](wl_um, theta_rad, phi_rad)

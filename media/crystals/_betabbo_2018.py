@@ -1,7 +1,6 @@
 import sympy
-from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, pi
-from functools import cached_property
+
 
 class BetaBBO(Medium):
     """
@@ -56,6 +55,10 @@ class BetaBBO(Medium):
         self._B3_e = 0.656
         self._C3_e = 263
     
+    def clear(self):
+        """ clear cached """
+        self.__init__()
+    
     @property
     def property(self):
         msg = ["B1_o = %.4f" % self._B1_o]
@@ -72,17 +75,14 @@ class BetaBBO(Medium):
         msg += ["C3_e = %.4f" % self._C3_e]
         print("\n".join(msg))
     
-    @cached_property
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-ray """
         return sympy.sqrt(1.0 + self._B1_o * wl**2/ (wl**2 - self._C1_o) + self._B2_o * wl**2/ (wl**2 - self._C2_o) + self._B3_o * wl**2/ (wl**2 - self._C3_o))
     
-    @cached_property
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-ray """
         return sympy.sqrt(1.0 + self._B1_e * wl**2/ (wl**2 - self._C1_e) + self._B2_e * wl**2/ (wl**2 - self._C2_e) + self._B3_e * wl**2/ (wl**2 - self._C3_e))
 
-    @cached_property
     def n_expr(self, pol):
         """"
         Sympy expression, 
@@ -96,7 +96,7 @@ class BetaBBO(Medium):
             return self.n_e_expr() / sympy.sqrt( sympy.sin(theta)**2 + (self.n_e_expr()/self.n_o_expr())**2 * sympy.cos(theta)**2 )
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
-    
+
     def n(self, wl_um, pol, theta_rad, phi_rad=0.0):
         """
         Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
@@ -106,7 +106,7 @@ class BetaBBO(Medium):
         wl_um     :  float, wavelength in um, valid from 0.22 to 1.06 um
         pol       :  str, 'o' or 'e', polarization of light
         theta_rad :  float, 0 to pi radians
-        phi_rad   :  float, option, Actually, this is arbitray and the result does not depend on this value.
+        phi_rad   :  float, option, this is arbitray and the result does not depend on this value.
 
         return
         -------
@@ -114,14 +114,14 @@ class BetaBBO(Medium):
         """
         return super().n(wl_um, pol, theta_rad, phi_rad)
 
-    def dn(self, wl_um, pol, theta_rad, phi_rad=0.0):
-        return super().dn(wl_um, pol, theta_rad, phi_rad)
+    def dn_wl(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        return super().dn_wl(wl_um, pol, theta_rad, phi_rad)
     
-    def dn2(self, wl_um, pol, theta_rad, phi_rad=0.0):
-        return super().dn2(wl_um, pol, theta_rad, phi_rad)
+    def d2n_wl(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        return super().d2n_wl(wl_um, pol, theta_rad, phi_rad)
 
-    def dn3(self, wl_um, pol, theta_rad, phi_rad=0.0):
-        return super().dn3(wl_um, pol, theta_rad, phi_rad)
+    def d3n_wl(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        return super().d3n_wl(wl_um, pol, theta_rad, phi_rad)
 
     def GD(self, wl_um, pol, theta_rad, phi_rad=0.0):
         """Group Delay [fs/mm]"""

@@ -34,10 +34,10 @@ class BetaBBO(Medium):
 
     @author: Akihiko Shimura
     """
-    __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
-                 "_A_e", "_B_e", "_C_e", "_D_e"]
+    # __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
+                #  "_A_e", "_B_e", "_C_e", "_D_e"]
     def __init__(self):
-        Medium.__init__(self)
+        super().__init__(self)
 
         """ Constants of dispersion formula """
         # For ordinary ray
@@ -100,3 +100,32 @@ class BetaBBO(Medium):
         Refractive index, float
         """
         return lambdify([wl, theta], self.n_expr(pol=pol), 'numpy')(wl_um, theta_rad)
+
+    def dn_wl(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        return super().dn_wl(wl_um, pol, theta_rad, phi_rad)
+    
+    def d2n_wl(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        return super().d2n_wl(wl_um, pol, theta_rad, phi_rad)
+
+    def d3n_wl(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        return super().d3n_wl(wl_um, pol, theta_rad, phi_rad)
+
+    def GD(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        """Group Delay [fs/mm]"""
+        return super().GD(wl_um, pol, theta_rad, phi_rad)
+    
+    def GV(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        """Group Velocity [um/fs]"""
+        return super().GV(wl_um, pol, theta_rad, phi_rad)
+    
+    def ng(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        """Group index, c/Group velocity"""
+        return super().ng(wl_um, pol, theta_rad, phi_rad)
+
+    def GVD(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        """Group Delay Dispersion [fs^2/mm]"""
+        return super().GVD(wl_um, pol, theta_rad, phi_rad)
+
+    def TOD(self, wl_um, pol, theta_rad, phi_rad=0.0):
+        """Third Order Dispersion [fs^3/mm]"""
+        return super().TOD(wl_um, pol, theta_rad, phi_rad)

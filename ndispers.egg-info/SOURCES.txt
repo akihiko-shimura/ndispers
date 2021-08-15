@@ -1,0 +1,11 @@
+setup.py
+media/__init__.py
+media/crystals/__init__.py
+media/crystals/_betabbo_1987.py
+media/crystals/_betabbo_2018.py
+media/crystals/_lbo.py
+ndispers.egg-info/PKG-INFO
+ndispers.egg-info/SOURCES.txt
+ndispers.egg-info/dependency_links.txt
+ndispers.egg-info/not-zip-safe
+ndispers.egg-info/top_level.txt
