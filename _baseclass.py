@@ -11,6 +11,7 @@ from math import pi
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
 c_umfs = c_ms * 1e-9  #(um/fs)
 import numpy
+from collections import defaultdict
 
 class Medium:
     """
@@ -18,20 +19,21 @@ class Medium:
 
     @author: Akihiko Shimura
     """
-    __slots__ = ["__plane", 
-                 "_cached_n_func", "_cached_dn_wl_func", "_cached_d2n_wl_func", "_cached_d3n_wl_func",
-                 "_cached_GD_func", "_cached_ng_func", "_cached_ng_func", "_cached_GV_func", "_cached_GVD_func", "_cached_TOD_func"]
+    __slots__ = ["__plane", "_cached_func_dict"]
+
     def __init__(self):
         self.__plane = 'arb'
-        self._cached_n_func = {'o': 0, 'e': 0}
-        self._cached_dn_wl_func = {'o': 0, 'e': 0}
-        self._cached_d2n_wl_func = {'o': 0, 'e': 0}
-        self._cached_d3n_wl_func = {'o': 0, 'e': 0}
-        self._cached_GD_func = {'o': 0, 'e': 0}
-        self._cached_ng_func = {'o': 0, 'e': 0}
-        self._cached_GV_func = {'o': 0, 'e': 0}
-        self._cached_GVD_func = {'o': 0, 'e': 0}
-        self._cached_TOD_func = {'o': 0, 'e': 0}
+        self._cached_func_dict = defaultdict(dict)
+        self._cached_func_dict['n_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['dn_wl_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['d2n_wl_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['d3n_wl_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['GD_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['GV_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['ng_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['GD_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['GVD_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['TOD_expr'] = {'o': 0, 'e': 0}
     
     def clear(self):
         """ clear cached """
@@ -78,72 +80,49 @@ class Medium:
         """ Sympy expression for Third Order Dispersion """
         return - wl**4/(4*pi**2*c_umfs**3) * (3*self.d2n_wl_expr(pol) + wl * self.d3n_wl_expr(pol)) * 1e3
 
-    """ Functions """
-    def n(self, wl_um, pol, theta_rad, phi_rad):
-        """ n, refractive index of a medium """
-        if self._cached_n_func[pol]:
-            return self._cached_n_func[pol](wl_um, theta_rad, phi_rad)
+    """ lambdified unctions """
+    def _func(self, expr, *args, pol='o'):
+        array_args = map(numpy.asarray, args)
+        cached_func = self._cached_func_dict[expr.__name__][pol] # if not yet generated, 0
+        if cached_func:
+                return cached_func(*array_args)
         else:
-            self._cached_n_func[pol] = lambdify([wl, theta, phi], self.n_expr(pol), 'numpy')
-            return self._cached_n_func[pol](wl_um, theta_rad, phi_rad)
+            cached_func = lambdify([wl, theta, phi], expr(pol), 'numpy')
+            self._cached_func_dict[expr.__name__][pol] = cached_func
+            return cached_func(*array_args)
     
-    def dn_wl(self, wl_um, pol, theta_rad, phi_rad):
-        if self._cached_dn_wl_func[pol]:
-            return self._cached_dn_wl_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_dn_wl_func[pol] = lambdify([wl, theta, phi], self.dn_wl_expr(pol), 'numpy')
-        return self._cached_dn_wl_func[pol](wl_um, theta_rad, phi_rad)
+    def n(self, *args, pol='o'):
+        return self._func(self.n_expr, *args, pol=pol)
 
-    def d2n_wl(self, wl_um, pol, theta_rad, phi_rad):
-        if self._cached_d2n_wl_func[pol]:
-            return self._cached_d2n_wl_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_d2n_wl_func[pol] = lambdify([wl, theta, phi], self.d2n_wl_expr(pol), 'numpy')
-        return self._cached_d2n_wl_func[pol](wl_um, theta_rad, phi_rad)
-
-    def d3n_wl(self, wl_um, pol, theta_rad, phi_rad):
-        if self._cached_d3n_wl_func[pol]:
-            return self._cached_d3n_wl_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_d3n_wl_func[pol] = lambdify([wl, theta, phi], self.d3n_wl_expr(pol), 'numpy')
-        return self._cached_d3n_wl_func[pol](wl_um, theta_rad, phi_rad)
-
-    def GD(self, wl_um, pol, theta_rad, phi_rad):
-        """ Group Delay [fs/mm] """
-        if self._cached_GD_func[pol]:
-            return self._cached_GD_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_GD_func[pol] = lambdify([wl, theta, phi], self.GD_expr(pol), 'numpy')
-        return self._cached_GD_func[pol](wl_um, theta_rad, phi_rad)
+    # def n(self, *args, pol='o'):
+    #     """ n, refractive index of a medium """
+    #     array_args = map(numpy.asarray, args)
+    #     if self._cached_n_func[pol]:
+    #         return self._cached_n_func[pol](*array_args)
+    #     else:
+    #         self._cached_n_func[pol] = lambdify([wl, theta, phi], self.n_expr(pol), 'numpy')
+    #         return self._cached_n_func[pol](*array_args)
     
-    def GV(self, wl_um, pol, theta_rad, phi_rad):
-        """ Group Velocity [um/fs] """
-        if self._cached_GV_func[pol]:
-            return self._cached_GV_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_GV_func[pol] = lambdify([wl, theta, phi], self.GV_expr(pol), 'numpy')
-        return self._cached_GV_func[pol](wl_um, theta_rad, phi_rad)
+    def dn_wl(self, *args, pol='o'):
+        return self._func(self.dn_wl_expr, *args, pol=pol)
     
-    def ng(self, wl_um, pol, theta_rad, phi_rad):
-        """ Group index, c/Group velocity [] """
-        if self._cached_ng_func[pol]:
-            return self._cached_ng_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_ng_func[pol] = lambdify([wl, theta, phi], self.ng_expr(pol), 'numpy')
-        return self._cached_ng_func[pol](wl_um, theta_rad, phi_rad)
+    def d2n_wl(self, *args, pol='o'):
+        return self._func(self.d2n_wl_expr, *args, pol=pol)
 
-    def GVD(self, wl_um, pol, theta_rad, phi_rad):
-        """ Group Delay Dispersion [fs^2/mm] """
-        if self._cached_GVD_func[pol]:
-            return self._cached_GVD_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_GVD_func[pol] = lambdify([wl, theta, phi], self.GVD_expr(pol), 'numpy')
-        return self._cached_GVD_func[pol](wl_um, theta_rad, phi_rad)
+    def d3n_wl(self, *args, pol='o'):
+        return self._func(self.d3n_wl_expr, *args, pol=pol)
 
-    def TOD(self, wl_um, pol, theta_rad, phi_rad):
-        """ Third Order Dispersion [fs^3/mm] """
-        if self._cached_TOD_func[pol]:
-            return self._cached_TOD_func[pol](wl_um, theta_rad, phi_rad)
-        else:
-            self._cached_TOD_func[pol] = lambdify([wl, theta, phi], self.TOD_expr(pol), 'numpy')
-            return self._cached_TOD_func[pol](wl_um, theta_rad, phi_rad)
+    def GD(self, *args, pol='o'):
+        return self._func(self.GD_expr, *args, pol=pol)
+    
+    def GV(self, *args, pol='o'):
+        return self._func(self.GV_expr, *args, pol=pol)
+    
+    def ng(self, *args, pol='o'):
+        return self._func(self.ng_expr, *args, pol=pol)
+    
+    def GVD(self, *args, pol='o'):
+        return self._func(self.GVD_expr, *args, pol=pol)
+    
+    def TOD(self, *args, pol='o'):
+        return self._func(self.TOD_expr, *args, pol=pol)

@@ -40,12 +40,12 @@ class LBO(Medium):
     Usage
     ------
     # create an instance of LBO object for wave vector in 'xy' principal dielectric plane.
-    lbo = ndispers.media.crystals.LBO(plane='xy')
-    # Get a refractive index for e-ray as a function of wavelength (um) and theta angle
-    lbo.n(0.6, pol='e', theta_rad=0.5*pi, phi_rad=0.2*pi)
-    # Note: theta_rad is actually fixed at 0.5*pi value for xy plane. So if input any values, the output is the same.
+    lbo_xy = ndispers.media.crystals.LBO_xy()
+    # Get a refractive index for e-ray as a function of wavelength (um) and phi angle
+    lbo_xy.n(0.6, 'e', 0.2*pi)
+    # Note: theta_rad is fixed at 0.5*pi value for xy plane and the third argument is phi_rad.
     # Derivative dispersion quantities are also easily obtained.
-    lbo.GVD(0.6, pol='e', theta_rad=0.5*pi, phi_rad=0.2*pi)
+    lbo_xy.GVD(0.6, 'e', 0.2*pi)
 
     @author: Akihiko Shimura
     """
@@ -113,6 +113,7 @@ class LBO_xy(LBO):
 
     def __init__(self):
         super().__init__()
+        self.__doc__ = super().__doc__
         self._LBO_xy__plane = 'xy'
         self._LBO_xy__theta_rad = 0.5*pi
         self._LBO_xy__phi_rad = 'arb'
@@ -197,6 +198,7 @@ class LBO_yz(LBO):
 
     def __init__(self):
         super().__init__()
+        self.__doc__ = super().__doc__
         self._LBO_yz__plane = 'yz'
         self._LBO_yz__phi_rad = 0.5*pi
         self._LBO_yz__theta_rad = 'arb'
@@ -280,6 +282,7 @@ class LBO_zx(LBO):
 
     def __init__(self):
         super().__init__()
+        self.__doc__ = super().__doc__
         self._LBO_zx__plane = 'zx'
         self._LBO_zx__theta_rad = 'arb'
         self._LBO_zx__phi_rad = 0.5*pi
