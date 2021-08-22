@@ -4,7 +4,7 @@ from setuptools import find_packages
 def main():
     setup(
         name='ndispers',
-        version='0.1.2',
+        version='0.1.3',
         zip_safe=False,
         packages=find_packages(),
         

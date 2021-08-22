@@ -2,15 +2,15 @@ import sympy
 from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, pi
 
-class BetaBBO(Medium):
+class CLBO(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    CLBO (Cs Li B_6 O_10, Cesium Lithium Borate) crystal
 
-    - Point group : 3m
-    - Crystal class : Trigonal
+    - Point group : 4m2
+    - Crystal class : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 - 2.6 um
+    - Tranparency range : 0.18 - 2.75 um
 
     Dispersion formula of refractive index
     ---------------------------------------
@@ -18,11 +18,11 @@ class BetaBBO(Medium):
     
     Validity range
     ---------------
-    0.22 - 1.06 um
+    0.1914 - 2.09 um
 
     Ref
     ----
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    Umemura, N., Yoshida, K., Kamimura, T., Mori, Y., Sasaki, T., & Kato, K. "New data on the phase-matching properties of CsLiB6O10." Advanced Solid State Lasers. Optical Society of America, 1999.
 
     Usage
     ------
@@ -41,25 +41,25 @@ class BetaBBO(Medium):
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e"]
-                 
+
     def __init__(self):
         super().__init__()
 
         """ Constants of dispersion formula """
         # For ordinary ray
-        self._A_o = 2.7405
-        self._B_o = 0.0184
-        self._C_o = 0.0179
-        self._D_o = 0.0155
+        self._A_o = 2.2104
+        self._B_o = 0.01018
+        self._C_o = 0.01424
+        self._D_o = 0.01258
         # For extraordinary ray
-        self._A_e = 2.3730
-        self._B_e = 0.0128
-        self._C_e = 0.0156
-        self._D_e = 0.0044
+        self._A_e = 2.0588
+        self._B_e = 0.00838
+        self._C_e = 0.01363
+        self._D_e = 0.00607
     
     @property
     def property(self):
-        msg = ["A_o = %g" % self._A_o]
+        msg  = ["A_o = %g" % self._A_o]
         msg += ["B_o = %g" % self._B_o]
         msg += ["C_o = %g" % self._C_o]
         msg += ["D_o = %g" % self._D_o]

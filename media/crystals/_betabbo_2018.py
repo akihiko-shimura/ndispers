@@ -10,6 +10,7 @@ class BetaBBO(Medium):
     - Crystal class : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
+    - Tranparency range : 1.9 - 2.6 um
 
     Dispersion formula of refractive index
     ---------------------------------------
@@ -27,15 +28,20 @@ class BetaBBO(Medium):
     ------
     # Create an instance of BetaBBO object.
     bbo = ndispers.media.crystals.BetaBBO()
-    # Get a refractive index for e-ray as a function of wavelength (um) and theta angle.
-    bbo.n(0.6, 'e', 0.2*pi)
+    # Get a refractive index for e-ray as a function of wavelength (um), thetaand phi angles (rad).
+    bbo.n(0.6, 0, 0, pol='o') # here, n does not depend on theta and phi for o-ray
+    # For e-ray, n depends on theta,
+    bbo.n(0.6, 0.5*pi, 0, pol='e') # along z-axis
+    bbo.n(0.6, 0.23*pi, 0, pol='e') # for theta = 0.23*pi rad
+    bbo.n(0.6, 0*pi, 0, pol='e') # for theta = 0 rad, this corresponds to the case of o-ray
     # Derivative dispersion quantities are also easily obtained.
-    bbo.GVD(0.6, 'e', theta_rad=0.2*pi)
+    bbo.GVD(0.6, 0.23*pi, 0, pol='e')
 
     @author: Akihiko Shimura
     """
     __slots__ = ["_B1_o", "_C1_o", "_B2_o", "_C2_o", "_B3_o", "_C3_o",
                  "_B1_e", "_C1_e", "_B2_e", "_C2_e", "_B3_e", "_C3_e"]
+
     def __init__(self):
         super().__init__()
 
@@ -55,24 +61,20 @@ class BetaBBO(Medium):
         self._B3_e = 0.656
         self._C3_e = 263
     
-    def clear(self):
-        """ clear cached """
-        self.__init__()
-    
     @property
     def property(self):
-        msg = ["B1_o = %.4f" % self._B1_o]
-        msg += ["C1_o = %.4f" % self._C1_o]
-        msg += ["B2_o = %.4f" % self._B2_o]
-        msg += ["C2_o = %.4f" % self._C2_o]
-        msg += ["B3_o = %.4f" % self._B3_o]
-        msg += ["C3_o = %.4f" % self._C3_o]
-        msg += ["B1_e = %.4f" % self._B1_e]
-        msg += ["C1_e = %.4f" % self._C1_e]
-        msg += ["B2_e = %.4f" % self._B2_e]
-        msg += ["C2_e = %.4f" % self._C2_e]
-        msg += ["B3_e = %.4f" % self._B3_e]
-        msg += ["C3_e = %.4f" % self._C3_e]
+        msg = ["B1_o = %g" % self._B1_o]
+        msg += ["C1_o = %g" % self._C1_o]
+        msg += ["B2_o = %g" % self._B2_o]
+        msg += ["C2_o = %g" % self._C2_o]
+        msg += ["B3_o = %g" % self._B3_o]
+        msg += ["C3_o = %g" % self._C3_o]
+        msg += ["B1_e = %g" % self._B1_e]
+        msg += ["C1_e = %g" % self._C1_e]
+        msg += ["B2_e = %g" % self._B2_e]
+        msg += ["C2_e = %g" % self._C2_e]
+        msg += ["B3_e = %g" % self._B3_e]
+        msg += ["C3_e = %g" % self._C3_e]
         print("\n".join(msg))
     
     def n_o_expr(self):
@@ -104,11 +106,11 @@ class BetaBBO(Medium):
 
         input
         ------
-        wl_um     :  float, wavelength in um, valid from 0.22 to 1.06 um
+        wl_um     :  float, wavelength in um
         pol       :  str, 'o' or 'e', polarization of light
         theta_rad :  float, 0 to pi radians
         phi_rad   :  float, option, this is arbitray and the result does not depend on this value.
-
+s
         return
         -------
         Refractive index, float

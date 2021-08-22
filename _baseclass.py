@@ -7,9 +7,11 @@ from sympy.utilities import lambdify
 wl = sympy.Symbol('wl')
 phi = sympy.Symbol('phi')
 theta = sympy.Symbol('theta')
+
 from math import pi
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
 c_umfs = c_ms * 1e-9  #(um/fs)
+
 import numpy
 from collections import defaultdict
 
@@ -36,7 +38,7 @@ class Medium:
         self._cached_func_dict['TOD_expr'] = {'o': 0, 'e': 0}
     
     def clear(self):
-        """ clear cached """
+        """ clear cached functions """
         self.__init__()
 
     @property
@@ -80,28 +82,19 @@ class Medium:
         """ Sympy expression for Third Order Dispersion """
         return - wl**4/(4*pi**2*c_umfs**3) * (3*self.d2n_wl_expr(pol) + wl * self.d3n_wl_expr(pol)) * 1e3
 
-    """ lambdified unctions """
+    """ lambdified functions """
     def _func(self, expr, *args, pol='o'):
         array_args = map(numpy.asarray, args)
-        cached_func = self._cached_func_dict[expr.__name__][pol] # if not yet generated, 0
-        if cached_func:
-                return cached_func(*array_args)
+        func = self._cached_func_dict[expr.__name__][pol]
+        if func:
+            return func(*array_args)
         else:
-            cached_func = lambdify([wl, theta, phi], expr(pol), 'numpy')
-            self._cached_func_dict[expr.__name__][pol] = cached_func
-            return cached_func(*array_args)
+            func = lambdify([wl, theta, phi], expr(pol), 'numpy')
+            self._cached_func_dict[expr.__name__][pol] = func
+            return func(*array_args)
     
     def n(self, *args, pol='o'):
         return self._func(self.n_expr, *args, pol=pol)
-
-    # def n(self, *args, pol='o'):
-    #     """ n, refractive index of a medium """
-    #     array_args = map(numpy.asarray, args)
-    #     if self._cached_n_func[pol]:
-    #         return self._cached_n_func[pol](*array_args)
-    #     else:
-    #         self._cached_n_func[pol] = lambdify([wl, theta, phi], self.n_expr(pol), 'numpy')
-    #         return self._cached_n_func[pol](*array_args)
     
     def dn_wl(self, *args, pol='o'):
         return self._func(self.dn_wl_expr, *args, pol=pol)

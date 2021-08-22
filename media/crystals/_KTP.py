@@ -1,14 +1,15 @@
 import sympy
 from ndispers._baseclass import Medium, wl, phi, theta, pi
 
-class LBO(Medium):
+class KTP(Medium):
     """
-    LBO (Li B_3 O_5) crystal
+    KTP (K Ti O P O_4, Potassium Titanyl Phosphate) crystal
 
     - Point group : mm2
-    - Crystal class : orthorhombic 
-    - Dielecric principal axes, x // a, y // -c, z // b
+    - Crystal class : Orthorhombic
+    - Dielecric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
+    - Tranparency range : 0.35 - 4.5 um
 
     Dispersion formula of refractive index
     ---------------------------------------
@@ -16,15 +17,10 @@ class LBO(Medium):
     
     Validity range
     ---------------
-    0.22 - 1.32 um
 
     Ref
     ----
-    Kato, K. "Tunable UV generation to 0.2325 mu m in LiB/sub 3/O/sub 5." IEEE journal of quantum electronics 26.7 (1990): 1173-1175.
-    
-    Note
-    -----
-    The constants of dispersion formula are at temperature T = 20 degC.
+    Kato, K. "Parametric oscillation at 3.2 mu m in KTP pumped at 1.064 mu m." IEEE journal of quantum electronics 27.5 (1991): 1137-1140.
 
     Input
     ------
@@ -39,8 +35,8 @@ class LBO(Medium):
 
     Usage
     ------
-    # create an instance of LBO object for wave vector in 'xy' principal dielectric plane.
-    lbo_xy = ndispers.media.crystals.LBO_xy()
+    # create an instance of KTP object for wave vector in 'xy' principal dielectric plane.
+    lbo_xy = ndispers.media.crystals.KTP_xy()
     # Get a refractive index for e-ray as a function of wavelength (um) and phi angle
     lbo_xy.n(0.6, 0.23*pi, pol='e')
     # Note: theta_rad is fixed at 0.5*pi value for xy plane and the third argument is phi_rad.
@@ -58,20 +54,20 @@ class LBO(Medium):
         super().__init__()
 
         # for x-axis
-        self._A_x = 2.4542
-        self._B_x = 0.01125
-        self._C_x = 0.01135
-        self._D_x = 0.01388
+        self._A_x = 3.00065
+        self._B_x = 0.03901
+        self._C_x = 0.04251
+        self._D_x = 0.01327
         # for y-axis
-        self._A_y = 2.5390
-        self._B_y = 0.01277
-        self._C_y = 0.01189
-        self._D_y = 0.01848
+        self._A_y = 3.0333
+        self._B_y = 0.04154
+        self._C_y = 0.04547
+        self._D_y = 0.01408
         # z-axis
-        self._A_z = 2.5865
-        self._B_z = 0.01310
-        self._C_z = 0.01223
-        self._D_z = 0.01861
+        self._A_z = 3.3134
+        self._B_z = 0.05694
+        self._C_z = 0.05658
+        self._D_z = 0.01682
     
     @property
     def property(self):
@@ -102,25 +98,25 @@ class LBO(Medium):
         return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2)
 
 
-class LBO_xy(LBO):
-    __slots__ = ["_LBO_xy__plane", "_LBO_xy__theta_rad", "_LBO_xy__phi_rad"]
+class KTP_xy(KTP):
+    __slots__ = ["_KTP_xy__plane", "_KTP_xy__theta_rad", "_KTP_xy__phi_rad"]
 
     def __init__(self):
         super().__init__()
         # self.__doc__ = super().__doc__
-        self._LBO_xy__plane = 'xy'
-        self._LBO_xy__theta_rad = 0.5*pi
-        self._LBO_xy__phi_rad = 'arb'
+        self._KTP_xy__plane = 'xy'
+        self._KTP_xy__theta_rad = 0.5*pi
+        self._KTP_xy__phi_rad = 'arb'
     
     @property
     def help(self):
         print(super().__doc__)
-    
+
     @property
     def angles(self):
-        msg =  ["plane = %s" % self._LBO_xy__plane]
-        msg += ["theta_rad = %s" % self._LBO_xy__theta_rad]
-        msg += ["phi_rad = %s" % self._LBO_xy__phi_rad]
+        msg =  ["plane = %s" % self._KTP_xy__plane]
+        msg += ["theta_rad = %s" % self._KTP_xy__theta_rad]
+        msg += ["phi_rad = %s" % self._KTP_xy__phi_rad]
         print("\n".join(msg))
 
     def n_o_expr(self):
@@ -161,7 +157,7 @@ class LBO_xy(LBO):
         return super().n(wl_um, 0.5*pi, phi_rad, pol=pol)
 
     def dn_wl(self, wl_um, phi_rad, pol='o'):
-        return super().dn_wl(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().dn_wl(wl_um, pol, 0.5*pi, phi_rad, pol=pol)
     
     def d2n_wl(self, wl_um, phi_rad, pol='o'):
         return super().d2n_wl(wl_um, 0.5*pi, phi_rad, pol=pol)
@@ -179,7 +175,7 @@ class LBO_xy(LBO):
     
     def ng(self, wl_um, phi_rad, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().ng(wl_um, .5*pi, phi_rad, pol=pol)
 
     def GVD(self, wl_um, phi_rad, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
@@ -190,25 +186,25 @@ class LBO_xy(LBO):
         return super().TOD(wl_um, 0.5*pi, phi_rad, pol=pol)
 
 
-class LBO_yz(LBO):
-    __slots__ = ["_LBO_yz__plane", "_LBO_yz__theta_rad", "_LBO_yz__phi_rad"]
+class KTP_yz(KTP):
+    __slots__ = ["_KTP_yz__plane", "_KTP_yz__theta_rad", "_KTP_yz__phi_rad"]
 
     def __init__(self):
         super().__init__()
         # self.__doc__ = super().__doc__
-        self._LBO_yz__plane = 'yz'
-        self._LBO_yz__phi_rad = 0.5*pi
-        self._LBO_yz__theta_rad = 'arb'
+        self._KTP_yz__plane = 'yz'
+        self._KTP_yz__phi_rad = 0.5*pi
+        self._KTP_yz__theta_rad = 'arb'
     
     @property
     def help(self):
         print(super().__doc__)
-    
+
     @property
     def angles(self):
-        msg =  ["plane = %s" % self._LBO_yz__plane]
-        msg += ["theta_rad = %s" % self._LBO_yz__theta_rad]
-        msg += ["phi_rad = %s" % self._LBO_yz__phi_rad]
+        msg =  ["plane = %s" % self._KTP_yz__plane]
+        msg += ["theta_rad = %s" % self._KTP_yz__theta_rad]
+        msg += ["phi_rad = %s" % self._KTP_yz__phi_rad]
         print("\n".join(msg))
 
     def n_o_expr(self):
@@ -278,25 +274,25 @@ class LBO_yz(LBO):
         return super().TOD(wl_um, theta_rad, 0.5*pi, pol=pol)
 
 
-class LBO_zx(LBO):
-    __slots__ = ["_LBO_zx__plane", "_LBO_zx__theta_rad", "_LBO_zx__phi_rad"]
+class KTP_zx(KTP):
+    __slots__ = ["_KTP_zx__plane", "_KTP_zx__theta_rad", "_KTP_zx__phi_rad"]
 
     def __init__(self):
         super().__init__()
         # self.__doc__ = super().__doc__
-        self._LBO_zx__plane = 'zx'
-        self._LBO_zx__theta_rad = 'arb'
-        self._LBO_zx__phi_rad = 0.5*pi
+        self._KTP_zx__plane = 'zx'
+        self._KTP_zx__theta_rad = 'arb'
+        self._KTP_zx__phi_rad = 0.5*pi
     
     @property
     def help(self):
         print(super().__doc__)
-    
+
     @property
     def angles(self):
-        msg =  ["plane = %s" % self._LBO_zx__plane]
-        msg += ["theta_rad = %s" % self._LBO_zx__theta_rad]
-        msg += ["phi_rad = %s" % self._LBO_zx__phi_rad]
+        msg =  ["plane = %s" % self._KTP_zx__plane]
+        msg += ["theta_rad = %s" % self._KTP_zx__theta_rad]
+        msg += ["phi_rad = %s" % self._KTP_zx__phi_rad]
         print("\n".join(msg))
 
     def n_o_expr(self):

@@ -2,27 +2,27 @@ import sympy
 from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, pi
 
-class BetaBBO(Medium):
+class KDP(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    KDP (K H_2 P O_4, Potassium Dihydrogen Phosphate) crystal
 
-    - Point group : 3m
-    - Crystal class : Trigonal
+    - Point group : 42m
+    - Crystal class : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 - 2.6 um
+    - Tranparency range : 0.174 - 1.57 um
 
     Dispersion formula of refractive index
     ---------------------------------------
-    n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2)  for i = o, e
+    n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2/(wl_um**2 - 400))  for i = o, e
     
     Validity range
     ---------------
-    0.22 - 1.06 um
+    
 
     Ref
     ----
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    Zernike, Frits. "Refractive indices of ammonium dihydrogen phosphate and potassium dihydrogen phosphate between 2000 Å and 1.5 μ." JOSA 54.10 (1964): 1215-1220
 
     Usage
     ------
@@ -47,19 +47,19 @@ class BetaBBO(Medium):
 
         """ Constants of dispersion formula """
         # For ordinary ray
-        self._A_o = 2.7405
-        self._B_o = 0.0184
-        self._C_o = 0.0179
-        self._D_o = 0.0155
+        self._A_o = 2.259276
+        self._B_o = 0.01008956
+        self._C_o = 0.012942625
+        self._D_o = 13.00522
         # For extraordinary ray
-        self._A_e = 2.3730
-        self._B_e = 0.0128
-        self._C_e = 0.0156
-        self._D_e = 0.0044
+        self._A_e = 2.132668
+        self._B_e = 0.00863749
+        self._C_e = 0.012281043
+        self._D_e = 3.22799
     
     @property
     def property(self):
-        msg = ["A_o = %g" % self._A_o]
+        msg  = ["A_o = %g" % self._A_o]
         msg += ["B_o = %g" % self._B_o]
         msg += ["C_o = %g" % self._C_o]
         msg += ["D_o = %g" % self._D_o]
@@ -71,11 +71,11 @@ class BetaBBO(Medium):
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-ray """
-        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2)
+        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o / (wl**2 - 400))
     
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-ray """
-        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2)
+        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e / (wl**2 - 400))
 
     def n_expr(self, pol):
         """"

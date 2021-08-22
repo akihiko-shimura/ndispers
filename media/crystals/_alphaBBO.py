@@ -2,15 +2,15 @@ import sympy
 from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, pi
 
-class BetaBBO(Medium):
+class AlphaBBO(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    alpha-BBO (alpha-Ba B_2 O_4) crystal
 
     - Point group : 3m
-    - Crystal class : Trigonal
+    - Crystal class : Hexagonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 - 2.6 um
+    - Tranparency range : 1.9 - 2.6 nm
 
     Dispersion formula of refractive index
     ---------------------------------------
@@ -18,11 +18,11 @@ class BetaBBO(Medium):
     
     Validity range
     ---------------
-    0.22 - 1.06 um
+    
 
     Ref
     ----
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    https://www.castech.com/product/%CE%B1-BBO-90.html
 
     Usage
     ------
@@ -41,21 +41,21 @@ class BetaBBO(Medium):
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e"]
-                 
+
     def __init__(self):
         super().__init__()
 
         """ Constants of dispersion formula """
         # For ordinary ray
-        self._A_o = 2.7405
-        self._B_o = 0.0184
-        self._C_o = 0.0179
-        self._D_o = 0.0155
+        self._A_o = 2.7471
+        self._B_o = 0.01878
+        self._C_o = 0.01822
+        self._D_o = 0.01354
         # For extraordinary ray
-        self._A_e = 2.3730
-        self._B_e = 0.0128
-        self._C_e = 0.0156
-        self._D_e = 0.0044
+        self._A_e = 2.37153
+        self._B_e = 0.01224
+        self._C_e = 0.01667
+        self._D_e = 0.01516
     
     @property
     def property(self):

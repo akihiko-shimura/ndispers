@@ -1,28 +1,30 @@
 import sympy
-from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, pi
+import numpy
 
-class BetaBBO(Medium):
+class LB4(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    LB4 or LTB (Li_2 B_4 O_7, lithium tetraborate) crystal
 
-    - Point group : 3m
-    - Crystal class : Trigonal
+    - Point group : 4mm
+    - Crystal class : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 - 2.6 um
+    - - Tranparency range : 0.16 - 3.6 um
 
     Dispersion formula of refractive index
     ---------------------------------------
-    n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2)  for i = o, e
+    n(wl_um) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
     Validity range
     ---------------
-    0.22 - 1.06 um
+    0.18 - 2.3 um
+    T = 25 degC
+    P = 101325 Pa
 
     Ref
     ----
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    Sugawara, Tamotsu, Ryuichi Komatsu, and Satoshi Uda. "Linear and nonlinear optical properties of lithium tetraborate." Solid state communications 107.5 (1998): 233-237.
 
     Usage
     ------
@@ -41,25 +43,25 @@ class BetaBBO(Medium):
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e"]
-                 
+
     def __init__(self):
         super().__init__()
 
         """ Constants of dispersion formula """
         # For ordinary ray
-        self._A_o = 2.7405
-        self._B_o = 0.0184
-        self._C_o = 0.0179
-        self._D_o = 0.0155
+        self._A_o = 2.564310
+        self._B_o = 0.012337
+        self._C_o = 0.114467**2
+        self._D_o = 0.019075
         # For extraordinary ray
-        self._A_e = 2.3730
-        self._B_e = 0.0128
-        self._C_e = 0.0156
-        self._D_e = 0.0044
+        self._A_e = 2.386510
+        self._B_e = 0.010664
+        self._C_e = 0.113483**2
+        self._D_e = 0.012813
     
     @property
     def property(self):
-        msg = ["A_o = %g" % self._A_o]
+        msg  = ["A_o = %g" % self._A_o]
         msg += ["B_o = %g" % self._B_o]
         msg += ["C_o = %g" % self._C_o]
         msg += ["D_o = %g" % self._D_o]
