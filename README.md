@@ -1,2 +1,2 @@
 # ndispers
-A Python package for calculating refractive index disperion of various crystals and glasses.
+A Python package for calculating refractive index dispersion of various crystals and glasses.
