@@ -1,5 +1,11 @@
 """
 base class for medium object - _baseclass.py
+
+変更案
+- radからdeg単位に
+- 温度依存性
+- 位相整合角のメソッド
+
 """
 
 import sympy
