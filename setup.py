@@ -14,11 +14,12 @@ def main():
         long_description=open('README.md').read(),
         long_description_content_type='text/markdown',
 
-        python_requires='~=3',
+        python_requires='~=3.6',
 
         classifiers=[
             'License :: OSI Approved :: MIT License',
             'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.9',
         ],
         )
