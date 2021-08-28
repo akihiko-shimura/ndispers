@@ -5,4 +5,4 @@ init file of ndispers package
 from . import _baseclass
 from . import media
 
-# from . import test
+# from .tests import test1
