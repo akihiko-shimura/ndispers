@@ -57,4 +57,5 @@ docs/_build/
 # PyBuilder
 target/
 
-media/.DS_Store
+
+.DS_Store/
