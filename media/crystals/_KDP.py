@@ -7,7 +7,7 @@ class KDP(Medium):
     KDP (K H_2 P O_4, Potassium Dihydrogen Phosphate) crystal
 
     - Point group : 42m
-    - Crystal class : Tetragonal
+    - Crystal ststem : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 0.174 - 1.57 um

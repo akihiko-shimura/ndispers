@@ -18,8 +18,11 @@ from math import pi
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
 c_umfs = c_ms * 1e-9  #(um/fs)
 
-import numpy
+import numpy as np
 from collections import defaultdict
+
+def _returnShape(*args):
+    return np.broadcast(*args).shape
 
 class Medium:
     """
@@ -90,14 +93,14 @@ class Medium:
 
     """ lambdified functions """
     def _func(self, expr, *args, pol='o'):
-        array_args = map(numpy.asarray, args)
+        array_args = map(np.asarray, args)
         func = self._cached_func_dict[expr.__name__][pol]
         if func:
-            return func(*array_args)
+            return np.resize(func(*args), _returnShape(*array_args))
         else:
             func = lambdify([wl, theta, phi], expr(pol), 'numpy')
             self._cached_func_dict[expr.__name__][pol] = func
-            return func(*array_args)
+            return np.resize(func(*args), _returnShape(*array_args))
     
     def n(self, *args, pol='o'):
         return self._func(self.n_expr, *args, pol=pol)

@@ -6,7 +6,7 @@ class KTP(Medium):
     KTP (K Ti O P O_4, Potassium Titanyl Phosphate) crystal
 
     - Point group : mm2
-    - Crystal class : Orthorhombic
+    - Crystal ststem : Orthorhombic
     - Dielecric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
     - Tranparency range : 0.35 - 4.5 um

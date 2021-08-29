@@ -7,7 +7,7 @@ class CLBO(Medium):
     CLBO (Cs Li B_6 O_10, Cesium Lithium Borate) crystal
 
     - Point group : 4m2
-    - Crystal class : Tetragonal
+    - Crystal ststem : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 0.18 - 2.75 um

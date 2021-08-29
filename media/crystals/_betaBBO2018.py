@@ -7,7 +7,7 @@ class BetaBBO(Medium):
     beta-BBO (beta-Ba B_2 O_4) crystal
 
     - Point group : 3m
-    - Crystal class : Trigonal
+    - Crystal ststem : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 1.9 - 2.6 um

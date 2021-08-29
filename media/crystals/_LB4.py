@@ -7,7 +7,7 @@ class LB4(Medium):
     LB4 or LTB (Li_2 B_4 O_7, lithium tetraborate) crystal
 
     - Point group : 4mm
-    - Crystal class : Tetragonal
+    - Crystal ststem : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - - Tranparency range : 0.16 - 3.6 um
