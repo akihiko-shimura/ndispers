@@ -7,7 +7,7 @@ class BetaBBO(Medium):
     beta-BBO (beta-Ba B_2 O_4) crystal
 
     - Point group : 3m
-    - Crystal ststem : Trigonal
+    - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 1.9 - 2.6 um
@@ -26,24 +26,24 @@ class BetaBBO(Medium):
 
     Usage
     ------
-    # Create an instance of BetaBBO object.
-    bbo = ndispers.media.crystals.BetaBBO()
-    # Get a refractive index for e-ray as a function of wavelength (um), thetaand phi angles (rad).
-    bbo.n(0.6, 0, 0, pol='o') # here, n does not depend on theta and phi for o-ray
-    # For e-ray, n depends on theta,
-    bbo.n(0.6, 0.5*pi, 0, pol='e') # along z-axis
-    bbo.n(0.6, 0.23*pi, 0, pol='e') # for theta = 0.23*pi rad
-    bbo.n(0.6, 0*pi, 0, pol='e') # for theta = 0 rad, this corresponds to the case of o-ray
-    # Derivative dispersion quantities are also easily obtained.
-    bbo.GVD(0.6, 0.23*pi, 0, pol='e')
+    >>> bbo = ndispers.media.crystals.BetaBBO2018()
+    >>> bbo.n(0.6, 0, pol='o') # for o-ray, n does not depend on theta.
+    >>> bbo.n(0.6, 0.5*pi, pol='e') # along z-axis, it is pure e-ray.
+    >>> bbo.n(0.6, 0.23*pi, pol='e')
+    >>> bbo.n(0.6, 0*pi, pol='e') # for theta = 0 rad, it corresponds to o-ray.
+    >>> bbo.GVD(0.6, 0.23*pi, pol='e')
 
     @author: Akihiko Shimura
     """
-    __slots__ = ["_B1_o", "_C1_o", "_B2_o", "_C2_o", "_B3_o", "_C3_o",
+    __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
+                 "_B1_o", "_C1_o", "_B2_o", "_C2_o", "_B3_o", "_C3_o",
                  "_B1_e", "_C1_e", "_B2_e", "_C2_e", "_B3_e", "_C3_e"]
 
     def __init__(self):
         super().__init__()
+        self._BetaBBO__plane = 'arb'
+        self._BetaBBO__theta_rad = 'var'
+        self._BetaBBO__phi_rad = 'arb'
 
         """ Constants of dispersion formula """
         # For ordinary ray
@@ -62,7 +62,23 @@ class BetaBBO(Medium):
         self._C3_e = 263
     
     @property
-    def property(self):
+    def plane(self):
+        return self._BetaBBO__plane
+    @property
+    def theta_rad(self):
+        return self._BetaBBO__theta_rad
+    @property
+    def phi_rad(self):
+        return self._BetaBBO__phi_rad
+    @property
+    def angles(self):
+        msg =  ["plane = %s" % self._BetaBBO__plane]
+        msg += ["theta_rad = %s" % self._BetaBBO__theta_rad]
+        msg += ["phi_rad = %s" % self._BetaBBO__phi_rad]
+        print("\n".join(msg))
+    
+    @property
+    def constants(self):
         msg = ["B1_o = %g" % self._B1_o]
         msg += ["C1_o = %g" % self._C1_o]
         msg += ["B2_o = %g" % self._B2_o]
@@ -100,48 +116,47 @@ class BetaBBO(Medium):
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
     
-    def n(self, wl_um, theta_rad, phi_rad, pol='o'):
+    def n(self, wl_um, theta_rad, pol='o'):
         """
         Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
 
         input
         ------
         wl_um     :  float, wavelength in um
-        pol       :  str, 'o' or 'e', polarization of light
         theta_rad :  float, 0 to pi radians
-        phi_rad   :  float, option, this is arbitray and the result does not depend on this value.
-s
+        pol       :  str, 'o' or 'e', polarization of light
+
         return
         -------
         Refractive index, float
         """
-        return super().n(wl_um, theta_rad, phi_rad, pol=pol)
+        return super().n(wl_um, theta_rad, 0.0, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, phi_rad, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, phi_rad, pol=pol)
+    def dn_wl(self, wl_um, theta_rad, pol='o'):
+        return super().dn_wl(wl_um, theta_rad, 0.0, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, phi_rad, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, phi_rad, pol=pol)
+    def d2n_wl(self, wl_um, theta_rad, pol='o'):
+        return super().d2n_wl(wl_um, theta_rad, 0.0, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, phi_rad, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, phi_rad, pol=pol)
+    def d3n_wl(self, wl_um, theta_rad, pol='o'):
+        return super().d3n_wl(wl_um, theta_rad, 0.0, pol=pol)
     
-    def GD(self, wl_um, theta_rad, phi_rad, pol='o'):
+    def GD(self, wl_um, theta_rad, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, phi_rad, pol=pol)
+        return super().GD(wl_um, theta_rad, 0.0, pol=pol)
     
-    def GV(self, wl_um, theta_rad, phi_rad, pol='o'):
+    def GV(self, wl_um, theta_rad, pol='o'):
         """Group Velocity [um/fs]"""
-        return super().GV(wl_um, theta_rad, phi_rad, pol=pol)
+        return super().GV(wl_um, theta_rad, 0.0, pol=pol)
     
-    def ng(self, wl_um, theta_rad, phi_rad, pol='o'):
+    def ng(self, wl_um, theta_rad, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, phi_rad, pol=pol)
+        return super().ng(wl_um, theta_rad, 0.0, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, phi_rad, pol='o'):
+    def GVD(self, wl_um, theta_rad, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, phi_rad, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0.0, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, phi_rad, pol='o'):
+    def TOD(self, wl_um, theta_rad, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, phi_rad, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0.0, pol=pol)

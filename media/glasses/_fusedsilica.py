@@ -40,7 +40,7 @@ class FusedSilica(Medium):
         self._C3 = 9.896161**2
      
     @property
-    def property(self):
+    def constants(self):
         msg  = ["B1 = %g" % self._B1]
         msg += ["C1 = %g" % self._C1]
         msg += ["B2 = %g" % self._B2]

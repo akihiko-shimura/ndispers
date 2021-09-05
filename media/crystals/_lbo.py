@@ -6,7 +6,7 @@ class LBO(Medium):
     LBO (Li B_3 O_5) crystal
 
     - Point group : mm2
-    - Crystal ststem : orthorhombic 
+    - Crystal system : orthorhombic 
     - Dielecric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
 
@@ -39,13 +39,8 @@ class LBO(Medium):
 
     Usage
     ------
-    # create an instance of LBO object for wave vector in 'xy' principal dielectric plane.
-    lbo_xy = ndispers.media.crystals.LBO_xy()
-    # Get a refractive index for e-ray as a function of wavelength (um) and phi angle
-    lbo_xy.n(0.6, 0.23*pi, pol='e')
-    # Note: theta_rad is fixed at 0.5*pi value for xy plane and the third argument is phi_rad.
-    # Derivative dispersion quantities are also easily obtained.
-    lbo_xy.GVD(0.6, 0.23*pi, pol='e')
+    >>> lbo_xy = ndispers.media.crystals.LBO_xy()
+    >>> lbo_xy.n(0.6, 0.23*pi, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
 
     @author: Akihiko Shimura
     """
@@ -74,7 +69,7 @@ class LBO(Medium):
         self._D_z = 0.01861
     
     @property
-    def property(self):
+    def constants(self):
         msg =  ["A_x = %g" % self._A_x]
         msg += ["B_x = %g" % self._B_x]
         msg += ["C_x = %g" % self._C_x]
@@ -107,15 +102,23 @@ class LBO_xy(LBO):
 
     def __init__(self):
         super().__init__()
-        # self.__doc__ = super().__doc__
         self._LBO_xy__plane = 'xy'
         self._LBO_xy__theta_rad = 0.5*pi
-        self._LBO_xy__phi_rad = 'arb'
+        self._LBO_xy__phi_rad = 'var'
     
     @property
     def help(self):
         print(super().__doc__)
     
+    @property
+    def plane(self):
+        return self._LBO_xy__plane
+    @property
+    def theta_rad(self):
+        return self._LBO_xy__theta_rad
+    @property
+    def phi_rad(self):
+        return self._LBO_xy__phi_rad
     @property
     def angles(self):
         msg =  ["plane = %s" % self._LBO_xy__plane]
@@ -195,14 +198,23 @@ class LBO_yz(LBO):
 
     def __init__(self):
         super().__init__()
-        # self.__doc__ = super().__doc__
         self._LBO_yz__plane = 'yz'
         self._LBO_yz__phi_rad = 0.5*pi
-        self._LBO_yz__theta_rad = 'arb'
+        self._LBO_yz__theta_rad = 'var'
     
     @property
     def help(self):
         print(super().__doc__)
+    
+    @property
+    def plane(self):
+        return self._LBO_yz__plane
+    @property
+    def theta_rad(self):
+        return self._LBO_yz__theta_rad
+    @property
+    def phi_rad(self):
+        return self._LBO_yz__phi_rad
     
     @property
     def angles(self):
@@ -283,15 +295,23 @@ class LBO_zx(LBO):
 
     def __init__(self):
         super().__init__()
-        # self.__doc__ = super().__doc__
         self._LBO_zx__plane = 'zx'
-        self._LBO_zx__theta_rad = 'arb'
+        self._LBO_zx__theta_rad = 'var'
         self._LBO_zx__phi_rad = 0.5*pi
     
     @property
     def help(self):
         print(super().__doc__)
     
+    @property
+    def plane(self):
+        return self._LBO_zx__plane
+    @property
+    def theta_rad(self):
+        return self._LBO_zx__theta_rad
+    @property
+    def phi_rad(self):
+        return self._LBO_zx__phi_rad
     @property
     def angles(self):
         msg =  ["plane = %s" % self._LBO_zx__plane]
