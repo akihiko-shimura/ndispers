@@ -164,7 +164,7 @@ class Medium:
         d : dict,
             Phase-matching angles for types of interactions.
         """
-        wl3 = 1./(1./wl1 + 1./wl2) # SFG energy conversion
+        wl3 = 1./(1./wl1 + 1./wl2) # SFG
 
         def pmAngle_for_pol(pol1, pol2, pol3):
             angle_ar = np.arange(0, 90, tol_deg) * pi/180 #deg to rad, accuracy 0.01 deg
