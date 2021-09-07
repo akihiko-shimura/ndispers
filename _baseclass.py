@@ -1,7 +1,6 @@
 """
 base class for medium object - _baseclass.py
 """
-
 import sympy
 from sympy.utilities import lambdify
 wl = sympy.Symbol('wl')
@@ -15,15 +14,7 @@ c_umfs = c_ms * 1e-9  #(um/fs)
 import numpy as np
 from collections import defaultdict
 
-def _returnShape(*args):
-    return np.broadcast(*args).shape
-
-def _arg_signchange(a):
-    a_sign = np.sign(a)
-    if_signflip = ((np.roll(a_sign, 1) - a_sign) != 0).astype(int)
-    if_signflip[0] = 0
-    arg_signflip = np.where(if_signflip == 1)
-    return arg_signflip
+from .helper import (returnShape, arg_signchange)
 
 class Medium:
     """
@@ -110,11 +101,11 @@ class Medium:
         array_args = map(np.asarray, args)
         func = self._cached_func_dict[expr.__name__][pol]
         if func:
-            return np.resize(func(*args), _returnShape(*array_args))
+            return np.resize(func(*args), returnShape(*array_args))
         else:
             func = lambdify([wl, theta, phi], expr(pol), 'numpy')
             self._cached_func_dict[expr.__name__][pol] = func
-            return np.resize(func(*args), _returnShape(*array_args))
+            return np.resize(func(*args), returnShape(*array_args))
     
     def n(self, *args, pol='o'):
         return self._func(self.n_expr, *args, pol=pol)
@@ -144,15 +135,23 @@ class Medium:
         return self._func(self.TOD_expr, *args, pol=pol)
 
     """ Methods for nonlinear optics """
+    def dk_sfg(self, wl1, wl2, angle_rad, pol1, pol2, pol3):
+        wl3 = 1./(1./wl1 + 1./wl2)
+        n1 = self.n(wl1, angle_rad, pol=pol1)
+        n2 = self.n(wl2, angle_rad, pol=pol2)
+        n3 = self.n(wl3, angle_rad, pol=pol3)
+        dk_sfg = 2*pi * (n3/wl3 - n2/wl2 - n1/wl1)
+        return dk_sfg
+
     def pmAngles_sfg(self, wl1, wl2, tol_deg=0.01, deg=False):
         """
-        Phase-matching angles in sum-frequency generation (SFG).
+        Phase-matching angles for sum-frequency generation (SFG).
 
         Parameters
         ----------
-        wl1 : float, 
+        wl1 : float or array_like
             pump wavelength 1 in um.
-        wl2 : float, 
+        wl2 : float or array_like
             pump wavelength 2 in um.
         tol_deg : float, optional
             Tolerance error of angle in degree. Defaults to 0.01 deg.
@@ -164,24 +163,19 @@ class Medium:
         d : dict,
             Phase-matching angles for types of interactions.
         """
-        wl3 = 1./(1./wl1 + 1./wl2) # SFG
+        wl3 = 1./(1./wl1 + 1./wl2)
 
         def pmAngle_for_pol(pol1, pol2, pol3):
-            angle_ar = np.arange(0, 90, tol_deg) * pi/180 #deg to rad, accuracy 0.01 deg
-            n1 = self.n(wl1, angle_ar, pol=pol1)
-            n2 = self.n(wl2, angle_ar, pol=pol2)
-            n3 = self.n(wl3, angle_ar, pol=pol3)
-            dk = 2*pi * (n3/wl3 - n2/wl2 - n1/wl1)
-            angle_pm = angle_ar[_arg_signchange(dk)]
+            angle_ar = np.arange(0, 90, tol_deg) * pi/180
+            angle_pm = angle_ar[arg_signchange(self.dk_sfg(wl1, wl2, angle_ar, pol1, pol2, pol3))]
             if deg:
                 angle_pm *= 180/pi
-
             pm_angles = dict()
             if self.theta_rad == 'var':
-                pm_angles['theta'] = angle_pm
+                pm_angles['theta'] = angle_pm.tolist()
                 pm_angles['phi'] = None
             elif self.phi_rad == 'var':
-                pm_angles['phi'] = angle_pm
+                pm_angles['phi'] = angle_pm.tolist()
                 pm_angles['theta'] = None
             return pm_angles
         
@@ -195,3 +189,32 @@ class Medium:
         d['eoo'] = pmAngle_for_pol('e', 'o', 'o') #posi1
         d['oeo'] = pmAngle_for_pol('o', 'e', 'o') #posi2
         return d
+
+    def pmBand_sfg(self, wl1, wl2, angle_rad, pol1, pol2, pol3, L_um):
+        """
+        Phase-matching band of SFG
+
+        Parameters
+        ----------
+        wl1 : float or array_like
+            pump wavelength 1 in um.
+        wl2 : float or array_like
+            pump wavelength 2 in um.
+        angle_rad : float or array_like
+            variable angle, theta_rad or phi_rad.
+        pol1: {'o', 'e'}
+            polarization of wl1 wave.
+        pol2: {'o', 'e'}
+            polarization of wl2 wave.
+        pol3: {'o', 'e'}
+            polarization of sum-frequency wave.
+        L_um : float
+            crystal length in um.
+
+        Return
+        ------
+        pmBand_sfg : float or array_like
+            Phase-matching band.
+        """
+        t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, pol1, pol2, pol3) * L_um
+        return (np.sin(t)/t)**2
