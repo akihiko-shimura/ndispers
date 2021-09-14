@@ -72,7 +72,10 @@ class KDP(Medium):
         msg += ["theta_rad = %s" % self._KDP__theta_rad]
         msg += ["phi_rad = %s" % self._KDP__phi_rad]
         print("\n".join(msg))
-    
+    @property
+    def symbols(self):
+        return [wl, theta, phi]
+
     @property
     def constants(self):
         msg  = ["A_o = %g" % self._A_o]

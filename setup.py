@@ -12,7 +12,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name="ndispers",
-    version='0.1.6',
+    version='0.1.8',
     packages=find_packages(),
 
     license='MIT License',

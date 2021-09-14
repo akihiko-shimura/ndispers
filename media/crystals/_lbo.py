@@ -1,5 +1,5 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta, pi
+from ndispers._baseclass import Medium, wl, phi, theta, T, pi
 
 class LBO(Medium):
     """
@@ -31,11 +31,11 @@ class LBO(Medium):
     plane  :  Principal dielectric plane which includes wave vector of light ("xy", "yz" or "xz")
     
     If plane == "xy", 
-        o-ray polarization // z-axis, e-ray polarization in xy-plane, phi is a variable and theta = 90 deg.
+        o-ray polarization // z-axis, e-ray polarization in xy-plane, phi is variable and theta = 90 deg.
     If plane == "yz", 
-        o-ray polarization // x-axis, e-ray polarization in yz-plane, phi = 90 deg and theta is a variable.
+        o-ray polarization // x-axis, e-ray polarization in yz-plane, phi = 90 deg and theta is variable.
     If plane == "xz", 
-        o-ray polarization // y-axis, e-ray polarization in xz-plane, phi = 0 deg and theta is a variable.
+        o-ray polarization // y-axis, e-ray polarization in xz-plane, phi = 0 deg and theta is variable.
 
     Usage
     ------
@@ -47,7 +47,8 @@ class LBO(Medium):
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x",
                  "_A_y", "_B_y", "_C_y", "_D_y",
-                 "_A_z", "_B_z", "_C_z", "_D_z",]
+                 "_A_z", "_B_z", "_C_z", "_D_z",
+                 "_dndT_x", "_dndT_y", "_dndT_z"]
     
     def __init__(self):
         super().__init__()
@@ -67,7 +68,15 @@ class LBO(Medium):
         self._B_z = 0.01310
         self._C_z = 0.01223
         self._D_z = 0.01861
+        # dn/dT
+        self._dndT_x = 9.3e-6 #1/K
+        self._dndT_y = -13.6e-6 #1/K
+        self._dndT_z = (-6.3 - 2.1*wl)*1e-6 #1/K
     
+    @property
+    def symbols(self):
+        return [wl, theta, phi, T]
+
     @property
     def constants(self):
         msg =  ["A_x = %g" % self._A_x]
@@ -82,19 +91,22 @@ class LBO(Medium):
         msg += ["B_z = %g" % self._B_z]
         msg += ["C_z = %g" % self._C_z]
         msg += ["D_z = %g" % self._D_z]
+        msg += ["dn_x/dT = %s" % self._dndT_x]
+        msg += ["dn_y/dT = %s" % self._dndT_y]
+        msg += ["dn_z/dT = %s" % self._dndT_z]
         print("\n".join(msg))
     
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2)
+        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2) + self._dndT_x * (T - 20)
     
     def n_y_expr(self):
         """ sympy expresssion, dispersion formula of y-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) - self._D_y * wl**2)
+        return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) - self._D_y * wl**2) + self._dndT_y * (T - 20)
 
     def n_z_expr(self):
         """ sympy expresssion, dispersion formula of z-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2)
+        return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2) + self._dndT_z * (T - 20)
 
 
 class LBO_xy(LBO):
@@ -109,7 +121,6 @@ class LBO_xy(LBO):
     @property
     def help(self):
         print(super().__doc__)
-    
     @property
     def plane(self):
         return self._LBO_xy__plane
@@ -146,51 +157,51 @@ class LBO_xy(LBO):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    def n(self, wl_um, phi_rad, pol='o'):
+    def n(self, wl_um, phi_rad, T_degC, pol='o'):
         """
         Refractive index in xy plane.
 
         input
         ------
-        wl_um     :  float, wavelength in um
-        pol       :  str, 'o' or 'e', polarization of light
-        phi_rad   :  float, 0 to 2pi radians
+        wl_um     :  float or array_like, wavelength in um
+        phi_rad   :  float or array_like, polar angle in radians
+        T_degC    :  float or array_like, temperature of crystal in degree C.
         (Note: theta_rad is fixed at 0.5*pi in xy principal plane.)
 
         return
         -------
-        Refractive index, float
+        Refractive index, float or array_like
         """
-        return super().n(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().n(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, phi_rad, pol='o'):
-        return super().dn_wl(wl_um, 0.5*pi, phi_rad, pol=pol)
+    def dn_wl(self, wl_um, phi_rad, T_degC, pol='o'):
+        return super().dn_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, phi_rad, pol='o'):
-        return super().d2n_wl(wl_um, 0.5*pi, phi_rad, pol=pol)
+    def d2n_wl(self, wl_um, phi_rad, T_degC, pol='o'):
+        return super().d2n_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, phi_rad, pol='o'):
-        return super().d3n_wl(wl_um, 0.5*pi, phi_rad, pol=pol)
+    def d3n_wl(self, wl_um, phi_rad, T_degC, pol='o'):
+        return super().d3n_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
-    def GD(self, wl_um, phi_rad, pol='o'):
+    def GD(self, wl_um, phi_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().GD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def GV(self, wl_um, phi_rad, pol='o'):
+    def GV(self, wl_um, phi_rad, T_degC, pol='o'):
         """Group Velocity [um/fs]"""
-        return super().GV(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().GV(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def ng(self, wl_um, phi_rad, pol='o'):
+    def ng(self, wl_um, phi_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().ng(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
-    def GVD(self, wl_um, phi_rad, pol='o'):
+    def GVD(self, wl_um, phi_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().GVD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
-    def TOD(self, wl_um, phi_rad, pol='o'):
+    def TOD(self, wl_um, phi_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, 0.5*pi, phi_rad, pol=pol)
+        return super().TOD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
 
 class LBO_yz(LBO):
@@ -205,7 +216,6 @@ class LBO_yz(LBO):
     @property
     def help(self):
         print(super().__doc__)
-    
     @property
     def plane(self):
         return self._LBO_yz__plane
@@ -215,7 +225,6 @@ class LBO_yz(LBO):
     @property
     def phi_rad(self):
         return self._LBO_yz__phi_rad
-    
     @property
     def angles(self):
         msg =  ["plane = %s" % self._LBO_yz__plane]
@@ -243,51 +252,51 @@ class LBO_yz(LBO):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    def n(self, wl_um, theta_rad, pol='o'):
+    def n(self, wl_um, theta_rad, T_degC, pol='o'):
         """
         Refractive index in yz plane.
 
         input
         ------
-        wl_um     :  float, wavelength in um
-        pol       :  str, 'o' or 'e', polarization of light
-        theta_rad :  float, 0 to 2pi radians
-        (Note: phi_rad is fixed at 0.5*pi in yz principal plane.)
+        wl_um     :  float or array_like, wavelength in um
+        theta_rad   :  float or array_like, azimuthal angle in radians
+        T_degC    :  float or array_like, temperature of crystal in degree C.
+        (Note: phi_rad is fixed at 0.5*pi in xy principal plane.)
 
         return
         -------
-        Refractive index, float
+        Refractive index, float or array_like
         """
-        return super().n(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().n(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
+    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dn_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
+    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().d2n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, pol='o'):
+    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().d3n_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
 
-    def GD(self, wl_um, theta_rad, pol='o'):
+    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, pol='o'):
+    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Velocity [um/fs]"""
-        return super().GV(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, pol='o'):
+    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().ng(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def GVD(self, wl_um, theta_rad, pol='o'):
+    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def TOD(self, wl_um, theta_rad, pol='o'):
+    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
 
 class LBO_zx(LBO):
@@ -302,7 +311,6 @@ class LBO_zx(LBO):
     @property
     def help(self):
         print(super().__doc__)
-    
     @property
     def plane(self):
         return self._LBO_zx__plane
@@ -339,48 +347,48 @@ class LBO_zx(LBO):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    def n(self, wl_um, theta_rad, pol='o'):
+    def n(self, wl_um, theta_rad, T_degC, pol='o'):
         """
-        Refractive index in zx plane.
+        Refractive index in yz plane.
 
         input
         ------
-        wl_um     :  float, wavelength in um
-        pol       :  str, 'o' or 'e', polarization of light
-        theta_rad :  float, 0 to 2pi radians
-        (Note: phi_rad is fixed at 0.5*pi in zx principal plane.)
+        wl_um     :  float or array_like, wavelength in um
+        theta_rad   :  float or array_like, azimuthal angle in radians
+        T_degC    :  float or array_like, temperature of crystal in degree C.
+        (Note: phi_rad is fixed at 0.5*pi in xy principal plane.)
 
         return
         -------
-        Refractive index, float
+        Refractive index, float or array_like
         """
-        return super().n(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().n(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
+    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dn_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
+    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().d2n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, pol='o'):
+    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().d3n_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
 
-    def GD(self, wl_um, theta_rad, pol='o'):
+    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, pol='o'):
+    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Velocity [um/fs]"""
-        return super().GV(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, pol='o'):
+    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().ng(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def GVD(self, wl_um, theta_rad, pol='o'):
+    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def TOD(self, wl_um, theta_rad, pol='o'):
+    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)

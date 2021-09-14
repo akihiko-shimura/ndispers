@@ -19,9 +19,9 @@ def resample(x, y, N=1, kind='linear'):
     y_new = y_func(x_new)
     return x_new, y_new
 
-def fwhm(x_ar, y_ar, N=1):
+def fullWidth(x_ar, y_ar, threshold=0.5, N=1):
     x, y = resample(x_ar, y_ar, N=N)
-    idx_3dB = np.where(y >= np.max(y) * 0.5)
+    idx_3dB = np.where(y >= np.max(y) * threshold)
     x_3dB = x[idx_3dB]
     width_3dB = x_3dB[-1] - x_3dB[0]
     return width_3dB

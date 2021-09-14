@@ -1,6 +1,6 @@
 import sympy
 from sympy.utilities import lambdify
-from ndispers._baseclass import Medium, wl, phi, theta, pi
+from ndispers._baseclass import Medium, wl, phi, theta, T, pi
 
 class BetaBBO(Medium):
     """
@@ -20,9 +20,11 @@ class BetaBBO(Medium):
     ---------------
     0.22 - 1.06 um
 
+
     Ref
     ----
     Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
 
     Usage
     ------
@@ -37,7 +39,8 @@ class BetaBBO(Medium):
     """
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
                  "_A_o", "_B_o", "_C_o", "_D_o",
-                 "_A_e", "_B_e", "_C_e", "_D_e"]
+                 "_A_e", "_B_e", "_C_e", "_D_e",
+                 "_dndT_o", "_dndT_e"]
                  
     def __init__(self):
         super().__init__()
@@ -56,6 +59,9 @@ class BetaBBO(Medium):
         self._B_e = 0.0128
         self._C_e = 0.0156
         self._D_e = 0.0044
+        # dn/dT
+        self._dndT_o = -16.6e-6 #/degC
+        self._dndT_e = -9.3e-6 #/degC
     
     @property
     def plane(self):
@@ -72,6 +78,9 @@ class BetaBBO(Medium):
         msg += ["theta_rad = %s" % self._BetaBBO__theta_rad]
         msg += ["phi_rad = %s" % self._BetaBBO__phi_rad]
         print("\n".join(msg))
+    @property
+    def symbols(self):
+        return [wl, theta, phi, T]
     
     @property
     def constants(self):
@@ -83,15 +92,17 @@ class BetaBBO(Medium):
         msg += ["B_e = %g" % self._B_e]
         msg += ["C_e = %g" % self._C_e]
         msg += ["D_e = %g" % self._D_e]
+        msg += ["dn_o/dT = %g" % self._dndT_o]
+        msg += ["dn_e/dT = %g" % self._dndT_e]
         print("\n".join(msg))
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-ray """
-        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2)
+        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2) + self._dndT_o * (T - 20)
     
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-ray """
-        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2)
+        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2) + self._dndT_e * (T - 20)
 
     def n_expr(self, pol):
         """"
@@ -107,47 +118,48 @@ class BetaBBO(Medium):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, pol='o'):
+    def n(self, wl_um, theta_rad, T_degC, pol='o'):
         """
         Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
 
         input
         ------
-        wl_um     :  float, wavelength in um
-        theta_rad :  float, 0 to pi radians
-        pol       :  str, 'o' or 'e', polarization of light
+        wl_um     :  float or array_like, wavelength in um
+        theta_rad :  float or array_like, 0 to pi radians
+        T_degC    :  float or array_like, temperature of crystal in degree C.
+        pol       :  {'o', 'e'}, optional, polarization of light
 
         return
         -------
         Refractive index, float
         """
-        return super().n(wl_um, theta_rad, 0.0, pol=pol)
+        return super().n(wl_um, theta_rad, 0.0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0.0, pol=pol)
+    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dn_wl(wl_um, theta_rad, 0.0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0.0, pol=pol)
+    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().d2n_wl(wl_um, theta_rad, 0.0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0.0, pol=pol)
+    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().d3n_wl(wl_um, theta_rad, 0.0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, pol='o'):
+    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0.0, pol=pol)
+        return super().GD(wl_um, theta_rad, 0.0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, pol='o'):
+    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Velocity [um/fs]"""
-        return super().GV(wl_um, theta_rad, 0.0, pol=pol)
+        return super().GV(wl_um, theta_rad, 0.0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, pol='o'):
+    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0.0, pol=pol)
+        return super().ng(wl_um, theta_rad, 0.0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, pol='o'):
+    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0.0, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0.0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, pol='o'):
+    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0.0, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0.0, T_degC, pol=pol)

@@ -6,6 +6,7 @@ from sympy.utilities import lambdify
 wl = sympy.Symbol('wl')
 phi = sympy.Symbol('phi')
 theta = sympy.Symbol('theta')
+T = sympy.Symbol('T')
 
 from math import pi
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
@@ -23,7 +24,6 @@ class Medium:
     @author: Akihiko Shimura
     """
     __slots__ = ["__plane", "__theta_rad", "__phi_rad", "_cached_func_dict"]
-
 
     def __init__(self):
         self.__plane = 'arb'
@@ -103,7 +103,7 @@ class Medium:
         if func:
             return np.resize(func(*args), returnShape(*array_args))
         else:
-            func = lambdify([wl, theta, phi], expr(pol), 'numpy')
+            func = lambdify(self.symbols, expr(pol), 'numpy')
             self._cached_func_dict[expr.__name__][pol] = func
             return np.resize(func(*args), returnShape(*array_args))
     
@@ -135,15 +135,15 @@ class Medium:
         return self._func(self.TOD_expr, *args, pol=pol)
 
     """ Methods for nonlinear optics """
-    def dk_sfg(self, wl1, wl2, angle_rad, pol1, pol2, pol3):
+    def dk_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3):
         wl3 = 1./(1./wl1 + 1./wl2)
-        n1 = self.n(wl1, angle_rad, pol=pol1)
-        n2 = self.n(wl2, angle_rad, pol=pol2)
-        n3 = self.n(wl3, angle_rad, pol=pol3)
+        n1 = self.n(wl1, angle_rad, T_degC, pol=pol1)
+        n2 = self.n(wl2, angle_rad, T_degC, pol=pol2)
+        n3 = self.n(wl3, angle_rad, T_degC, pol=pol3)
         dk_sfg = 2*pi * (n3/wl3 - n2/wl2 - n1/wl1)
         return dk_sfg
 
-    def pmAngles_sfg(self, wl1, wl2, tol_deg=0.01, deg=False):
+    def pmAngles_sfg(self, wl1, wl2, T_degC, tol_deg=0.005, deg=False):
         """
         Phase-matching angles for sum-frequency generation (SFG).
 
@@ -167,7 +167,7 @@ class Medium:
 
         def pmAngle_for_pol(pol1, pol2, pol3):
             angle_ar = np.arange(0, 90, tol_deg) * pi/180
-            angle_pm = angle_ar[arg_signchange(self.dk_sfg(wl1, wl2, angle_ar, pol1, pol2, pol3))]
+            angle_pm = angle_ar[arg_signchange(self.dk_sfg(wl1, wl2, angle_ar, T_degC, pol1, pol2, pol3))]
             if deg:
                 angle_pm *= 180/pi
             pm_angles = dict()
@@ -190,7 +190,7 @@ class Medium:
         d['oeo'] = pmAngle_for_pol('o', 'e', 'o') #posi2
         return d
 
-    def pmBand_sfg(self, wl1, wl2, angle_rad, pol1, pol2, pol3, L_um):
+    def pmBand_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_um):
         """
         Phase-matching band of SFG
 
@@ -216,5 +216,5 @@ class Medium:
         pmBand_sfg : float or array_like
             Phase-matching band.
         """
-        t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, pol1, pol2, pol3) * L_um
+        t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3) * L_um
         return (np.sin(t)/t)**2

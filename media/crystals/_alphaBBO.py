@@ -72,6 +72,9 @@ class AlphaBBO(Medium):
         msg += ["theta_rad = %s" % self._AlphaBBO__theta_rad]
         msg += ["phi_rad = %s" % self._AlphaBBO__phi_rad]
         print("\n".join(msg))
+    @property
+    def symbols(self):
+        return [wl, theta, phi]
     
     @property
     def constants(self):
