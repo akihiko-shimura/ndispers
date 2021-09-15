@@ -116,13 +116,13 @@ class KDP(Medium):
 
         input
         ------
-        wl_um     :  float, wavelength in um
-        theta_rad :  float, 0 to pi radians
-        pol       :  str, 'o' or 'e', polarization of light
+        wl_um     :  float or array_like, wavelength in um
+        theta_rad :  float or array_like, 0 to pi radians
+        pol       :  {'o' or 'e'}, optional, polarization of light
 
         return
         -------
-        Refractive index, float
+        Refractive index, float or array_like
         """
         return super().n(wl_um, theta_rad, 0.0, pol=pol)
 
@@ -154,3 +154,9 @@ class KDP(Medium):
     def TOD(self, wl_um, theta_rad, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, theta_rad, 0.0, pol=pol)
+    
+    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
+        return super().woa_theta(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+    
+    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
+        return super().woa_phi(wl_um, theta_rad, 0.0, T_degC, pol=pol)

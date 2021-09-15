@@ -20,20 +20,25 @@ class BetaBBO(Medium):
     ---------------
     0.22 - 1.06 um
 
-
     Ref
     ----
     Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
     Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
 
-    Usage
-    ------
+    Examples
+    --------
     >>> bbo = ndispers.media.crystals.BetaBBO1987()
-    >>> bbo.n(0.6, 0, pol='o') # for o-ray, n does not depend on theta.
-    >>> bbo.n(0.6, 0.5*pi, pol='e') # along z-axis, it is pure e-ray.
-    >>> bbo.n(0.6, 0.23*pi, pol='e')
-    >>> bbo.n(0.6, 0*pi, pol='e') # for theta = 0 rad, it corresponds to o-ray.
-    >>> bbo.GVD(0.6, 0.23*pi, pol='e')
+    >>> bbo.n(0.6, 0, 40, pol='o') # args: (wl_um, theta_rad, T_degC, pol)
+    >>> bbo.n(0.6, 0.5*pi, 40, pol='e') # along z-axis, it is pure e-ray.
+    >>> bbo.n(0.6, 0*pi, 40, pol='e') # for theta = 0 rad, it corresponds to o-ray.
+    >>> bbo.GVD(0.6, 0.23*pi, 40, pol='e')
+    >>> bbo.pmAngles_sfg(1.064, 1.064, 40, deg=True)
+    {'ooe': {'theta': [22.895], 'phi': None},
+     'eeo': {'theta': [], 'phi': None},
+     'oee': {'theta': [32.575], 'phi': None},
+     'eoe': {'theta': [32.575], 'phi': None},
+     'eoo': {'theta': [], 'phi': None},
+     'oeo': {'theta': [], 'phi': None}}
 
     @author: Akihiko Shimura
     """
@@ -131,7 +136,7 @@ class BetaBBO(Medium):
 
         return
         -------
-        Refractive index, float
+        Refractive index, float or array_like
         """
         return super().n(wl_um, theta_rad, 0.0, T_degC, pol=pol)
 
@@ -163,3 +168,11 @@ class BetaBBO(Medium):
     def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+    
+    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
+        """ Polar walk-off angle [rad] """
+        return super().woa_theta(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+    
+    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
+        """ Azimuthal walk-off angle [rad] """
+        return super().woa_phi(wl_um, theta_rad, 0.0, T_degC, pol=pol)

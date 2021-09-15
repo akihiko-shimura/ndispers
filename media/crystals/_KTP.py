@@ -208,6 +208,12 @@ class KTP_xy(KTP):
     def TOD(self, wl_um, phi_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
+    
+    def woa_theta(self, wl_um, phi_rad, T_degC, pol='e'):
+        return super().woa_theta(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
+    
+    def woa_phi(self, wl_um, phi_rad, T_degC, pol='e'):
+        return super().woa_phi(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
 
 class KTP_yz(KTP):
@@ -311,6 +317,12 @@ class KTP_yz(KTP):
     def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
+        return super().woa_theta(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
+        return super().woa_phi(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
 
 class KTP_zx(KTP):
@@ -414,3 +426,9 @@ class KTP_zx(KTP):
     def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
+        return super().woa_theta(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
+        return super().woa_phi(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)

@@ -40,6 +40,8 @@ class Medium:
         self._cached_func_dict['GD_expr'] = {'o': 0, 'e': 0}
         self._cached_func_dict['GVD_expr'] = {'o': 0, 'e': 0}
         self._cached_func_dict['TOD_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['woa_theta_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['woa_phi_expr'] = {'o': 0, 'e': 0}
     
     def clear(self):
         """ clear cached functions """
@@ -48,7 +50,6 @@ class Medium:
     @property
     def help(self):
         print(self.__doc__)
-    
     @property
     def plane(self):
         return self.__plane
@@ -96,6 +97,14 @@ class Medium:
         """ Sympy expression for Third Order Dispersion """
         return - wl**4/(4*pi**2*c_umfs**3) * (3*self.d2n_wl_expr(pol) + wl * self.d3n_wl_expr(pol)) * 1e3
 
+    def woa_theta_expr(self, pol):
+        """ Sympy expression for polar walkoff angle """
+        return sympy.atan(- 1/self.n_expr(pol) * sympy.diff(self.n_expr(pol), theta))
+    
+    def woa_phi_expr(self, pol):
+        """ Sympy expression for azimuthal walkoff angle """
+        return sympy.atan(- 1/self.n_expr(pol) * sympy.diff(self.n_expr(pol), phi))
+
     """ lambdified functions """
     def _func(self, expr, *args, pol='o'):
         array_args = map(np.asarray, args)
@@ -133,6 +142,14 @@ class Medium:
     
     def TOD(self, *args, pol='o'):
         return self._func(self.TOD_expr, *args, pol=pol)
+
+    def woa_theta(self, *args, pol='e'):
+        """ Polar walk-off angle """
+        return self._func(self.woa_theta_expr, *args, pol=pol)
+    
+    def woa_phi(self, *args, pol='e'):
+        """ Azimuthal walk-off angle """
+        return self._func(self.woa_phi_expr, *args, pol=pol)
 
     """ Methods for nonlinear optics """
     def dk_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3):

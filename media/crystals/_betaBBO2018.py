@@ -139,7 +139,7 @@ class BetaBBO(Medium):
 
         return
         -------
-        Refractive index, float
+        Refractive index, float or array_like
         """
         return super().n(wl_um, theta_rad, 0.0, T_degC, pol=pol)
 
