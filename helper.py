@@ -1,5 +1,8 @@
 import numpy as np
 
+def vars2(obj):
+    return {k: getattr(obj, k) for k in obj.__slots__}
+
 def returnShape(*args):
     return np.broadcast(*args).shape
 

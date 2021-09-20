@@ -1,5 +1,7 @@
 import sympy
 from ndispers._baseclass import Medium, wl, phi, theta, T, pi
+from helper import vars2
+from itertools import chain
 
 class LBO(Medium):
     """
@@ -12,19 +14,16 @@ class LBO(Medium):
 
     Dispersion formula of refractive index
     ---------------------------------------
-        n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2)  for i = x, y, z
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = x, y, z
     
     Validity range
     ---------------
     0.22 - 1.32 um
+    T = 20 degC
 
     Ref
     ----
-    Kato, K. "Tunable UV generation to 0.2325 mu m in LiB/sub 3/O/sub 5." IEEE journal of quantum electronics 26.7 (1990): 1173-1175.
-    
-    Note
-    -----
-    The constants of dispersion formula are at temperature T = 20 degC.
+    Kato, K. "Tunable UV generation to 0.2325 mu m in Li B_3 O_5." IEEE journal of quantum electronics 26.7 (1990): 1173-1175.
 
     Input
     ------
@@ -40,7 +39,7 @@ class LBO(Medium):
     Usage
     ------
     >>> lbo_xy = ndispers.media.crystals.LBO_xy()
-    >>> lbo_xy.n(0.6, 0.23*pi, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
+    >>> lbo_xy.n(0.6, 0.3*pi, 40, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
 
     @author: Akihiko Shimura
     """
@@ -74,31 +73,16 @@ class LBO(Medium):
         self._dndT_z = (-6.3 - 2.1*wl)*1e-6 #1/K
     
     @property
-    def symbols(self):
-        return [wl, theta, phi, T]
+    def constants(self):
+        print(vars2(self))
 
     @property
-    def constants(self):
-        msg =  ["A_x = %g" % self._A_x]
-        msg += ["B_x = %g" % self._B_x]
-        msg += ["C_x = %g" % self._C_x]
-        msg += ["D_x = %g" % self._D_x]
-        msg += ["A_y = %g" % self._A_y]
-        msg += ["B_y = %g" % self._B_y]
-        msg += ["C_y = %g" % self._C_y]
-        msg += ["D_y = %g" % self._D_y]
-        msg += ["A_z = %g" % self._A_z]
-        msg += ["B_z = %g" % self._B_z]
-        msg += ["C_z = %g" % self._C_z]
-        msg += ["D_z = %g" % self._D_z]
-        msg += ["dn_x/dT = %s" % self._dndT_x]
-        msg += ["dn_y/dT = %s" % self._dndT_y]
-        msg += ["dn_z/dT = %s" % self._dndT_z]
-        print("\n".join(msg))
+    def symbols(self):
+        return [wl, theta, phi, T]
     
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2) + self._dndT_x * (T - 20)
+        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2) +  self._dndT_x * (T - 20)
     
     def n_y_expr(self):
         """ sympy expresssion, dispersion formula of y-axis (principal dielectric axis) """
@@ -121,21 +105,22 @@ class LBO_xy(LBO):
     @property
     def help(self):
         print(super().__doc__)
+
     @property
     def plane(self):
         return self._LBO_xy__plane
+
     @property
     def theta_rad(self):
         return self._LBO_xy__theta_rad
+
     @property
     def phi_rad(self):
         return self._LBO_xy__phi_rad
+
     @property
-    def angles(self):
-        msg =  ["plane = %s" % self._LBO_xy__plane]
-        msg += ["theta_rad = %s" % self._LBO_xy__theta_rad]
-        msg += ["phi_rad = %s" % self._LBO_xy__phi_rad]
-        print("\n".join(msg))
+    def constants(self):
+        print({**vars2(super()), **vars2(self)})
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -208,6 +193,12 @@ class LBO_xy(LBO):
     
     def woa_phi(self, wl_um, phi_rad, T_degC, pol='e'):
         return super().woa_phi(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
+    
+    def dndT(self, wl_um, phi_rad, T_degC, pol='o'):
+        return super().dndT(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
+    
+    def dndT(self, wl_um, phi_rad, T_degC, pol='o'):
+        return super().dndT(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
 
 class LBO_yz(LBO):
@@ -222,21 +213,22 @@ class LBO_yz(LBO):
     @property
     def help(self):
         print(super().__doc__)
+
     @property
     def plane(self):
         return self._LBO_yz__plane
+
     @property
     def theta_rad(self):
         return self._LBO_yz__theta_rad
+
     @property
     def phi_rad(self):
         return self._LBO_yz__phi_rad
+    
     @property
-    def angles(self):
-        msg =  ["plane = %s" % self._LBO_yz__plane]
-        msg += ["theta_rad = %s" % self._LBO_yz__theta_rad]
-        msg += ["phi_rad = %s" % self._LBO_yz__phi_rad]
-        print("\n".join(msg))
+    def constants(self):
+        print({**vars2(super()), **vars2(self)})
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -309,6 +301,9 @@ class LBO_yz(LBO):
     
     def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
         return super().woa_phi(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dndT(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
 
 class LBO_zx(LBO):
@@ -323,21 +318,22 @@ class LBO_zx(LBO):
     @property
     def help(self):
         print(super().__doc__)
+
     @property
     def plane(self):
         return self._LBO_zx__plane
+
     @property
     def theta_rad(self):
         return self._LBO_zx__theta_rad
+
     @property
     def phi_rad(self):
         return self._LBO_zx__phi_rad
+    
     @property
-    def angles(self):
-        msg =  ["plane = %s" % self._LBO_zx__plane]
-        msg += ["theta_rad = %s" % self._LBO_zx__theta_rad]
-        msg += ["phi_rad = %s" % self._LBO_zx__phi_rad]
-        print("\n".join(msg))
+    def constants(self):
+        print({**vars2(super()), **vars2(self)})
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -410,3 +406,6 @@ class LBO_zx(LBO):
     
     def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
         return super().woa_phi(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dndT(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)

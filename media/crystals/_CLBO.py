@@ -1,6 +1,6 @@
 import sympy
-from sympy.utilities import lambdify
-from ndispers._baseclass import Medium, wl, phi, theta, T, pi
+from ndispers._baseclass import Medium, wl, phi, theta, T
+from helper import vars2
 
 class CLBO(Medium):
     """
@@ -14,7 +14,7 @@ class CLBO(Medium):
 
     Dispersion formula of refractive index
     ---------------------------------------
-    n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2)  for i = o, e
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     dn_o/dT = (At_o + Bt_o/wl)*1e-6
     dn_e/dT = (At_e + Bt_e/wl + Ct_e/wl**2 + Dt_e/wl**3)*1e-6
     
@@ -26,15 +26,6 @@ class CLBO(Medium):
     Ref
     ----
     Umemura, N., Yoshida, K., Kamimura, T., Mori, Y., Sasaki, T., & Kato, K. "New data on the phase-matching properties of CsLiB6O10." Advanced Solid State Lasers. Optical Society of America, 1999.
-
-    Usage
-    ------
-    >>> clbo = ndispers.media.crystals.CLBO()
-    >>> clbo.n(0.6, 0, pol='o') # for o-ray, n does not depend on theta.
-    >>> clbo.n(0.6, 0.5*pi, pol='e') # along z-axis, it is pure e-ray.
-    >>> clbo.n(0.6, 0.23*pi, pol='e')
-    >>> clbo.n(0.6, 0*pi, pol='e') # for theta = 0 rad, it corresponds to o-ray.
-    >>> clbo.GVD(0.6, 0.23*pi, pol='e')
 
     @author: Akihiko Shimura
     """
@@ -72,53 +63,36 @@ class CLBO(Medium):
     @property
     def plane(self):
         return self._CLBO__plane
+
     @property
     def theta_rad(self):
         return self._CLBO__theta_rad
+
     @property
     def phi_rad(self):
         return self._CLBO__phi_rad
+
     @property
-    def angles(self):
-        msg =  ["plane = %s" % self._CLBO__plane]
-        msg += ["theta_rad = %s" % self._CLBO__theta_rad]
-        msg += ["phi_rad = %s" % self._CLBO__phi_rad]
-        print("\n".join(msg))
+    def constants(self):
+        print(vars2(self))
+    
     @property
     def symbols(self):
         return [wl, theta, phi, T]
 
-    @property
-    def constants(self):
-        msg  = ["A_o = %g" % self._A_o]
-        msg += ["B_o = %g" % self._B_o]
-        msg += ["C_o = %g" % self._C_o]
-        msg += ["D_o = %g" % self._D_o]
-        msg += ["A_e = %g" % self._A_e]
-        msg += ["B_e = %g" % self._B_e]
-        msg += ["C_e = %g" % self._C_e]
-        msg += ["D_e = %g" % self._D_e]
-        msg += ["At_o = %g" % self._At_o]
-        msg += ["Bt_o = %g" % self._Bt_o]
-        msg += ["At_e = %g" % self._At_e]
-        msg += ["Bt_e = %g" % self._Bt_e]
-        msg += ["Ct_e = %g" % self._Ct_e]
-        msg += ["Dt_e = %g" % self._Dt_e]
-        print("\n".join(msg))
-
-    def dndT_o(self):
+    def dndT_o_expr(self):
         return  (self._At_o + self.Bt_o/wl)*1e-6
     
-    def dndT_e(self):
+    def dndT_e_expr(self):
         return  (self._At_e + self._Bt_e/wl + self._Ct_e/wl**2 + self._Dt_e/wl**3)*1e-6
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-ray """
-        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2) + self.dndT_o() * (T - 20.0)
+        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2) + self.dndT_o_expr() * (T - 20)
     
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-ray """
-        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2) + self.dndT_e() * (T - 20.0)
+        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2) + self.dndT_e_expr() * (T - 20)
 
     def n_expr(self, pol):
         """"
@@ -149,39 +123,42 @@ class CLBO(Medium):
         -------
         Refractive index, float or array_like
         """
-        return super().n(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
     def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
     def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Velocity [um/fs]"""
-        return super().GV(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, theta_rad, 0.0, T_degC, pol=pol)
+        return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
+    
+    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)

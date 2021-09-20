@@ -42,6 +42,7 @@ class Medium:
         self._cached_func_dict['TOD_expr'] = {'o': 0, 'e': 0}
         self._cached_func_dict['woa_theta_expr'] = {'o': 0, 'e': 0}
         self._cached_func_dict['woa_phi_expr'] = {'o': 0, 'e': 0}
+        self._cached_func_dict['dndT_expr'] = {'o': 0, 'e': 0}
     
     def clear(self):
         """ clear cached functions """
@@ -104,6 +105,10 @@ class Medium:
     def woa_phi_expr(self, pol):
         """ Sympy expression for azimuthal walkoff angle """
         return sympy.atan(- 1/self.n_expr(pol) * sympy.diff(self.n_expr(pol), phi))
+    
+    def dndT_expr(self, pol):
+        """ Sympy expression for dn/dT """
+        return sympy.diff(self.n_expr(pol), T)
 
     """ lambdified functions """
     def _func(self, expr, *args, pol='o'):
@@ -151,7 +156,18 @@ class Medium:
         """ Azimuthal walk-off angle """
         return self._func(self.woa_phi_expr, *args, pol=pol)
 
-    """ Methods for nonlinear optics """
+    def dndT(self, *args, pol='o'):
+        """
+        dn/dT for given angle, temperature and eigen-polarization (o- or e-ray)
+
+        NOTE
+        ----
+        Here, self.dndT_expr is given by sympy.diff(self.n_expr(pol)), so there is no need to give dndT_expr explicitly.
+        """
+        return self._func(self.dndT_expr, *args, pol=pol)
+    
+
+    """ Methods for three-wave interactions """
     def dk_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3):
         wl3 = 1./(1./wl1 + 1./wl2)
         n1 = self.n(wl1, angle_rad, T_degC, pol=pol1)

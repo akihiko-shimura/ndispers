@@ -38,6 +38,10 @@ class FusedSilica(Medium):
         self._C2 = 0.1162414**2
         self._B3 = 0.8974794
         self._C3 = 9.896161**2
+    
+    @property
+    def symbols(self):
+        return [wl, theta, phi]
      
     @property
     def constants(self):
