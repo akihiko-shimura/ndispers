@@ -55,7 +55,7 @@ class CLBO(Medium):
         # dn/dT
         self._At_o = -12.48 #1/K
         self._Bt_o = -0.328 #um/K
-        self._At_o = -8.36 #1/K
+        self._At_e = -8.36 #1/K
         self._Bt_e = 0.047 #um/K
         self._Ct_e = 0.039 #um^2/K
         self._Dt_e = 0.014 #um^3/K
@@ -81,7 +81,7 @@ class CLBO(Medium):
         return [wl, theta, phi, T]
 
     def dndT_o_expr(self):
-        return  (self._At_o + self.Bt_o/wl)*1e-6
+        return  (self._At_o + self._Bt_o/wl)*1e-6
     
     def dndT_e_expr(self):
         return  (self._At_e + self._Bt_e/wl + self._Ct_e/wl**2 + self._Dt_e/wl**3)*1e-6
