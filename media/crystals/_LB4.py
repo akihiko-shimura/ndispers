@@ -10,20 +10,22 @@ class LB4(Medium):
     - Crystal system : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.16 - 3.6 um
+    - Tranparency range : 0.16 to 3.6 um
 
-    Dispersion formula of refractive index
+    Dispersion formula for refractive index
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) for i = o,e
+
+    Thermo-optic coefficient
+    -------------------------
     dn/dT = At_i + Bt_i * wl + Ct_i * wl**2 + Dt_i * wl**3 + Et_i * (T - 25)
     for i = o, e
     
     Validity range
     ---------------
-    0.18 - 2.3 um
-    T = 25 degC
-    P = 101325 Pa
-    dn/dT : 0.436 - 0.644 um, -40 to 60 degC
+    0.18 to 2.3 um
+    at 101325 Pa
+    dn/dT : 0.436 to 0.644 um, -40 to 60 degC
 
     Ref
     ----

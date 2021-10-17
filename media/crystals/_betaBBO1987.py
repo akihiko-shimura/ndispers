@@ -10,15 +10,15 @@ class BetaBBO(Medium):
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 - 2.6 um
+    - Tranparency range : 1.9 to 2.6 um
 
-    Dispersion formula of refractive index
+    Dispersion formula for refractive index
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
     Validity range
     ---------------
-    0.22 - 1.06 um
+    0.22 to 1.06 um
 
     Ref
     ----

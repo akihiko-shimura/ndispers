@@ -1,4 +1,7 @@
-""" __init__.py of ndispers.media.crystals """
+"""
+ndispers.media.crystals/__init__.py
+anisotropic crystals
+"""
 
 from ._betaBBO1987 import BetaBBO as BetaBBO1987
 from ._betaBBO2018 import BetaBBO as BetaBBO2018
@@ -10,3 +13,4 @@ from ._LB4 import LB4
 from ._CLBO import CLBO
 from ._KDP import KDP
 from ._KTP import KTP_xy, KTP_yz, KTP_zx
+from ._calcite import Calcite

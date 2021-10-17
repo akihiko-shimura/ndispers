@@ -10,15 +10,19 @@ class KTP(Medium):
     - Crystal system : Orthorhombic
     - Dielecric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
-    - Tranparency range : 0.35 - 4.5 um
+    - Tranparency range : 0.35 to 4.5 um
 
-    Dispersion formula of refractive index
+    Dispersion formula for refractive index
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i/(wl**2 - E_i))  for i = x, y, z
     
+    Thermo-optic coefficient
+    -------------------------
+    dn_i/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
+
     Validity range
     ---------------
-    dn/dT : 0.43 - 1.58 um
+    dn/dT : 0.43 to 1.58 um
 
     Ref
     ----

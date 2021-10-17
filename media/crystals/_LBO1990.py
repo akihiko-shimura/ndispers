@@ -12,14 +12,14 @@ class LBO(Medium):
     - Dielecric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
 
-    Dispersion formula of refractive index
+    Dispersion formula for refractive index
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = x, y, z
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = x,y,z
     
     Validity range
     ---------------
-    0.22 - 1.32 um
-    T = 20 degC
+    0.22 to 1.32 um
+    at T=20 degC
 
     Ref
     ----

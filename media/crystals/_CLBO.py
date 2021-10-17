@@ -10,18 +10,21 @@ class CLBO(Medium):
     - Crystal system : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.18 - 2.75 um
+    - Tranparency range : 0.18 to 2.75 um
 
-    Dispersion formula of refractive index
+    Dispersion formula for refractive index
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
+
+    Thermo-optic coefficient
+    -------------------------
     dn_o/dT = (At_o + Bt_o/wl)*1e-6
     dn_e/dT = (At_e + Bt_e/wl + Ct_e/wl**2 + Dt_e/wl**3)*1e-6
     
     Validity range
     ---------------
-    0.1914 - 2.09 um
-    dn/dT : 0.2128 - 1.3382 um
+    0.1914 to 2.09 um
+    dn/dT : 0.2128 to 1.3382 um
 
     Ref
     ----

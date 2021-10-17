@@ -149,11 +149,11 @@ class Medium:
         return self._func(self.TOD_expr, *args, pol=pol)
 
     def woa_theta(self, *args, pol='e'):
-        """ Polar walk-off angle """
+        """ Polar walk-off angle (rad) """
         return self._func(self.woa_theta_expr, *args, pol=pol)
     
     def woa_phi(self, *args, pol='e'):
-        """ Azimuthal walk-off angle """
+        """ Azimuthal walk-off angle (rad) """
         return self._func(self.woa_phi_expr, *args, pol=pol)
 
     def dndT(self, *args, pol='o'):
@@ -162,7 +162,7 @@ class Medium:
 
         NOTE
         ----
-        Here, self.dndT_expr is given by sympy.diff(self.n_expr(pol)), so there is no need to give dndT_expr explicitly.
+        Here, self.dndT_expr is given by sympy.diff(self.n_expr(pol)), so there are no need to give dndT_expr explicitly.
         """
         return self._func(self.dndT_expr, *args, pol=pol)
     
@@ -213,6 +213,7 @@ class Medium:
             return pm_angles
         
         d = dict()
+        d['wl3'] = wl3
         # Type-I interactions
         d['ooe'] = pmAngle_for_pol('o', 'o', 'e') #negative
         d['eeo'] = pmAngle_for_pol('e', 'e', 'o') #positive
