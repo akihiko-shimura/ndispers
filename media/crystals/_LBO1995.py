@@ -38,6 +38,8 @@ class LBO(Medium):
     If plane == "xz", 
         o-ray polarization // y-axis, e-ray polarization in xz-plane, phi = 0 deg and theta is variable.
 
+    Type-I(ooe) NCPM SHG at 1.064 um is achieved in xy plane, theta=pi/2, phi=0.
+
     Usage
     ------
     >>> lbo_xy = ndispers.media.crystals.LBO_xy()
@@ -76,11 +78,11 @@ class LBO(Medium):
         self._E_z = 91
         # dn/dT
         self._G_x = -127.70167e-6
-        self._G_y = 373.33870e-6
-        self._G_z = -446.95031
-        self._H_x = 122.13435
-        self._H_y = -415.10435
-        self._H_z = 419.33410
+        self._G_y = 373.33870e-6 #372.170 - 2.199e-1 * T + 1.1748e-3 * T**2 - 2.05077e-6 * T**3
+        self._G_z = -446.95031e-6
+        self._H_x = 122.13435e-6
+        self._H_y = -415.10435e-6
+        self._H_z = 419.33410e-6 #410.66123 + 1.667e-1 * T - 5.1887e-4 * T**2 + 5.56251e-7 * T**3
         self._R_x = wl**2/(wl**2 - 0.0530**2)
         self._R_y = wl**2/(wl**2 - 0.0327**2)
         self._R_z = wl**2/(wl**2 - 0.0435**2)
@@ -124,7 +126,7 @@ class LBO(Medium):
 
     def n_z_expr(self):
         """ sympy expresssion, dispersion formula of z-axis (principal dielectric axis) """
-        return self._n_T20_z_expr() + self.dndT_z_xepr() * (T - 20)
+        return self._n_T20_z_expr() + self.dndT_z_expr() * (T - 20)
 
 
 class LBO_xy(LBO):

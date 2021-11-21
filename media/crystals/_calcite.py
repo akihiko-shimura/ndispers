@@ -25,7 +25,7 @@ class Calcite(Medium):
 
     Ref
     ----
-    Handbook of Optics: Devices, Measurements, and Properties, Volume II, Second Edition, by Michael Bass (ed),
+    Handbook of Optics: Devices, Measurements, and Properties, Volume II, by Michael Bass (ed),
     Chapter 33: PROPERTIES OF CRYSTALS AND GLASSES, William J. Tropf, Michael E. Thomas, and Terry J. Harris
 
     Usage
