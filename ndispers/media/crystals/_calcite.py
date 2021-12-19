@@ -1,28 +1,32 @@
 import sympy
 from ndispers._baseclass import Medium, wl, phi, theta
-from helper import vars2
+from ndispers.helper import vars2
 
-class AlphaBBO(Medium):
+class Calcite(Medium):
     """
-    alpha-BBO (alpha-Ba B_2 O_4) crystal
+    calcite (Ca C O_3) crystal
 
-    - Point group : 3m
+    - Point group : -3m
     - Crystal system : Hexagonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.19 to 2.6 um
+    - Tranparency range : 
 
     Dispersion formula for refractive index
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
+    n(wl) 
+    = sqrt(1 + A1_o * wl**2 / (wl**2 - B1_o**2) + A2_o * wl**2 / (wl**2 - B2_o**2) + A3_o * wl**2 / (wl**2 - B3_o**2) + A4_o * wl**2 / (wl**2 - B4_o**2)) for o-ray
+    = sqrt(1 + A1_e * wl**2 / (wl**2 - B1_e**2) + A2_e * wl**2 / (wl**2 - B2_e**2) + A3_e * wl**2 / (wl**2 - B3_e**2)) for e-ray
     
     Validity range
     ---------------
-
+    0.2 to 2.2 um for o-ray
+    0.2 to 3.3 um for e-ray
 
     Ref
     ----
-    https://www.castech.com/product/%CE%B1-BBO-90.html
+    Handbook of Optics: Devices, Measurements, and Properties, Volume II, by Michael Bass (ed),
+    Chapter 33: PROPERTIES OF CRYSTALS AND GLASSES, William J. Tropf, Michael E. Thomas, and Terry J. Harris
 
     Usage
     ------
@@ -35,39 +39,45 @@ class AlphaBBO(Medium):
 
     @author: Akihiko Shimura
     """
-    __slots__ = ["_AlphaBBO__plane", "_AlphaBBO__theta_rad", "_AlphaBBO__phi_rad",
-                 "_A_o", "_B_o", "_C_o", "_D_o", 
-                 "_A_e", "_B_e", "_C_e", "_D_e"]
+    __slots__ = ["_Calcite__plane", "_Calcite__theta_rad", "_Calcite__phi_rad",
+                 "_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",
+                 "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e"]
 
     def __init__(self):
         super().__init__()
-        self._AlphaBBO__plane = 'arb'
-        self._AlphaBBO__theta_rad = 'var'
-        self._AlphaBBO__phi_rad = 'arb'
+        self._Calcite__plane = 'arb'
+        self._Calcite__theta_rad = 'var'
+        self._Calcite__phi_rad = 'arb'
 
         """ Constants of dispersion formula """
         # For ordinary ray
-        self._A_o = 2.7471
-        self._B_o = 0.01878
-        self._C_o = 0.01822
-        self._D_o = 0.01354
+        self._A1_o = 0.8559
+        self._B1_o = 0.0588
+        self._A2_o = 0.8391
+        self._B2_o = 0.141
+        self._A3_o = 0.0009
+        self._B3_o = 0.197
+        self._A4_o = 0.6845
+        self._B4_o = 7.005
         # For extraordinary ray
-        self._A_e = 2.37153
-        self._B_e = 0.01224
-        self._C_e = 0.01667
-        self._D_e = 0.01516
+        self._A1_e = 1.0856
+        self._B1_e = 0.07897
+        self._A2_e = 0.0988
+        self._B2_e = 0.142
+        self._A3_e = 0.317
+        self._B3_e = 11.468
     
     @property
     def plane(self):
-        return self._AlphaBBO__plane
+        return self._Calcite__plane
 
     @property
     def theta_rad(self):
-        return self._AlphaBBO__theta_rad
+        return self._Calcite__theta_rad
 
     @property
     def phi_rad(self):
-        return self._AlphaBBO__phi_rad
+        return self._Calcite__phi_rad
 
     @property
     def symbols(self):
@@ -79,11 +89,11 @@ class AlphaBBO(Medium):
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-ray """
-        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2)
+        return sympy.sqrt(1 + self._A1_o * wl**2 / (wl**2 - self._B1_o**2) + self._A2_o * wl**2 / (wl**2 - self._B2_o**2) + self._A3_o * wl**2 / (wl**2 - self._B3_o**2) + self._A4_o * wl**2 / (wl**2 - self._B4_o**2))
     
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-ray """
-        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2)
+        return sympy.sqrt(1 + self._A1_e * wl**2 / (wl**2 - self._B1_e**2) + self._A2_e * wl**2 / (wl**2 - self._B2_e**2) + self._A3_e * wl**2 / (wl**2 - self._B3_e**2))
 
     def n_expr(self, pol):
         """"

@@ -1,6 +1,7 @@
 import sympy
+from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, T
-from helper import vars2
+from ndispers.helper import vars2
 
 class BetaBBO(Medium):
     """
@@ -14,16 +15,19 @@ class BetaBBO(Medium):
 
     Dispersion formula for refractive index
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
+    n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
+
+    Thermo-optic coefficient
+    -------------------------
+    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i for i = o, e
+    (R depends on wl)
     
     Validity range
     ---------------
-    0.22 to 1.06 um
 
     Ref
     ----
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
-    Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β‐BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
 
     Examples
     --------
@@ -43,9 +47,10 @@ class BetaBBO(Medium):
     @author: Akihiko Shimura
     """
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
-                 "_A_o", "_B_o", "_C_o", "_D_o",
-                 "_A_e", "_B_e", "_C_e", "_D_e",
-                 "_dndT_o", "_dndT_e"]
+                 "_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
+                 "_A_e", "_B_e", "_C_e", "_D_e", "_E_e",
+                 "_G_o", "_H_o", "_R_o",
+                 "_G_e", "_H_e", "_R_e"]
                  
     def __init__(self):
         super().__init__()
@@ -55,18 +60,24 @@ class BetaBBO(Medium):
 
         """ Constants of dispersion formula """
         # For ordinary ray
-        self._A_o = 2.7405
-        self._B_o = 0.0184
-        self._C_o = 0.0179
-        self._D_o = 0.0155
+        self._A_o = 1.7018379
+        self._B_o = 1.0357554
+        self._C_o = 0.018003440
+        self._D_o = 1.2479989
+        self._E_o = 91
         # For extraordinary ray
-        self._A_e = 2.3730
-        self._B_e = 0.0128
-        self._C_e = 0.0156
-        self._D_e = 0.0044
+        self._A_e = 1.5920433
+        self._B_e = 0.7816893
+        self._C_e = 0.016067891
+        self._D_e = 0.8403893
+        self._E_e = 91
         # dn/dT
-        self._dndT_o = -16.6e-6 #/degC
-        self._dndT_e = -9.3e-6 #/degC
+        self._G_o = -19.3007e-6
+        self._G_e = -141.421e-6
+        self._H_o = -34.9683e-6
+        self._H_e = 110.8630e-6
+        self._R_o = wl**2/(wl**2 - 0.0652**2)
+        self._R_e = wl**2/(wl**2 - 0.0730**2)
     
     @property
     def plane(self):
@@ -75,11 +86,11 @@ class BetaBBO(Medium):
     @property
     def theta_rad(self):
         return self._BetaBBO__theta_rad
-
+        
     @property
     def phi_rad(self):
         return self._BetaBBO__phi_rad
-
+    
     @property
     def symbols(self):
         return [wl, theta, phi, T]
@@ -88,18 +99,30 @@ class BetaBBO(Medium):
     def constants(self):
         print(vars2(self))
     
+    def _n_T20_o_expr(self):
+        """ Sympy expression, dispersion formula for o-ray at 20degC """
+        return sympy.sqrt(self._A_o + self._B_o / (1 - self._C_o/wl**2) + self._D_o/(1 - self._E_o/wl**2))
+    
+    def _n_T20_e_expr(self):
+        """ Sympy expression, dispersion formula for theta=90 deg e-ray at 20degC """
+        return sympy.sqrt(self._A_e + self._B_e / (1 - self._C_e/wl**2) + self._D_e/(1 - self._E_e/wl**2))
+    
+    def dndT_o_expr(self):
+        return (self._G_o * self._R_o + self._H_o * self._R_o**2) / (2*self._n_T20_o_expr())
+    
+    def dndT_e_expr(self):
+        return (self._G_e * self._R_e + self._H_e * self._R_e**2) / (2*self._n_T20_e_expr())
+    
     def n_o_expr(self):
-        """ Sympy expression, dispersion formula for o-ray """
-        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2) + self._dndT_o * (T - 20)
+        return self._n_T20_o_expr() + self.dndT_o_expr() * (T - 20)
     
     def n_e_expr(self):
-        """ Sympy expression, dispersion formula for theta=90 deg e-ray """
-        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2) + self._dndT_e * (T - 20)
+        return self._n_T20_e_expr() + self.dndT_e_expr() * (T - 20)
 
     def n_expr(self, pol):
         """"
         Sympy expression, 
-        dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'n_o_expr'.
+        dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'.
 
         n(theta) = n_e / sqrt( sin(theta)**2 + (n_e/n_o)**2 * cos(theta)**2 )
         """
@@ -166,4 +189,3 @@ class BetaBBO(Medium):
     
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)
-    

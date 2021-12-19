@@ -1,7 +1,7 @@
 import sympy
 from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, T
-from helper import vars2
+from ndispers.helper import vars2
 
 class FusedSilica(Medium):
     """

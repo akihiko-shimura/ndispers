@@ -1,6 +1,6 @@
 import sympy
 from ndispers._baseclass import Medium, wl, phi, theta, T, pi
-from helper import vars2
+from ndispers.helper import vars2
 
 class KTP(Medium):
     """
