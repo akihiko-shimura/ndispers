@@ -70,7 +70,7 @@ To compute refractive index, use a method of the `bbo` instance,
 array(1.6748653)
 ```
 
-where three arguments are wavelength (in micro-meter), temperature (in deg.C), theta (in radians) and polarization (`pol='o' or 'e'`) as an option ('o' as default). Note that `pol='e'` corresponds to `pol='o'` for theta angle is 0 radians.
+where the three arguments are wavelength (in micro-meter), temperature (in deg.C), theta (in radians) and polarization (`pol='o' or 'e'`) as an option ('o' as default). Note that `pol='e'` corresponds to `pol='o'` for theta angle is 0 radians.
 
 Output value is generically of `numpy.ndarray` type. You can input an array to each arguments, getting an output array of the same shape.
 
