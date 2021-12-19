@@ -1,6 +1,7 @@
+# ndispers
 *ndispers* is a Python3 package for calculating refractive index dispersion of various crystals and glasses commonly used in the field of nonlinear/ultrafast optics. This is based on Sellmeier equartions and thermo-optics coefficients (dn/dT) reported in literatures.
 
-You can compute
+You can easily compute
 - Refractive index
 - Group delay
 - Group velocity
@@ -17,18 +18,18 @@ as a function of
 
 This package is a general-purpose tool intended for computing phase-matching angles and bandwidths in designing nonlinear frequency mixing.
 
-# Installation
+## Installation
 
 In terminal, just
 ```zsh
 pip install ndispers
 ```
 
-# Example
+## Example
 
 
 
 
-# Call for Contributions
+## Call for Contributions
 
 With Sellmeier-equation and thermo-optic coefficient provided, this package can be extended to include new crystals or glasses. 
