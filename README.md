@@ -16,7 +16,7 @@ as a function of
 3. Crystal temperature
 4. Polarization of light (ordinary- or extraordinary-ray)
 
-This package is a general-purpose tool intended for computing phase-matching angles and bandwidths in designing nonlinear frequency mixing.
+This package was created as a general-purpose tool for computing phase-matching angles and bandwidths etc. in designing nonlinear frequency mixing.
 
 ## Installation
 
@@ -27,7 +27,7 @@ pip install ndispers
 
 ## Example
 
-Firstly, make an object of BBO crystal.
+Firstly, make an object of beta-BBO crystal.
 
 ```python
 >>> import ndispers as nd
@@ -63,16 +63,21 @@ beta-BBO (beta-Ba B_2 O_4) crystal
     Ghosh, Gorachand. "Temperature dispersion of refractive indices in β‐BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
 ```
 
-To compute refractive index, use a method of the `bbo` instance,
+To compute refractive indices, use a method of the `bbo` instance,
 
 ```python
 >>> bbo.n(0.532, 25, 0, pol='o')
 array(1.6748653)
 ```
 
-where the three arguments are wavelength (in micro-meter), temperature (in deg.C), theta (in radians) and polarization (`pol='o' or 'e'`) as an option ('o' as default). Note that `pol='e'` corresponds to `pol='o'` for theta angle is 0 radians.
+where the four arguments are
+1. wavelength (in micro-meter), 
+2. temperature (in deg.C), 
+3. theta angle (in radians),
+4. polarization (`pol='o' or 'e'`) as a keyword argument ('o' as default). 
+Note that `pol='e'` corresponds to `pol='o'` when theta angle is 0 radians. 
 
-Output value is generically of `numpy.ndarray` type. You can input an array to each arguments, getting an output array of the same shape.
+Output value is generically of `numpy.ndarray` type. You can input an array to each argument, getting an output array of the same shape.
 
 ```python
 >>> import numpy as np
