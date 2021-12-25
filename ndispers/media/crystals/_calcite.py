@@ -37,7 +37,7 @@ class Calcite(Medium):
     >>> abbo.n(0.6, 0*pi, pol='e') # for theta = 0 rad, it corresponds to o-ray.
     >>> abbo.GVD(0.6, 0.23*pi, pol='e')
 
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_Calcite__plane", "_Calcite__theta_rad", "_Calcite__phi_rad",
                  "_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",

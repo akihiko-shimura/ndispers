@@ -33,7 +33,7 @@ class AlphaBBO(Medium):
     >>> abbo.n(0.6, 0*pi, pol='e') # for theta = 0 rad, it corresponds to o-ray.
     >>> abbo.GVD(0.6, 0.23*pi, pol='e')
 
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_AlphaBBO__plane", "_AlphaBBO__theta_rad", "_AlphaBBO__phi_rad",
                  "_A_o", "_B_o", "_C_o", "_D_o", 

@@ -30,7 +30,7 @@ class CLBO(Medium):
     ----
     Umemura, N., Yoshida, K., Kamimura, T., Mori, Y., Sasaki, T., & Kato, K. "New data on the phase-matching properties of CsLiB6O10." Advanced Solid State Lasers. Optical Society of America, 1999.
 
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_CLBO__plane", "_CLBO__theta_rad", "_CLBO__phi_rad",
                  "_A_o", "_B_o", "_C_o", "_D_o", 

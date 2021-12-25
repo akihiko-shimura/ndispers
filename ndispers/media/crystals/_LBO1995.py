@@ -24,11 +24,11 @@ class LBO(Medium):
     ---------------
 
     Ref
-    ----
+    -----
     Ghosh, Gorachand. "Temperature dispersion of refractive indices in β‐BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
 
     Input
-    ------
+    -------
     plane  :  Principal dielectric plane which includes wave vector of light ("xy", "yz" or "xz")
     
     If plane == "xy", 
@@ -38,14 +38,11 @@ class LBO(Medium):
     If plane == "xz", 
         o-ray polarization // y-axis, e-ray polarization in xz-plane, phi = 0 deg and theta is variable.
 
-    Type-I(ooe) NCPM SHG at 1.064 um is achieved in xy plane, theta=pi/2, phi=0.
-
-    Usage
-    ------
+    Example
+    ------------
     >>> lbo_xy = ndispers.media.crystals.LBO_xy()
     >>> lbo_xy.n(0.6, 0.3*pi, 40, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
 
-    @author: Akihiko Shimura
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

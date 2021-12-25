@@ -31,7 +31,7 @@ class CaF2(Medium):
     Examples
     ---------
     
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_A1", "_B1", "_A2", "_B2", "_A3", "_B3", "_dndT"]
 

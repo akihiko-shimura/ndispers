@@ -24,7 +24,7 @@ class KDP(Medium):
     ----
     Zernike, Frits. "Refractive indices of ammonium dihydrogen phosphate and potassium dihydrogen phosphate between 2000 Å and 1.5 μ." JOSA 54.10 (1964): 1215-1220
 
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_KDP__plane", "_KDP__theta_rad", "_KDP__phi_rad",
                  "_A_o", "_B_o", "_C_o", "_D_o", 

@@ -40,7 +40,7 @@ class BetaBBO(Medium):
      'eoo': {'theta': [], 'phi': None},
      'oeo': {'theta': [], 'phi': None}}
 
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
                  "_B1_o", "_C1_o", "_B2_o", "_C2_o", "_B3_o", "_C3_o",

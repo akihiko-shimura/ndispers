@@ -28,7 +28,7 @@ class FusedSilica(Medium):
     Examples
     ---------
     
-    @author: Akihiko Shimura
+    
     """
     __slots__ = ["_B1", "_C1", "_B2", "_C2", "_B3", "_C3", "_dndT"]
 

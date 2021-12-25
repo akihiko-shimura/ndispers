@@ -20,8 +20,6 @@ from .helper import (returnShape, arg_signchange)
 class Medium:
     """
     Medium object base class. Vacuum with n=1.0.
-
-    @author: Akihiko Shimura
     """
     __slots__ = ["__plane", "__theta_rad", "__phi_rad", "_cached_func_dict"]
 
