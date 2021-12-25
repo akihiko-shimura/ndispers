@@ -29,7 +29,7 @@ class BetaBBO(Medium):
 
     Ref
     ----
-    Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for Beta-BaB [sub] 2 [/sub] O [sub] 4 [/sub](revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
+    Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for Beta-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
 
     Examples
     --------
