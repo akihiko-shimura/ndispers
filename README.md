@@ -13,7 +13,7 @@ You can easily compute
 as a function of
 1. Wavelength of light
 2. Polar (theta) or azimuthal (phi) angles of wave vector with respect to dielectric principal axes of anisotropic crystals
-3. Crystal temperature
+3. Temperature
 4. Polarization of light (ordinary- or extraordinary-ray)
 
 
@@ -72,8 +72,8 @@ array(1.6748653)
 
 where the four arguments are
 1. wavelength (in micro-meter), 
-2. temperature (in deg.C), 
-3. theta angle (in radians),
+2. theta angle (in radians),
+3. temperature (in deg.C), 
 4. polarization (`pol='o' or 'e'`, ordinary or extraordinary ray). 
 
 Default is `pol='o'`. Note that `pol='e'` corresponds to `pol='o'` in index surface when theta angle is 0 radians. 
