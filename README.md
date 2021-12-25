@@ -31,7 +31,7 @@ Firstly, make an object of beta-BBO crystal.
 
 ```python
 >>> import ndispers as nd
->>> bbo = nd.media.crystals.BetaBBO1995()
+>>> bbo = nd.media.crystals.BetaBBO1987()
 ```
 
 For material information, 
@@ -48,26 +48,25 @@ beta-BBO (beta-Ba B_2 O_4) crystal
 
     Dispersion formula for refractive index
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
-
-    Thermo-optic coefficient
-    -------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i for i = o, e
-    (R depends on wl)
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
     Validity range
     ---------------
+    0.22 to 1.06 um
 
     Ref
     ----
-    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β‐BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
+    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
 ```
 
 To compute refractive indices, use a method of the `bbo` instance,
 
 ```python
->>> bbo.n(0.532, 25, 0, pol='o')
-array(1.6748653)
+>>> bbo.n(0.532, 0, 25, pol='o')
+array(1.67488405)
+>>> bbo.n(0.532, 3.1416/2, 25, pol='e')
+array(1.55546588)
 ```
 
 where the four arguments are
@@ -82,13 +81,11 @@ Output values are generically of `numpy.ndarray` type. You can input an array to
 
 ```python
 >>> import numpy as np
->>> wl_ar = np.arange(0.2, 1.5, 0.1)
+>>> wl_ar = np.arange(0.2, 1.5, 0.2)
 >>> wl_ar
-array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. , 1.1, 1.2, 1.3, 1.4])
->>> bbo.n(wl_ar, 25, 0, pol='o')
-array([1.89369555, 1.73105003, 1.69347308, 1.67798949, 1.66981073,
-       1.66476577, 1.6612739 , 1.65862123, 1.65644462, 1.65454248,
-       1.65279501, 1.65112696, 1.64948873])
+array([0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4])
+>>> bbo.n(wl_ar, 0, 25, pol='o')
+array([1.89625189, 1.692713, 1.66892613, 1.66039556, 1.65560236, 1.65199986, 1.64874414])
 ```
 
 
