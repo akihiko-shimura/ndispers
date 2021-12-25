@@ -12,7 +12,7 @@ You can easily compute
 
 as a function of
 1. Wavelength of light
-2. Crystal temperature
+2. Temperature
 3. Polar (theta) or azimuthal (phi) angles of wave vector with respect to dielectric principal axes of anisotropic crystals
 4. Polarization of light (ordinary- or extraordinary-ray)
 
