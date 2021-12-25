@@ -31,7 +31,7 @@ Firstly, make an object of beta-BBO crystal.
 
 ```python
 >>> import ndispers as nd
->>> bbo = nd.media.crystals.BetaBBO1995()
+>>> bbo = nd.media.crystals.BetaBBO1987()
 ```
 
 For material information, 
