@@ -17,16 +17,16 @@ class BetaBBO(Medium):
     n(wl_um) = sqrt(1 + B1_i*wl**2/(wl**2 - C1_i) + B2_i*wl**2/(wl**2 - C2_i) + B3_i*wl**2/(wl**2 - C3_i))  for i = o, e
     
     Validity range
-    ---------------
+    --------------
     0.188 - 5.2 um
 
     Ref
-    ----
-    Tamošauskas, Gintaras, et al. "Transmittance and phase matching of BBO crystal in the 3−5 μm range and its application for the characterization of mid-infrared laser pulses." Optical Materials Express 8.6 (2018): 1410-1418.
+    ---
+    Tamošauskas, Gintaras, et al. "Transmittance and phase matching of BBO crystal in the 3-5 μm range and its application for the characterization of mid-infrared laser pulses." Optical Materials Express 8.6 (2018): 1410-1418.
     Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
 
-    Examples
-    --------
+    Example
+    -------
     >>> bbo = ndispers.media.crystals.BetaBBO2018()
     >>> bbo.n(0.6, 0, 40, pol='o') # args: (wl_um, theta_rad, T_degC, pol)
     >>> bbo.n(0.6, 0.5*pi, 40, pol='e') # along z-axis, it is pure e-ray.

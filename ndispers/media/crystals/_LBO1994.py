@@ -8,7 +8,7 @@ class LBO(Medium):
 
     - Point group : mm2
     - Crystal system : orthorhombic 
-    - Dielecric principal axes, x // a, y // -c, z // b
+    - Dielectric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
 
     Dispersion formula for refractive index
@@ -24,7 +24,7 @@ class LBO(Medium):
 
     Ref
     -----
-    K. Kato, "Temperature-tuned 90-deg phase-matching properties of Li B_3 O_5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
+    Kato, K., "Temperature-tuned 90-deg phase-matching properties of Li B_3 O_5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
 
     Input
     -------
@@ -45,11 +45,11 @@ class LBO(Medium):
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",
-                      "_A_y", "_B_y", "_C_y", "_D_y", "_E_y", "_F_y",
-                      "_A_z", "_B_z", "_C_z", "_D_z", "_E_z", "_F_z",
-                      "_G_x", "_H_x", "_I_x",
-                      "_G_y", "_H_y", "_I_y",
-                      "_G_z", "_H_z", "_I_z"]
+                 "_A_y", "_B_y", "_C_y", "_D_y", "_E_y", "_F_y",
+                 "_A_z", "_B_z", "_C_z", "_D_z", "_E_z", "_F_z",
+                 "_G_x", "_H_x", "_I_x",
+                 "_G_y", "_H_y", "_I_y",
+                 "_G_z", "_H_z", "_I_z"]
     
     def __init__(self):
         super().__init__()

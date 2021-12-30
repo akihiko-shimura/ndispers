@@ -165,8 +165,35 @@ class Medium:
         return self._func(self.dndT_expr, *args, pol=pol)
     
 
-    """ Methods for three-wave interactions """
+    """ 
+    Methods for three-wave interactions
+    """
     def dk_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3):
+        """
+        Wavevector mismatch for sum-frequency generation (SFG).
+
+        Parameters
+        ----------
+        wl1 : float or array_like
+            1st pump wavelength in um.
+        wl2 : float or array_like
+            2nd pump wavelength in um.
+        angle_rad : float or array_like
+            theta or phi angles in radians.
+        T_degC  :  float or array_like
+            Crystal temperature in degC.
+        pol1: {'o', 'e'}
+            Polarization of 1st pump wave.
+        pol2: {'o', 'e'}
+            Polarization of 2nd pump wave.
+        pol3: {'o', 'e'}
+            Polarization of sum-frequency wave.
+
+        Return
+        ------
+        float or array_like
+            Wavevector phase-mismatch for SFG.
+        """
         wl3 = 1./(1./wl1 + 1./wl2)
         n1 = self.n(wl1, angle_rad, T_degC, pol=pol1)
         n2 = self.n(wl2, angle_rad, T_degC, pol=pol2)
@@ -176,23 +203,27 @@ class Medium:
 
     def pmAngles_sfg(self, wl1, wl2, T_degC, tol_deg=0.005, deg=False):
         """
-        Phase-matching angles for sum-frequency generation (SFG).
+        Phase-matching angles for sum-frequency generation (SFG) and the sum-frequency wavelength.
 
         Parameters
         ----------
         wl1 : float or array_like
-            pump wavelength 1 in um.
+            1st pump wavelength in um.
         wl2 : float or array_like
-            pump wavelength 2 in um.
-        tol_deg : float, optional
-            Tolerance error of angle in degree. Defaults to 0.01 deg.
-        deg : bool, optional
-            If returned angle is expressed in radians (False) or degrees (True).
+            2nd pump wavelength in um.
+        tol_deg : float, defalut=0.005
+            Tolerance error of angle in degree.
+        deg : bool, default=False
+            If returned angles are expressed in radians (False) or degrees (True).
 
         Return
         ------
-        d : dict,
-            Phase-matching angles for types of interactions.
+        dict,
+            'wl3'  :  wavelength of sum-frequency
+            {'ooe'}  :  Phase-matching angle for negative type-I
+            {'eeo'}  :  Phase-matching angle for positive type-I
+            {'oee', 'eoe'}  :  Phase-matching angles for negative type-II
+            {'oee', 'eoe'}  :  Phase-matching angles for positive type-II
         """
         wl3 = 1./(1./wl1 + 1./wl2)
 
@@ -212,41 +243,43 @@ class Medium:
         
         d = dict()
         d['wl3'] = wl3
-        # Type-I interactions
+        # Type-I interaction
         d['ooe'] = pmAngle_for_pol('o', 'o', 'e') #negative
         d['eeo'] = pmAngle_for_pol('e', 'e', 'o') #positive
-        # Type-II interactions
+        # Type-II interaction
         d['oee'] = pmAngle_for_pol('o', 'e', 'e') #nega1
         d['eoe'] = pmAngle_for_pol('e', 'o', 'e') #nega2
         d['eoo'] = pmAngle_for_pol('e', 'o', 'o') #posi1
         d['oeo'] = pmAngle_for_pol('o', 'e', 'o') #posi2
         return d
 
-    def pmBand_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_um):
+    def pmFactor_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_um):
         """
-        Phase-matching band of SFG
+        Phase-matching factor, sinc^2((0.5*dk*L)/(0.5*dk*L)), for sum-frequency generation (SFG).
 
         Parameters
         ----------
         wl1 : float or array_like
-            pump wavelength 1 in um.
+            1st pump wavelength in um.
         wl2 : float or array_like
-            pump wavelength 2 in um.
+            2nd pump wavelength in um.
         angle_rad : float or array_like
-            variable angle, theta_rad or phi_rad.
+            theta or phi angles in radians.
+        T_degC  :  float or array_like
+            Crystal temperature in degC.
         pol1: {'o', 'e'}
-            polarization of wl1 wave.
+            Polarization of 1st pump wave.
         pol2: {'o', 'e'}
-            polarization of wl2 wave.
+            Polarization of 2nd pump wave.
         pol3: {'o', 'e'}
-            polarization of sum-frequency wave.
+            Polarization of sum-frequency wave.
         L_um : float
-            crystal length in um.
+            Crystal length in um.
 
         Return
         ------
-        pmBand_sfg : float or array_like
-            Phase-matching band.
+        float or array_like
+            Phase-matching factor for SFG.
         """
         t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3) * L_um
         return (np.sin(t)/t)**2

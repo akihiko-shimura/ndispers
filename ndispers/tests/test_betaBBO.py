@@ -20,13 +20,13 @@ def sub(module):
     T_degC = 20.0
     print("T=%.1f degC"  % T_degC)
 
-    print("-"*36)
+    print("-"*80)
     print("Wavelength(um)")
-    print("  |  n_o        n_e")
+    print("  |  n_o        n_e     |    dn_o/dT       dn_e/dT")
     print("  |  Experimental")
     print("  |  Calculated")
     print("  |  (Cal - Exp)")
-    print("-"*36)
+    print("-"*80)
     for i, wl in enumerate(wl_list):
         # measured
         n_o_exp = n_o_list[i]
@@ -34,16 +34,18 @@ def sub(module):
         # calculated
         n_o_calc = bbo.n(wl, 0, T_degC, pol='o')
         n_e_calc = bbo.n(wl, pi*0.5, T_degC, pol='e')
+        dndT_o = bbo.dndT(wl, 0, T_degC, pol='o')
+        dndT_e = bbo.dndT(wl, 0, T_degC, pol='e')
 
         print("%.4f" % wl)
-        print("  |  {: .4f}   {: .4f}".format(n_o_exp, n_e_exp))
-        print("  |  {: .4f}   {: .4f}".format(n_o_calc, n_e_calc))
-        print("  | ({: .4f}) ({: .4f})".format(n_o_calc - n_o_exp, n_e_calc - n_e_exp))
+        print("  |  {: .4f}   {: .4f}  |".format(n_o_exp, n_e_exp))
+        print("  |  {: .4f}   {: .4f}  |  {: .4e}   {: .4e}".format(n_o_calc, n_e_calc, dndT_o, dndT_e))
+        print("  | ({: .4f}) ({: .4f}) |".format(n_o_calc - n_o_exp, n_e_calc - n_e_exp))
 
-    print("-"*36)
+    print("-"*80)
 
 def main():
-    print("="*42)
+    print("="*80)
     print("Compare refractive indices to the experimentaly measured values.")
     print("Ref: %s\n"  % ('Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.'))
     for module in modules:

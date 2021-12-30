@@ -29,7 +29,7 @@ class LB4(Medium):
 
     Ref
     ----
-    Sugawara, Tamotsu, Ryuichi Komatsu, and Satoshi Uda. "Linear and nonlinear optical properties of lithium tetraborate." Solid state communications 107.5 (1998): 233-237.
+    T. Sugawara, R. Komatsu, and S. Uda. "Linear and nonlinear optical properties of lithium tetraborate." Solid state communications 107.5 (1998): 233-237.
 
     
     """

@@ -18,19 +18,19 @@ class BetaBBO(Medium):
     n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
 
     Thermo-optic coefficient
-    -------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i for i = o, e
-    (R depends on wl)
+    ------------------------
+    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i for i=o, e
+    R_i = wl**2/(wl**2 - wl0_i**2), wl0_i = 0.0652 for i=o, wl0=0.0730 for i=e
     
     Validity range
-    ---------------
+    --------------
 
     Ref
     ----
     Ghosh, Gorachand. "Temperature dispersion of refractive indices in β‐BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
 
-    Examples
-    --------
+    Example
+    -------
     >>> bbo = ndispers.media.crystals.BetaBBO1987()
     >>> bbo.n(0.6, 0, 40, pol='o') # args: (wl_um, theta_rad, T_degC, pol)
     >>> bbo.n(0.6, 0.5*pi, 40, pol='e') # along z-axis, it is pure e-ray.

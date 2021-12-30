@@ -8,7 +8,7 @@ class KTP(Medium):
 
     - Point group : mm2
     - Crystal system : Orthorhombic
-    - Dielecric principal axes, x // a, y // b, z // c
+    - Dielectric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
     - Tranparency range : 0.35 to 4.5 um
 
