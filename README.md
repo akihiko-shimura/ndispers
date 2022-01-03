@@ -17,10 +17,9 @@ as a function of
 4. Polarization of light (ordinary- or extraordinary-ray)
 
 
-
 ## Installation
 
-In terminal, just
+In terminal,
 ```zsh
 pip install ndispers
 ```
@@ -87,7 +86,7 @@ array([0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4])
 >>> bbo.n(wl_ar, 0, 25, pol='o')
 array([1.89625189, 1.692713, 1.66892613, 1.66039556, 1.65560236, 1.65199986, 1.64874414])
 ```
-
+Complete documentation and more examples will be made in the future.
 
 ## Call for Contributions
 
