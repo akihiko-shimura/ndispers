@@ -2,8 +2,8 @@
 Compare refractive indices to the experimentaly measured.
 beta-BBO
 """
-from ndispers.media.crystals import (_betaBBO1987, _betaBBO1995, _betaBBO2010, _betaBBO2018)
-modules = [_betaBBO1987, _betaBBO1995, _betaBBO2010, _betaBBO2018]
+from ndispers.media.crystals import (_betaBBO_Eimerl1987, _betaBBO_Ghosh1995, _betaBBO_KK2010, _betaBBO_Tamosauskas2018)
+modules = [_betaBBO_Eimerl1987, _betaBBO_Ghosh1995, _betaBBO_KK2010, _betaBBO_Tamosauskas2018]
 from numpy import pi
 
 def sub(module):
@@ -17,7 +17,7 @@ def sub(module):
     n_o_list = [1.84707, 1.75707, 1.70556, 1.67493, 1.65510]
     n_e_list = [1.67467, 1.61461, 1.57757, 1.55552, 1.54254]
 
-    T_degC = 20.0
+    T_degC = 50.0
     print("T=%.1f degC"  % T_degC)
 
     print("-"*80)

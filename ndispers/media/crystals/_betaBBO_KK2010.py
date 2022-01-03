@@ -18,22 +18,22 @@ class BetaBBO(Medium):
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i)) + dn/dT * (T -20)
 
     Thermo-optic coefficient
-    -------------------------
-    dn/dT = (F_i/wl**3 + G_i/wl**2 + H_i/wl + I_i) for i = o, e
+    ------------------------
+    dn/dT = F_i/wl**3 + G_i/wl**2 + H_i/wl + I_i  for i = o, e
     
     Validity range
-    ---------------
+    --------------
     o: 0.2048 to 3.22 um
     e: 0.1916 to 0.2048 um
     dn/dT: 0.195 to 1.618 um
 
     Ref
-    ----
+    ---
     Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for Beta-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
 
-    Examples
-    --------
-    >>> bbo = ndispers.media.crystals.BetaBBO1987()
+    Example
+    -------
+    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
     >>> bbo.n(0.6, 0, 40, pol='o') # args: (wl_um, theta_rad, T_degC, pol)
     >>> bbo.n(0.6, 0.5*pi, 40, pol='e') # along z-axis, it is pure e-ray.
     >>> bbo.n(0.6, 0*pi, 40, pol='e') # for theta = 0 rad, it corresponds to o-ray.

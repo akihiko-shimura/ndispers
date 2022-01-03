@@ -15,8 +15,10 @@ class LBO(Medium):
     Dispersion formula for refractive index
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2 + E_i * wl**4)  for i = x,y,z
-    dn/dT = F_i  for i=x,y
-    dn/dT = F_i + G_i*wl  for i=z
+
+    Thermo-optic coefficient
+    ------------------------
+    dn/dT = (F_i + G_i * wl)  for i=x,y,z
     
     Validity range
     --------------
@@ -24,7 +26,7 @@ class LBO(Medium):
 
     Ref
     ---
-    CASTECH's catalogue, which is probably from S. Lin, B. Wu, F. Xie, C. Chen, Appl.Phys.Lett. 59,1541(1991).
+    https://www.newlightphotonics.com/Nonlinear-Optical-Crystals/LBO-Crystals
 
     Input
     -----
@@ -47,7 +49,8 @@ class LBO(Medium):
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",
-                 "_F_x", "_F_y", "_F_z", "_G_z"]
+                 "_F_x", "_F_y", "_F_z", 
+                 "_G_x", "_G_y", "_G_z"]
     
     def __init__(self):
         super().__init__()
@@ -71,10 +74,12 @@ class LBO(Medium):
         self._D_z = 0.017968
         self._E_z = -2.26e-4
         # dn/dT
-        self._F_x = +9.3e-6 #1/K
-        self._F_y = -13.6e-6 #1/K
-        self._F_z = -6.3e-6 #1/K
-        self._G_z = -2.1e-6 #1/(um*K)
+        self._F_x = +2.30e-6
+        self._F_y = -19.40e-6
+        self._F_z = -9.70e-6
+        self._G_x = -3.76e-6
+        self._G_y = +6.01e-6
+        self._G_z = +1.50e-6
     
     @property
     def constants(self):
@@ -97,13 +102,13 @@ class LBO(Medium):
         return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2 + self._E_z * wl**4)
     
     def dndT_x_expr(self):
-        return self._F_x
+        return self._F_x + self._G_x * wl
     
     def dndT_y_expr(self):
-        return self._F_y
+        return self._F_y + self._G_y * wl
     
     def dndT_z_expr(self):
-        return (self._F_z + self._G_z * wl)
+        return self._F_z + self._G_z * wl
 
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """

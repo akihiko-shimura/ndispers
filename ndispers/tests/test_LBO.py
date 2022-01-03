@@ -2,8 +2,8 @@
 Compare refractive indices to the experimentaly measured.
 LBO
 """
-from ndispers.media.crystals import (_LBO1990, _LBO1991, _LBO1994, _LBO1995)
-modules = [_LBO1990, _LBO1991, _LBO1994, _LBO1995]
+from ndispers.media.crystals import (_LBO_Castech, _LBO_Ghosh1995, _LBO_Newlight, _LBO_KK2018)
+modules = [_LBO_Castech, _LBO_Ghosh1995, _LBO_KK2018]
 
 def sub(module):
     module_name = module.__name__
@@ -19,7 +19,7 @@ def sub(module):
     n_y_list = [1.6582, 1.6346, 1.6065, 1.5905]
     n_z_list = [1.6792, 1.6509, 1.6212, 1.6055]
 
-    T_degC = 20.0
+    T_degC = 50.0
     print("T=%.1f degC"  % T_degC)
 
     print("-"*80)

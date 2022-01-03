@@ -13,19 +13,19 @@ class LBO(Medium):
 
     Dispersion formula for refractive index
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2 + E_i * wl**4 - F_i * wl**6)    for i = x,y,z
 
     Thermo-optic coefficient
     -------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i for i = x,y,z
-    (R depends on wl)
+    dn/dT = F_i + G_i * wl   for i = x,y,z
     
     Validity range
-    ---------------
+    --------------
 
     Ref
     ---
-    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
+    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
+    Kato, K., S. G. Grechin, and N. Umemura. "New thermo-optic dispersion formula for LiB3O5." Laser Physics 28.9 (2018): 095403.
 
     Input
     -----
@@ -42,47 +42,46 @@ class LBO(Medium):
     -------
     >>> lbo_xy = ndispers.media.crystals.LBO_xy()
     >>> lbo_xy.n(0.6, 0.3*pi, 40, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
-
+    
     """
 
-    __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
-                 "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
-                 "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",
-                 "_G_x", "_H_x", "_R_x",
-                 "_G_y", "_H_y", "_R_y",
-                 "_G_z", "_H_z", "_R_z"]
+    __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",
+                 "_A_y", "_B_y", "_C_y", "_D_y", "_E_y", "_F_y",
+                 "_A_z", "_B_z", "_C_z", "_D_z", "_E_z", "_F_z",
+                 "_F_x", "_F_y", "_F_z", 
+                 "_G_x", "_G_y", "_G_z"]
     
     def __init__(self):
         super().__init__()
 
         # for x-axis
-        self._A_x = 1.4426279
-        self._B_x = 1.0109932
-        self._C_x = 1.1210197e-2
-        self._D_x = 1.2363218
-        self._E_x = 91
+        self._A_x = 2.4542
+        self._B_x = 0.01125
+        self._C_x = 0.01135
+        self._D_x = 0.01388
+        self._E_x = 0.0
+        self._F_x = 0.0
         # for y-axis
-        self._A_y = 1.5014015
-        self._B_y = 1.0388217
-        self._C_y = 1.2157100e-2
-        self._D_y = 1.7567133
-        self._E_y = 91
+        self._A_y = 2.5390
+        self._B_y = 0.01277
+        self._C_y = 0.01189
+        self._D_y = 0.01849
+        self._E_y = 4.3025e-5
+        self._F_y = 2.9131e-5
         # z-axis
-        self._A_z = 1.4489240
-        self._B_z = 1.1365228
-        self._C_z = 1.1676746e-2
-        self._D_z = 1.5830069
-        self._E_z = 91
+        self._A_z = 2.5865
+        self._B_z = 0.01310
+        self._C_z = 0.01223
+        self._D_z = 0.01862
+        self._E_z = 4.5778e-5
+        self._F_z = 3.2526e-5
         # dn/dT
-        self._G_x = -127.70167e-6
-        self._G_y = 373.33870e-6 #372.170 - 2.199e-1 * T + 1.1748e-3 * T**2 - 2.05077e-6 * T**3
-        self._G_z = -446.95031e-6
-        self._H_x = 122.13435e-6
-        self._H_y = -415.10435e-6
-        self._H_z = 419.33410e-6 #410.66123 + 1.667e-1 * T - 5.1887e-4 * T**2 + 5.56251e-7 * T**3
-        self._R_x = wl**2/(wl**2 - 0.0530**2)
-        self._R_y = wl**2/(wl**2 - 0.0327**2)
-        self._R_z = wl**2/(wl**2 - 0.0435**2)
+        self._F_x = +0.2300e-5
+        self._G_x = -0.3760e-5
+        self._F_y = -1.9318e-5
+        self._G_y = +0.5779e-5
+        self._F_z = -1.1569e-5
+        self._G_z = +0.4073e-5
     
     @property
     def constants(self):
@@ -93,25 +92,25 @@ class LBO(Medium):
         return [wl, theta, phi, T]
     
     def _n_T20_x_expr(self):
-        """ Sympy expression, dispersion formula for x-axis (principal dielectric axis) at 20degC"""
-        return sympy.sqrt(self._A_x + self._B_x / (1 - self._C_x/wl**2) + self._D_x/(1 - self._E_x/wl**2))
+        """ Sympy expression, dispersion formula for x-axis (principal dielectric axis) at 20degC """
+        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2 + self._E_x * wl**4 - self._F_x * wl**6)
     
     def _n_T20_y_expr(self):
-        """ Sympy expression, dispersion formula for y-axis (principal dielectric axis) at 20degC"""
-        return sympy.sqrt(self._A_y + self._B_y / (1 - self._C_y/wl**2) + self._D_y/(1 - self._E_y/wl**2))
+        """ Sympy expression, dispersion formula for y-axis (principal dielectric axis) at 20degC """
+        return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) - self._D_y * wl**2 + self._E_y * wl**4 - self._F_y * wl**6)
     
     def _n_T20_z_expr(self):
-        """ Sympy expression, dispersion formula for x-axis (principal dielectric axis) at 20degC"""
-        return sympy.sqrt(self._A_z + self._B_z / (1 - self._C_z/wl**2) + self._D_z/(1 - self._E_z/wl**2))
+        """ Sympy expression, dispersion formula for x-axis (principal dielectric axis) at 20degC """
+        return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2 + self._E_z * wl**4 - self._F_z * wl**6)
     
     def dndT_x_expr(self):
-        return (self._G_x * self._R_x + self._H_x * self._R_x**2) / (2*self._n_T20_x_expr())
+        return self._F_x + self._G_x * wl
     
     def dndT_y_expr(self):
-        return (self._G_y * self._R_y + self._H_y * self._R_y**2) / (2*self._n_T20_y_expr())
+        return self._F_y + self._G_y * wl
     
     def dndT_z_expr(self):
-        return (self._G_z * self._R_z + self._H_z * self._R_z**2) / (2*self._n_T20_z_expr())
+        return self._F_z + self._G_z * wl
 
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """

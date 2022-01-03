@@ -203,7 +203,7 @@ class Medium:
 
     def pmAngles_sfg(self, wl1, wl2, T_degC, tol_deg=0.005, deg=False):
         """
-        Phase-matching angles for sum-frequency generation (SFG) and the sum-frequency wavelength.
+        Phase-matching (PM) angles for sum-frequency generation (SFG) and sum-frequency wavelength.
 
         Parameters
         ----------
@@ -219,11 +219,11 @@ class Medium:
         Return
         ------
         dict,
-            'wl3'  :  wavelength of sum-frequency
-            {'ooe'}  :  Phase-matching angle for negative type-I
-            {'eeo'}  :  Phase-matching angle for positive type-I
-            {'oee', 'eoe'}  :  Phase-matching angles for negative type-II
-            {'oee', 'eoe'}  :  Phase-matching angles for positive type-II
+            'wl3'  :  wavelength of SFG
+            {'ooe'}  :  PM angle for negative type-I
+            {'eeo'}  :  PM angle for positive type-I
+            {'oee', 'eoe'}  :  PM angles for negative type-II
+            {'oee', 'eoe'}  :  PM angles for positive type-II
         """
         wl3 = 1./(1./wl1 + 1./wl2)
 
