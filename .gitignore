@@ -59,4 +59,5 @@ docs/_build/
 target/
 
 
-.DS_Store/
+.DS_Store
+*/.DS_Store
