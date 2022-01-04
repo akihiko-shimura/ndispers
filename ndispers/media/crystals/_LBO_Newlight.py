@@ -41,7 +41,7 @@ class LBO(Medium):
 
     Example
     -------
-    >>> lbo_xy = ndispers.media.crystals.LBO_xy()
+    >>> lbo_xy = ndispers.media.crystals.LBO_KK2018_xy()
     >>> lbo_xy.n(0.6, 0.3*pi, 40, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
 
     """
