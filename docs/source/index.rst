@@ -8,7 +8,7 @@
 
 *ndispers* is a Python package for calculating refractive index dispersion 
 of various crystals and glasses used in nonlinear/ultrafast optics. 
-It is based on Sellmeier equartions :math:`n(\lambda)` and thermo-optics coefficients (*dn/dT*) 
+It is based on Sellmeier equartions :math:`n(\lambda)` and thermo-optic coefficients (*dn/dT*) 
 reported in literature.
 As an example, calculation of refractive indices of :math:`\beta`-BBO crystal 
 as a function of wavelength of light, 
@@ -26,8 +26,10 @@ is written as following lines of code::
 
 
 
-Overview
---------
+General Overview
+----------------
+
+
 
 
 
