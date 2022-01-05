@@ -1,5 +1,5 @@
 # ndispers
-*ndispers* is a Python package for calculating refractive index dispersion of various crystals and glasses used in the field of nonlinear/ultrafast optics. It is based on Sellmeier equartions and thermo-optics coefficients (dn/dT) reported in literature.
+*ndispers* is a Python package for calculating refractive index dispersion of various crystals and glasses used in the field of nonlinear/ultrafast optics. It is based on Sellmeier equartions and thermo-optic coefficients (dn/dT) reported in literature.
 
 You can easily compute
 - Refractive index
