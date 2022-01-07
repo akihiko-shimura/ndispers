@@ -6,7 +6,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name="ndispers",
-    version='0.2.2',
+    version='0.2.3',
     packages=find_packages(),
 
     author='Akihiko Shimura',

@@ -241,7 +241,7 @@ class KTP_yz(KTP):
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for yz principal plane """
-        return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.cos(phi)**2 + super().n_z_expr()**2 * sympy.sin(phi)**2 )
+        return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.sin(theta)**2 + super().n_z_expr()**2 * sympy.cos(theta)**2 )
 
     def n_expr(self, pol):
         """ sympy expresssion, 
@@ -346,7 +346,7 @@ class KTP_zx(KTP):
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for zx principal plane """
-        return super().n_z_expr() * super().n_z_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(phi)**2 + super().n_x_expr()**2 * sympy.sin(phi)**2 )
+        return super().n_z_expr() * super().n_x_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(theta)**2 + super().n_x_expr()**2 * sympy.sin(theta)**2 )
 
     def n_expr(self, pol):
         """ sympy expresssion, 

@@ -250,7 +250,7 @@ class LBO_yz(LBO):
     @property
     def phi_rad(self):
         return self._LBO_yz__phi_rad
-    
+
     @property
     def constants(self):
         print({**vars2(super()), **vars2(self)})
@@ -263,7 +263,7 @@ class LBO_yz(LBO):
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for yz principal plane """
-        return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.cos(phi)**2 + super().n_z_expr()**2 * sympy.sin(phi)**2 )
+        return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.sin(theta)**2 + super().n_z_expr()**2 * sympy.cos(theta)**2 )
 
     def n_expr(self, pol):
         """ sympy expresssion, 
@@ -355,7 +355,7 @@ class LBO_zx(LBO):
     @property
     def phi_rad(self):
         return self._LBO_zx__phi_rad
-    
+
     @property
     def constants(self):
         print({**vars2(super()), **vars2(self)})
@@ -368,7 +368,7 @@ class LBO_zx(LBO):
     def n_e_expr(self):
         """ sympy expresssion, 
         dispersion formula for e-ray polarization for zx principal plane """
-        return super().n_z_expr() * super().n_z_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(phi)**2 + super().n_x_expr()**2 * sympy.sin(phi)**2 )
+        return super().n_z_expr() * super().n_x_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(theta)**2 + super().n_x_expr()**2 * sympy.sin(theta)**2 )
 
     def n_expr(self, pol):
         """ sympy expresssion, 
@@ -434,3 +434,4 @@ class LBO_zx(LBO):
     
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dndT(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
