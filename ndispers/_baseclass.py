@@ -108,6 +108,10 @@ class Medium:
         """ Sympy expression for dn/dT """
         return sympy.diff(self.n_expr(pol), T)
 
+    def dndT2_expr(self, pol):
+        """ Sympy expression for d^2n/dT^2 """
+        return sympy.diff(self.dndT_expr(pol), T)
+
     """ lambdified functions """
     def _func(self, expr, *args, pol='o'):
         array_args = map(np.asarray, args)
@@ -156,15 +160,19 @@ class Medium:
 
     def dndT(self, *args, pol='o'):
         """
-        dn/dT for given angle, temperature and eigen-polarization (o- or e-ray)
+        dn/dT function for given arguments (angle, temperature and polarization)
 
         NOTE
         ----
-        Here, self.dndT_expr is given by sympy.diff(self.n_expr(pol)), so there are no need to give dndT_expr explicitly.
+        Here, self.dndT_expr is given by sympy.diff(self.n_expr(pol)), so there is no need to give dndT_expr explicitly.
         """
         return self._func(self.dndT_expr, *args, pol=pol)
     
+    def dndT2(self, *args, pol='o'):
+        """ d^2n/dT^2 """
+        return self._func(self.dndT2_expr, *args, pol=pol)
 
+    
     """ 
     Methods for three-wave interactions
     """
@@ -253,7 +261,7 @@ class Medium:
         d['oeo'] = pmAngle_for_pol('o', 'e', 'o') #posi2
         return d
 
-    def pmFactor_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_um):
+    def pmFactor_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm):
         """
         Phase-matching factor, sinc^2((0.5*dk*L)/(0.5*dk*L)), for sum-frequency generation (SFG).
 
@@ -273,13 +281,14 @@ class Medium:
             Polarization of 2nd pump wave.
         pol3: {'o', 'e'}
             Polarization of sum-frequency wave.
-        L_um : float
-            Crystal length in um.
+        L_mm : float
+            Crystal length in mm.
 
         Return
         ------
         float or array_like
             Phase-matching factor for SFG.
         """
+        L_um = L_mm * 1e3
         t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3) * L_um
         return (np.sin(t)/t)**2

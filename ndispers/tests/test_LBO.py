@@ -2,8 +2,8 @@
 Compare refractive indices to the experimentaly measured.
 LBO
 """
-from ndispers.media.crystals import (_LBO_Castech, _LBO_Ghosh1995, _LBO_Newlight, _LBO_KK2018)
-modules = [_LBO_Castech, _LBO_Ghosh1995, _LBO_KK2018]
+from ndispers.media.crystals import (_LBO_Castech, _LBO_Ghosh1995, _LBO_Newlight, _LBO_KK1994, _LBO_KK2018)
+modules = [_LBO_Castech, _LBO_Ghosh1995, _LBO_Newlight, _LBO_KK1994, _LBO_KK2018]
 
 def sub(module):
     module_name = module.__name__
