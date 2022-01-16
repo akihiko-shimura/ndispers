@@ -200,7 +200,7 @@ class Medium:
         Return
         ------
         float or array_like
-            Wavevector phase-mismatch for SFG.
+            Wavevector mismatch for SFG (in rad/um)
         """
         wl3 = 1./(1./wl1 + 1./wl2)
         n1 = self.n(wl1, angle_rad, T_degC, pol=pol1)
