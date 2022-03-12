@@ -12,8 +12,8 @@ You can easily compute
 
 as a function of
 1. Wavelength of light
-2. Polar (theta) or azimuthal (phi) angles of wave vector with respect to dielectric principal axes of anisotropic crystals
-3. Temperature
+2. Polar (theta) or azimuthal (phi) angles of wavevector with respect to dielectric principal axes of anisotropic crystals
+3. Temperature of crystal
 4. Polarization of light (ordinary- or extraordinary-ray)
 
 
@@ -24,7 +24,7 @@ In terminal,
 pip install ndispers
 ```
 
-## A simple example
+## Simple example
 
 Firstly, make an object of beta-BBO crystal.
 
@@ -33,7 +33,7 @@ Firstly, make an object of beta-BBO crystal.
 >>> bbo = nd.media.crystals.BetaBBO_Eimerl1987()
 ```
 
-For material information, 
+To look into the material information, 
 
 ```
 >>> bbo.help
@@ -59,7 +59,7 @@ beta-BBO (beta-Ba B_2 O_4) crystal
     Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
 ```
 
-To compute refractive indices, use a method of the `bbo` instance,
+To compute refractive indices,
 
 ```python
 >>> bbo.n(0.532, 0, 25, pol='o')
@@ -68,14 +68,13 @@ array(1.67488405)
 array(1.55546588)
 ```
 
-where the four arguments are
+where the four arguments are, respectively,
 1. wavelength (in micrometer), 
-2. theta angle (in radians),
-3. temperature (in deg.C), 
+2. theta angle (in radian),
+3. temperature (in degree Celsius), 
 4. polarization (`pol='o' or 'e'`, ordinary or extraordinary ray). 
 
 Default is `pol='o'`. Note that `pol='e'` corresponds to `pol='o'` in index surface when theta angle is 0 radians. 
-
 Output values are generically of `numpy.ndarray` type. You can input an array to each argument, getting an output array of the same shape, 
 
 ```python
