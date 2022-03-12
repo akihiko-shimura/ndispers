@@ -12,7 +12,7 @@ class Calcite(Medium):
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) 
     = sqrt(1 + A1_o * wl**2 / (wl**2 - B1_o**2) + A2_o * wl**2 / (wl**2 - B2_o**2) + A3_o * wl**2 / (wl**2 - B3_o**2) + A4_o * wl**2 / (wl**2 - B4_o**2)) for o-ray
@@ -20,8 +20,8 @@ class Calcite(Medium):
     
     Validity range
     ---------------
-    0.2 to 2.2 um for o-ray
-    0.2 to 3.3 um for e-ray
+    0.2 to 2.2 µm for o-ray
+    0.2 to 3.3 µm for e-ray
 
     Ref
     ----
@@ -115,7 +115,7 @@ class Calcite(Medium):
 
         input
         ------
-        wl_um     :  float, wavelength in um
+        wl_um     :  float, wavelength in µm
         theta_rad :  float, 0 to pi radians
         pol       :  str, 'o' or 'e', polarization of light
 
@@ -139,7 +139,7 @@ class Calcite(Medium):
         return super().GD(wl_um, theta_rad, 0, pol=pol)
     
     def GV(self, wl_um, theta_rad, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, pol=pol)
     
     def ng(self, wl_um, theta_rad, pol='o'):

@@ -4,26 +4,26 @@ from ndispers.helper import vars2
 
 class BetaBBO(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    β-BBO (β-Ba B_2 O_4) crystal
 
     - Point group : 3m
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 to 2.6 um
+    - Tranparency range : 1.9 to 2.6 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) + dn/dT * (T - 20)  for i = o, e
     
     Validity range
     ---------------
-    0.22 to 1.06 um
+    0.22 to 1.06 µm
 
     Ref
     ---
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
-    dn/dT from Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+    - Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    - Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
 
     Example
     -------
@@ -114,7 +114,7 @@ class BetaBBO(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o', 'e'}, optional, polarization of light
@@ -139,7 +139,7 @@ class BetaBBO(Medium):
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

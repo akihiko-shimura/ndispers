@@ -10,9 +10,9 @@ class AlphaBBO(Medium):
     - Crystal system : Hexagonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.19 to 2.6 um
+    - Tranparency range : 0.19 to 2.6 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
@@ -105,7 +105,7 @@ class AlphaBBO(Medium):
 
         input
         ------
-        wl_um     :  float, wavelength in um
+        wl_um     :  float, wavelength in µm
         theta_rad :  float, 0 to pi radians
         pol       :  str, 'o' or 'e', polarization of light
 
@@ -129,7 +129,7 @@ class AlphaBBO(Medium):
         return super().GD(wl_um, theta_rad, 0, pol=pol)
     
     def GV(self, wl_um, theta_rad, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, pol=pol)
     
     def ng(self, wl_um, theta_rad, pol='o'):

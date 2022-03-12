@@ -26,7 +26,7 @@ pip install ndispers
 
 ## Simple example
 
-Firstly, make an object of beta-BBO crystal.
+Firstly, make an object of β-BBO crystal.
 
 ```python
 >>> import ndispers as nd
@@ -37,21 +37,21 @@ To look into the material information,
 
 ```
 >>> bbo.help
-beta-BBO (beta-Ba B_2 O_4) crystal
+β-BBO (β-Ba B_2 O_4) crystal
 
     - Point group : 3m
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 to 2.6 um
+    - Tranparency range : 1.9 to 2.6 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
     Validity range
     ---------------
-    0.22 to 1.06 um
+    0.22 to 1.06 µm
 
     Ref
     ----

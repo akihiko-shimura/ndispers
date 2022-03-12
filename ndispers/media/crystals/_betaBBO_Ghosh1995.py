@@ -5,29 +5,29 @@ from ndispers.helper import vars2
 
 class BetaBBO(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    β-BBO (β-Ba B_2 O_4) crystal
 
     - Point group : 3m
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 to 2.6 um
+    - Tranparency range : 1.9 to 2.6 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
 
     Thermo-optic coefficient
     ------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i for i=o, e
-    R_i = wl**2/(wl**2 - wl0_i**2), wl0_i = 0.0652 for i=o, wl0=0.0730 for i=e
+    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i  for i = o, e
+    R_i = wl**2/(wl**2 - wl0_i**2), where wl0_i = 0.0652 for i = o or wl0 = 0.0730  for i = e
     
     Validity range
     --------------
 
     Ref
     ----
-    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β‐BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
+    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
 
     Example
     -------
@@ -139,7 +139,7 @@ class BetaBBO(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o', 'e'}, optional, polarization of light
@@ -164,7 +164,7 @@ class BetaBBO(Medium):
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

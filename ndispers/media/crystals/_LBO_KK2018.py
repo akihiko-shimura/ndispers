@@ -11,7 +11,7 @@ class LBO(Medium):
     - Dielectric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2 + E_i * wl**4 - F_i * wl**6)    for i = x,y,z
 
@@ -180,7 +180,7 @@ class LBO_xy(LBO):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         phi_rad   :  float or array_like, polar angle in radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         (Note: theta_rad is fixed at 0.5*pi in xy principal plane.)
@@ -205,7 +205,7 @@ class LBO_xy(LBO):
         return super().GD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
     def GV(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
     def ng(self, wl_um, phi_rad, T_degC, pol='o'):
@@ -285,7 +285,7 @@ class LBO_yz(LBO):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad   :  float or array_like, azimuthal angle in radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         (Note: phi_rad is fixed at 0.5*pi in xy principal plane.)
@@ -310,7 +310,7 @@ class LBO_yz(LBO):
         return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):
@@ -390,7 +390,7 @@ class LBO_zx(LBO):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad   :  float or array_like, azimuthal angle in radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         (Note: phi_rad is fixed at 0.5*pi in xy principal plane.)
@@ -415,7 +415,7 @@ class LBO_zx(LBO):
         return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

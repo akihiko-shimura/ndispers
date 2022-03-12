@@ -10,9 +10,9 @@ class KDP(Medium):
     - Crystal system : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.174 to 1.57 um
+    - Tranparency range : 0.174 to 1.57 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2/(wl_um**2 - 400))  for i = o, e
     
@@ -96,7 +96,7 @@ class KDP(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         pol       :  {'o' or 'e'}, optional, polarization of light
 
@@ -120,7 +120,7 @@ class KDP(Medium):
         return super().GD(wl_um, theta_rad, 0, pol=pol)
     
     def GV(self, wl_um, theta_rad, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, pol=pol)
     
     def ng(self, wl_um, theta_rad, pol='o'):

@@ -5,17 +5,17 @@ from ndispers.helper import vars2
 
 class BetaBBO(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    β-BBO (β-Ba B_2 O_4) crystal
 
     - Point group : 3m
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 to 2.6 um
+    - Tranparency range : 1.9 to 2.6 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i)) + dn/dT * (T -20)
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i)) + dn/dT * (T -20)  i = o, e
 
     Thermo-optic coefficient
     ------------------------
@@ -23,13 +23,13 @@ class BetaBBO(Medium):
     
     Validity range
     --------------
-    o: 0.2048 to 3.22 um
-    e: 0.1916 to 0.2048 um
-    dn/dT: 0.195 to 1.618 um
+    o: 0.2048 to 3.22 µm
+    e: 0.1916 to 0.2048 µm
+    dn/dT: 0.195 to 1.618 µm
 
     Ref
     ---
-    Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for Beta-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
+    Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for β-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
 
     Example
     -------
@@ -67,19 +67,19 @@ class BetaBBO(Medium):
         self._C_o = 0.01822
         self._D_o = 60.9129
         self._E_o = 67.8505
-        # For extraordinary ray (best fit from 0.2048 to 3.22 um)
+        # For extraordinary ray (best fit from 0.2048 to 3.22 µm)
         self._A_e = 3.33469
         self._B_e = 0.01237
         self._C_e = 0.01647
         self._D_e = 79.0672
         self._E_e = 82.2919
-        # For extraordinary ray (best fit from 0.1916 to 0.2048 um)
+        # For extraordinary ray (best fit from 0.1916 to 0.2048 µm)
         # self._A_e = 3.38630
         # self._B_e = 0.00921
         # self._C_e = 0.02073
         # self._D_e = 79.0672
         # self._E_e = 82.2919
-        # dn/dT (best fit from 0.195 to 1.618 um)
+        # dn/dT (best fit from 0.195 to 1.618 µm)
         self._F_o = -0.0137e-5
         self._F_e = 0.0413e-5
         self._G_o = 0.0607e-5
@@ -149,7 +149,7 @@ class BetaBBO(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o', 'e'}, optional, polarization of light
@@ -174,7 +174,7 @@ class BetaBBO(Medium):
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

@@ -10,9 +10,9 @@ class CLBO(Medium):
     - Crystal system : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.18 to 2.75 um
+    - Tranparency range : 0.18 to 2.75 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
 
@@ -23,13 +23,12 @@ class CLBO(Medium):
     
     Validity range
     ---------------
-    0.1914 to 2.09 um
-    dn/dT : 0.2128 to 1.3382 um
+    0.1914 to 2.09 µm
+    dn/dT : 0.2128 to 1.3382 µm
 
     Ref
     ----
     Umemura, N., Yoshida, K., Kamimura, T., Mori, Y., Sasaki, T., & Kato, K. "New data on the phase-matching properties of CsLiB6O10." Advanced Solid State Lasers. Optical Society of America, 1999.
-
     
     """
     __slots__ = ["_CLBO__plane", "_CLBO__theta_rad", "_CLBO__phi_rad",
@@ -57,11 +56,11 @@ class CLBO(Medium):
         self._D_e = 0.00607
         # dn/dT
         self._At_o = -12.48 #1/K
-        self._Bt_o = -0.328 #um/K
+        self._Bt_o = -0.328 #µm/K
         self._At_e = -8.36 #1/K
-        self._Bt_e = 0.047 #um/K
-        self._Ct_e = 0.039 #um^2/K
-        self._Dt_e = 0.014 #um^3/K
+        self._Bt_e = 0.047 #µm/K
+        self._Ct_e = 0.039 #µm^2/K
+        self._Dt_e = 0.014 #µm^3/K
     
     @property
     def plane(self):
@@ -117,7 +116,7 @@ class CLBO(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o', 'e'}, optional, polarization of light
@@ -142,7 +141,7 @@ class CLBO(Medium):
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

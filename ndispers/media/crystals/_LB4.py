@@ -10,9 +10,9 @@ class LB4(Medium):
     - Crystal system : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.16 to 3.6 um
+    - Tranparency range : 0.16 to 3.6 µm
 
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) for i = o,e
 
@@ -23,9 +23,9 @@ class LB4(Medium):
     
     Validity range
     ---------------
-    0.18 to 2.3 um
+    0.18 to 2.3 µm
     at 101325 Pa
-    dn/dT : 0.436 to 0.644 um, -40 to 60 degC
+    dn/dT : 0.436 to 0.644 µm, -40 to 60 degC
 
     Ref
     ----
@@ -59,15 +59,15 @@ class LB4(Medium):
         # dn/dT coefficients
         # for o-ray
         self._At_o = 1.893e-5 #1/K
-        self._Bt_o = -88.17e-6 #1/(um*K)
-        self._Ct_o = 1.497e-4 #1/(um^2*K)
-        self._Dt_o = -8.643e-5 #1/(um^3*K)
+        self._Bt_o = -88.17e-6 #1/(µm*K)
+        self._Ct_o = 1.497e-4 #1/(µm^2*K)
+        self._Dt_o = -8.643e-5 #1/(µm^3*K)
         self._Et_o = -2.55e-8 #1/(K^2)
         # for e-ray
         self._At_e = 1.297e-5 #1/K
-        self._Bt_e = -45.50e-6 #1/(um*K)
-        self._Ct_e = 0.714e-4 #1/(um^2*K)
-        self._Dt_e = -3.868e-5 #1/(um^3*K)
+        self._Bt_e = -45.50e-6 #1/(µm*K)
+        self._Ct_e = 0.714e-4 #1/(µm^2*K)
+        self._Dt_e = -3.868e-5 #1/(µm^3*K)
         self._Et_e = -2.08e-8 #1/(K^2)
 
     
@@ -125,7 +125,7 @@ class LB4(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o', 'e'}, optional, polarization of light
@@ -150,7 +150,7 @@ class LB4(Medium):
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

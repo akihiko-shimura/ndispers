@@ -23,7 +23,7 @@ def sub(module):
     print("T=%.1f degC"  % T_degC)
 
     print("-"*80)
-    print("Wavelength(um)")
+    print("Wavelength(µm)")
     print("  |  n_x        n_y        n_z    |    dn_x/dT       dn_y/dT       dn_z/dT")
     print("  |  Experimental")
     print("  |  Calculated")

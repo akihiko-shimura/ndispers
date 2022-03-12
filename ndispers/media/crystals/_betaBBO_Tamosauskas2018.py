@@ -4,21 +4,21 @@ from ndispers.helper import vars2
 
 class BetaBBO(Medium):
     """
-    beta-BBO (beta-Ba B_2 O_4) crystal
+    β-BBO (β-Ba B_2 O_4) crystal
 
     - Point group : 3m
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.19 to 2.6 um
+    - Tranparency range : 0.19 to 2.6 µm
     
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
-    n(wl_um) = sqrt(1 + B1_i*wl**2/(wl**2 - C1_i) + B2_i*wl**2/(wl**2 - C2_i) + B3_i*wl**2/(wl**2 - C3_i))  for i = o, e
+    n(wl_um) = sqrt(1 + B1_i*wl**2/(wl**2 - C1_i) + B2_i*wl**2/(wl**2 - C2_i) + B3_i*wl**2/(wl**2 - C3_i)) + dn/dT * (T - 20)  for i = o, e
     
     Validity range
     --------------
-    0.188 - 5.2 um
+    0.188 - 5.2 µm
 
     Ref
     ---
@@ -140,7 +140,7 @@ class BetaBBO(Medium):
 
         input
         ------
-        wl_um     :  float or array_like, wavelength in um
+        wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o', 'e'}, optional, polarization of light
@@ -165,7 +165,7 @@ class BetaBBO(Medium):
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

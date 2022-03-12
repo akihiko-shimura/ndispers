@@ -9,10 +9,10 @@ class CaF2(Medium):
 
     - Point group : Fm3m
     - Crystal system : cubic
-    - Tranparency range : 0.18 to 8 um (depends on material grade)
-    - Transmission Range : 0.13 to 10 um (depends on material grade)
+    - Tranparency range : 0.18 to 8 µm (depends on material grade)
+    - Transmission Range : 0.13 to 10 µm (depends on material grade)
     
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl) = sqrt(1 + A1 * wl**2 / (wl**2 - B1**2) + A2 * wl**2 / (wl**2 - B2**2) + A3 * wl**2 / (wl**2 - B3**2))
 
@@ -22,7 +22,7 @@ class CaF2(Medium):
     
     Validity range
     ---------------
-    0.23 to 9.7 um
+    0.23 to 9.7 µm
 
     Ref
     ----
@@ -66,7 +66,7 @@ class CaF2(Medium):
 
         input
         ------
-        wl_um   :  float or array_like, wavelength in um
+        wl_um   :  float or array_like, wavelength in µm
         T_degC  :  float or array_like, temperature of crystal in degree C.
         
         return
@@ -89,7 +89,7 @@ class CaF2(Medium):
         return super().GD(wl_um, T_deg, pol='o')
     
     def GV(self, wl_um, T_deg):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, T_deg, pol='o')
     
     def ng(self, wl_um, T_deg):

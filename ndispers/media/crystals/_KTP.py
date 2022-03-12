@@ -10,10 +10,10 @@ class KTP(Medium):
     - Crystal system : Orthorhombic
     - Dielectric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
-    - Tranparency range : 0.35 to 4.5 um
+    - Tranparency range : 0.35 to 4.5 µm
 
-    Dispersion formula for refractive index
-    ---------------------------------------
+    Sellmeier equation
+    ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i/(wl**2 - E_i))  for i = x, y, z
     
     Thermo-optic coefficient
@@ -22,22 +22,28 @@ class KTP(Medium):
 
     Validity range
     ---------------
-    dn/dT : 0.43 to 1.58 um
+    dn/dT : 0.43 to 1.58 µm
 
     Ref
     ----
     Kato, Kiyoshi, and Eiko Takaoka. "Sellmeier and thermo-optic dispersion formulas for KTP." Applied optics 41.24 (2002): 5040-5044.
-
-    Input
-    ------
-    plane  :  Principal dielectric plane which includes wave vector of light ("xy", "yz" or "xz")
     
-    If plane == "xy", 
-        o-ray polarization // z-axis, e-ray polarization in xy-plane, phi is variable and theta = 90 deg.
-    If plane == "yz", 
-        o-ray polarization // x-axis, e-ray polarization in yz-plane, phi = 90 deg and theta is variable.
-    If plane == "xz", 
-        o-ray polarization // y-axis, e-ray polarization in xz-plane, phi = 0 deg and theta is variable.
+    Note
+    ----
+    In the current version, biaxial crystals are limited to the principal dielectric planes, 
+    xy, yz or zx planes. In other words, a wavevector of light must be within any one of 
+    the three planes. Correspondence between principal plane, polarization orientations of 
+    o-ray and e-ray, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
+    to z and x principal axes, respectively, are shown in the table below.
+
+    plane  |  o-ray  |  e-ray  |  theta  |   phi   |
+    ================================================
+    xy     |    z    |    xy   |   pi/2  |   var   |
+    yz     |    x    |    yz   |   var   |   pi/2  |
+    zx     |    y    |    zx   |   var   |    0    |
+    ------------------------------------------------
+    pi = 3.14159...
+    var : variable
 
     Usage
     ------
@@ -154,7 +160,7 @@ class KTP_xy(KTP):
 
         input
         ------
-        wl_um     :  float, wavelength in um
+        wl_um     :  float, wavelength in µm
         pol       :  str, 'o' or 'e', polarization of light
         phi_rad   :  float, 0 to 2pi radians
         (Note: theta_rad is fixed at 0.5*pi in xy principal plane.)
@@ -179,7 +185,7 @@ class KTP_xy(KTP):
         return super().GD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
     def GV(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
     def ng(self, wl_um, phi_rad, T_degC, pol='o'):
@@ -259,7 +265,7 @@ class KTP_yz(KTP):
 
         input
         ------
-        wl_um     :  float, wavelength in um
+        wl_um     :  float, wavelength in µm
         pol       :  str, 'o' or 'e', polarization of light
         theta_rad :  float, 0 to 2pi radians
         (Note: phi_rad is fixed at 0.5*pi in yz principal plane.)
@@ -284,7 +290,7 @@ class KTP_yz(KTP):
         return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):
@@ -364,7 +370,7 @@ class KTP_zx(KTP):
 
         input
         ------
-        wl_um     :  float, wavelength in um
+        wl_um     :  float, wavelength in µm
         pol       :  str, 'o' or 'e', polarization of light
         theta_rad :  float, 0 to 2pi radians
         (Note: phi_rad is fixed at 0.5*pi in zx principal plane.)
@@ -389,7 +395,7 @@ class KTP_zx(KTP):
         return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
     def ng(self, wl_um, theta_rad, T_degC, pol='o'):

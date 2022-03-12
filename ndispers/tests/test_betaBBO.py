@@ -1,6 +1,6 @@
 """ 
 Compare refractive indices to the experimentaly measured.
-beta-BBO
+β-BBO
 """
 from ndispers.media.crystals import (_betaBBO_Eimerl1987, _betaBBO_Ghosh1995, _betaBBO_KK2010, _betaBBO_Tamosauskas2018)
 modules = [_betaBBO_Eimerl1987, _betaBBO_Ghosh1995, _betaBBO_KK2010, _betaBBO_Tamosauskas2018]
@@ -21,7 +21,7 @@ def sub(module):
     print("T=%.1f degC"  % T_degC)
 
     print("-"*80)
-    print("Wavelength(um)")
+    print("Wavelength(µm)")
     print("  |  n_o        n_e     |    dn_o/dT       dn_e/dT")
     print("  |  Experimental")
     print("  |  Calculated")

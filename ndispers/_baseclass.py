@@ -10,7 +10,7 @@ T = sympy.Symbol('T')
 
 from math import pi
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
-c_umfs = c_ms * 1e-9  #(um/fs)
+c_umfs = c_ms * 1e-9  #(µm/fs)
 
 import numpy as np
 from collections import defaultdict
@@ -183,9 +183,9 @@ class Medium:
         Parameters
         ----------
         wl1 : float or array_like
-            1st pump wavelength in um.
+            1st pump wavelength in µm.
         wl2 : float or array_like
-            2nd pump wavelength in um.
+            2nd pump wavelength in µm.
         angle_rad : float or array_like
             theta or phi angles in radians.
         T_degC  :  float or array_like
@@ -200,7 +200,7 @@ class Medium:
         Return
         ------
         float or array_like
-            Wavevector mismatch for SFG (in rad/um)
+            Wavevector mismatch for SFG (in rad/µm)
         """
         wl3 = 1./(1./wl1 + 1./wl2)
         n1 = self.n(wl1, angle_rad, T_degC, pol=pol1)
@@ -216,9 +216,9 @@ class Medium:
         Parameters
         ----------
         wl1 : float or array_like
-            1st pump wavelength in um.
+            1st pump wavelength in µm.
         wl2 : float or array_like
-            2nd pump wavelength in um.
+            2nd pump wavelength in µm.
         tol_deg : float, defalut=0.005
             Tolerance error of angle in degree.
         deg : bool, default=False
@@ -268,9 +268,9 @@ class Medium:
         Parameters
         ----------
         wl1 : float or array_like
-            1st pump wavelength in um.
+            1st pump wavelength in µm.
         wl2 : float or array_like
-            2nd pump wavelength in um.
+            2nd pump wavelength in µm.
         angle_rad : float or array_like
             theta or phi angles in radians.
         T_degC  :  float or array_like

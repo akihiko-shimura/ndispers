@@ -7,7 +7,7 @@ class FusedSilica(Medium):
     """
     Fused Silica glass
     
-    Dispersion formula for refractive index
+    Sellmeier equation
     ---------------------------------------
     n(wl_um) = sqrt(1 + B1 * wl_um**2/(wl_um**2 - C1) + B2 * wl_um**2/(wl_um**2 - C2) + B3 * wl_um**2/(wl_um**2 - C3))
 
@@ -17,7 +17,7 @@ class FusedSilica(Medium):
     
     Validity range
     ---------------
-    0.21 to 3.71 um
+    0.21 to 3.71 µm
 
     Ref
     ----
@@ -63,7 +63,7 @@ class FusedSilica(Medium):
 
         input
         ------
-        wl_um   :  float or array_like, wavelength in um
+        wl_um   :  float or array_like, wavelength in µm
         T_degC  :  float or array_like, temperature of crystal in degree C.
 
         return
@@ -86,7 +86,7 @@ class FusedSilica(Medium):
         return super().GD(wl_um, T_degC, pol='o')
     
     def GV(self, wl_um, T_degC):
-        """Group Velocity [um/fs]"""
+        """Group Velocity [µm/fs]"""
         return super().GV(wl_um, T_degC, pol='o')
     
     def ng(self, wl_um, T_degC):
