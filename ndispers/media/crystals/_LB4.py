@@ -13,13 +13,12 @@ class LB4(Medium):
     - Tranparency range : 0.16 to 3.6 µm
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) for i = o,e
 
     Thermo-optic coefficient
     -------------------------
-    dn/dT = At_i + Bt_i * wl + Ct_i * wl**2 + Dt_i * wl**3 + Et_i * (T - 25)
-    for i = o, e
+    dn/dT = At_i + Bt_i * wl + Ct_i * wl**2 + Dt_i * wl**3 + Et_i * (T - 25)  for i = o, e
     
     Validity range
     ---------------

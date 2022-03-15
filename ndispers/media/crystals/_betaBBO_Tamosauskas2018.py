@@ -13,7 +13,7 @@ class BetaBBO(Medium):
     - Tranparency range : 0.19 to 2.6 µm
     
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl_um) = sqrt(1 + B1_i*wl**2/(wl**2 - C1_i) + B2_i*wl**2/(wl**2 - C2_i) + B3_i*wl**2/(wl**2 - C3_i)) + dn/dT * (T - 20)  for i = o, e
     
     Validity range

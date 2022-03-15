@@ -13,7 +13,7 @@ class AlphaBBO(Medium):
     - Tranparency range : 0.19 to 2.6 µm
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
     Validity range

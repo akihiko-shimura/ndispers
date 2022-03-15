@@ -13,7 +13,7 @@ class KDP(Medium):
     - Tranparency range : 0.174 to 1.57 µm
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2/(wl_um**2 - 400))  for i = o, e
     
     Validity range

@@ -13,7 +13,7 @@ class CLBO(Medium):
     - Tranparency range : 0.18 to 2.75 µm
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
 
     Thermo-optic coefficient

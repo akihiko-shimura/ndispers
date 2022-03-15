@@ -13,7 +13,7 @@ class Calcite(Medium):
     - Tranparency range : 
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl) 
     = sqrt(1 + A1_o * wl**2 / (wl**2 - B1_o**2) + A2_o * wl**2 / (wl**2 - B2_o**2) + A3_o * wl**2 / (wl**2 - B3_o**2) + A4_o * wl**2 / (wl**2 - B4_o**2)) for o-ray
     = sqrt(1 + A1_e * wl**2 / (wl**2 - B1_e**2) + A2_e * wl**2 / (wl**2 - B2_e**2) + A3_e * wl**2 / (wl**2 - B3_e**2)) for e-ray

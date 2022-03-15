@@ -12,7 +12,7 @@ class LBO(Medium):
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl) = sqrt( A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2) ) + dn/dT * (T -20)  for i = x,y,z
 
     Thermo-optic coefficient
@@ -27,16 +27,22 @@ class LBO(Medium):
     ---
     Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
 
-    Input
-    -----
-    plane  :  Principal dielectric plane which includes wave vector of light ("xy", "yz" or "xz")
-    
-    If plane == "xy", 
-        o-ray polarization // z-axis, e-ray polarization in xy-plane, phi is variable and theta = 90 deg.
-    If plane == "yz", 
-        o-ray polarization // x-axis, e-ray polarization in yz-plane, phi = 90 deg and theta is variable.
-    If plane == "xz", 
-        o-ray polarization // y-axis, e-ray polarization in xz-plane, phi = 0 deg and theta is variable.
+    Note
+    ----
+    In the current version, biaxial crystals are limited to the principal dielectric planes, 
+    xy, yz or zx planes. In other words, a wavevector of light must be within any one of 
+    the three planes. Correspondence between principal plane, polarization orientations of 
+    o-ray and e-ray, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
+    to z and x principal axes, respectively, are shown in the table below.
+
+    plane  |  o-ray  |  e-ray  |  theta  |   phi   |
+    ================================================
+    xy     |    z    |    xy   |   pi/2  |   var   |
+    yz     |    x    |    yz   |   var   |   pi/2  |
+    zx     |    y    |    zx   |   var   |    0    |
+    ------------------------------------------------
+    pi = 3.14159...
+    var : variable
 
     Example
     -------

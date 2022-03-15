@@ -18,7 +18,7 @@ class KTP(Medium):
     
     Thermo-optic coefficient
     -------------------------
-    dn_i/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
+    dn/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
 
     Validity range
     ---------------

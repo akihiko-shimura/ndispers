@@ -14,7 +14,7 @@ class BetaBBO(Medium):
     - Tranparency range : 1.9 to 2.6 µm
 
     Sellmeier equation
-    ---------------------------------------
+    ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i)) + dn/dT * (T -20)  i = o, e
 
     Thermo-optic coefficient
