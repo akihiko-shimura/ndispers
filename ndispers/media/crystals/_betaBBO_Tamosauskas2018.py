@@ -180,5 +180,13 @@ class BetaBBO(Medium):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
+    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
+        """ Polar walk-off angle [rad] """
+        return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
+    
+    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
+        """ Azimuthal walk-off angle [rad] """
+        return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
+    
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)
