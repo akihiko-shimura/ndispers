@@ -77,7 +77,7 @@ class Medium:
 
     def GD_expr(self, pol):
         """ Sympy expression for group delay """
-        return (self.n_expr(pol) - wl * self.dn_expr(pol)) * 1e3 / c_umfs
+        return (self.n_expr(pol) - wl * self.dn_wl_expr(pol)) * 1e3 / c_umfs
     
     def GV_expr(self, pol):
         """ Sympy expression for group velocity """
