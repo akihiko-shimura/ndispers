@@ -20,29 +20,15 @@ class BetaBBO(Medium):
     ------------------------
     dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i  for i = o, e
     R_i = wl**2/(wl**2 - wl0_i**2), where wl0_i = 0.0652 for i = o or wl0 = 0.0730  for i = e
-    
-    Validity range
-    --------------
 
     Ref
     ----
     Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
-
+    
     Example
     -------
     >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0, 40, pol='o') # args: (wl_um, theta_rad, T_degC, pol)
-    >>> bbo.n(0.6, 0.5*pi, 40, pol='e') # along z-axis, it is pure e-ray.
-    >>> bbo.n(0.6, 0*pi, 40, pol='e') # for theta = 0 rad, it corresponds to o-ray.
-    >>> bbo.GVD(0.6, 0.3*pi, 40, pol='e')
-    >>> bbo.pmAngles_sfg(1.064, 1.064, 40, deg=True)
-    {'ooe': {'theta': [22.895], 'phi': None},
-     'eeo': {'theta': [], 'phi': None},
-     'oee': {'theta': [32.575], 'phi': None},
-     'eoe': {'theta': [32.575], 'phi': None},
-     'eoo': {'theta': [], 'phi': None},
-     'oeo': {'theta': [], 'phi': None}}
-
+    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",

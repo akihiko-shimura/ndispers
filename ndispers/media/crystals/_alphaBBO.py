@@ -16,23 +16,14 @@ class AlphaBBO(Medium):
     ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
-    Validity range
-    ---------------
-
-
     Ref
-    ----
+    ---
     https://www.castech.com/product/%CE%B1-BBO-90.html
 
-    Usage
-    ------
-    >>> abbo = ndispers.media.crystals.AlphaBBO()
-    >>> abbo.n(0.6, 0, pol='o') # for o-ray, n does not depend on theta.
-    >>> abbo.n(0.6, 0.5*pi, pol='e') # along z-axis, it is pure e-ray.
-    >>> abbo.n(0.6, 0.23*pi, pol='e')
-    >>> abbo.n(0.6, 0*pi, pol='e') # for theta = 0 rad, it corresponds to o-ray.
-    >>> abbo.GVD(0.6, 0.23*pi, pol='e')
-
+    Example
+    -------
+    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
+    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
     __slots__ = ["_AlphaBBO__plane", "_AlphaBBO__theta_rad", "_AlphaBBO__phi_rad",

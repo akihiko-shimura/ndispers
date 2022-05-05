@@ -24,6 +24,11 @@ class BetaBBO(Medium):
     ---
     Tamošauskas, Gintaras, et al. "Transmittance and phase matching of BBO crystal in the 3-5 μm range and its application for the characterization of mid-infrared laser pulses." Optical Materials Express 8.6 (2018): 1410-1418.
     dn/dT from Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+
+    Example
+    -------
+    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
+    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
