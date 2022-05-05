@@ -39,24 +39,29 @@ To look into the material information,
 >>> bbo.help
 β-BBO (β-Ba B_2 O_4) crystal
 
-    - Point group : 3m
+    - Point group : 3m  (C_{3v})
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 1.9 to 2.6 µm
 
     Sellmeier equation
-    ---------------------------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
+    ------------------
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) + dn/dT * (T - 20)  for i = o, e
     
     Validity range
     ---------------
     0.22 to 1.06 µm
 
     Ref
-    ----
-    Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
-    Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+    ---
+    - Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+    - Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+
+    Example
+    -------
+    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
+    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
 ```
 
 To compute refractive indices,
@@ -86,4 +91,4 @@ array([0.2, 0.4, 0.6, 0.8, 1. , 1.2, 1.4])
 array([1.89625189, 1.692713, 1.66892613, 1.66039556, 1.65560236, 1.65199986, 1.64874414])
 ```
 
-Complete [documentation](https://ndispers.readthedocs.io/en/latest/) is under construction.
+See [documentation](https://ndispers.readthedocs.io/en/latest/) for more features and examples.
