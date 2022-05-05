@@ -6,8 +6,8 @@ class AlphaBBO(Medium):
     """
     alpha-BBO (alpha-Ba B_2 O_4) crystal
 
-    - Point group : 3m
-    - Crystal system : Hexagonal
+    - Point group : 3m  (C_{3v})
+    - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
     - Tranparency range : 0.19 to 2.6 µm

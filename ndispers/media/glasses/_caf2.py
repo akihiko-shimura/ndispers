@@ -1,5 +1,4 @@
 import sympy
-from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, T
 from ndispers.helper import vars2
 

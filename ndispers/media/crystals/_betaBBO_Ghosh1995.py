@@ -1,5 +1,4 @@
 import sympy
-from sympy.utilities import lambdify
 from ndispers._baseclass import Medium, wl, phi, theta, T
 from ndispers.helper import vars2
 
@@ -7,7 +6,7 @@ class BetaBBO(Medium):
     """
     β-BBO (β-Ba B_2 O_4) crystal
 
-    - Point group : 3m
+    - Point group : 3m  (C_{3v})
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

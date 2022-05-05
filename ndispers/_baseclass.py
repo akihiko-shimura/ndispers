@@ -98,11 +98,11 @@ class Medium:
 
     def woa_theta_expr(self, pol):
         """ Sympy expression for polar walkoff angle """
-        return sympy.atan(- 1/self.n_expr(pol) * sympy.diff(self.n_expr(pol), theta))
+        return sympy.atan(- sympy.diff(self.n_expr(pol), theta) / self.n_expr(pol))
     
     def woa_phi_expr(self, pol):
         """ Sympy expression for azimuthal walkoff angle """
-        return sympy.atan(- 1/self.n_expr(pol) * sympy.diff(self.n_expr(pol), phi))
+        return sympy.atan(- sympy.diff(self.n_expr(pol), phi) / self.n_expr(pol))
     
     def dndT_expr(self, pol):
         """ Sympy expression for dn/dT """

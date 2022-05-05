@@ -6,7 +6,7 @@ class KTP(Medium):
     """
     KTP (K Ti O P O_4, Potassium Titanyl Phosphate) crystal
 
-    - Point group : mm2
+    - Point group : 2mm  (C_{2v})
     - Crystal system : Orthorhombic
     - Dielectric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis

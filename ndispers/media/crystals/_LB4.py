@@ -6,7 +6,7 @@ class LB4(Medium):
     """
     LB4 or LTB (Li_2 B_4 O_7, lithium tetraborate) crystal
 
-    - Point group : 4mm
+    - Point group : 4mm  (C_{4v})
     - Crystal system : Tetragonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
