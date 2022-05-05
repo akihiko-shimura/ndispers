@@ -6,7 +6,7 @@ class Calcite(Medium):
     """
     calcite (Ca C O_3) crystal
 
-    - Point group : \bar{3}m  (D_{3d})
+    - Point group : -3m  (D_{3d})
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
