@@ -25,9 +25,11 @@ class FusedSilica(Medium):
     - I. H. Malitson, "Interspecimen Comparison of the Refractive Index of Fused Silica" J. Opt. Soc. Am. 55 :1205-1209 (1965)
     - Rocha, A. C. P., et al. "Measurements of refractive indices and thermo-optical coefficients using a white-light Michelson interferometer." Applied optics 55.24 (2016): 6639-6643.
 
-    Examples
-    ---------
-    
+    Example
+    -------
+    >>> FS = nd.media.glasses.FusedSilica()
+    >>> FS.n(0.532, 25) # refractive index at 0.532µm and at 25 degC
+    array(1.46071764)
     
     """
     __slots__ = ["_B1", "_C1", "_B2", "_C2", "_B3", "_C3", "_dndT"]

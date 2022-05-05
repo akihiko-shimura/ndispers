@@ -24,22 +24,6 @@ class BetaBBO(Medium):
     ---
     Tamošauskas, Gintaras, et al. "Transmittance and phase matching of BBO crystal in the 3-5 μm range and its application for the characterization of mid-infrared laser pulses." Optical Materials Express 8.6 (2018): 1410-1418.
     dn/dT from Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
-
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Tamosauskas2018()
-    >>> bbo.n(0.6, 0, 40, pol='o') # args: (wl_um, theta_rad, T_degC, pol)
-    >>> bbo.n(0.6, 0.5*pi, 40, pol='e') # along z-axis, it is pure e-ray.
-    >>> bbo.n(0.6, 0*pi, 40, pol='e') # for theta = 0 rad, it corresponds to o-ray.
-    >>> bbo.GVD(0.6, 0.3*pi, 40, pol='e')
-    >>> bbo.pmAngles_sfg(1.064, 1.064, 40, deg=True)
-    {'ooe': {'theta': [22.895], 'phi': None},
-     'eeo': {'theta': [], 'phi': None},
-     'oee': {'theta': [32.575], 'phi': None},
-     'eoe': {'theta': [32.575], 'phi': None},
-     'eoo': {'theta': [], 'phi': None},
-     'oeo': {'theta': [], 'phi': None}}
-
     
     """
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",

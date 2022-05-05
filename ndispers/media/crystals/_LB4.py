@@ -27,10 +27,9 @@ class LB4(Medium):
     dn/dT : 0.436 to 0.644 µm, -40 to 60 degC
 
     Ref
-    ----
+    ---
     T. Sugawara, R. Komatsu, and S. Uda. "Linear and nonlinear optical properties of lithium tetraborate." Solid state communications 107.5 (1998): 233-237.
 
-    
     """
     __slots__ = ["_LB4__plane", "_LB4__theta_rad", "_LB4__phi_rad",
                  "_A_o", "_B_o", "_C_o", "_D_o", 
