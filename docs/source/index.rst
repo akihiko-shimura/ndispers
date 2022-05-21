@@ -40,7 +40,7 @@ which is important for reasearchers, engineers and students.
 
 This open-source Python project, ndispers, was created for those reasearchers, engineers and students 
 who want to study and employ in depth nonlinear/anisotropic crystals and dispersive media, 
-and is intended to be built in their numerical simulation programs.
+and is intended to be built in their numerical simulation programs and Jupyter notebooks.
 At the moment of this writing, the variety of crystals and glasses available is limited, 
 but you can request or contribute on GitHub to add more, new crystals and methods.
 
