@@ -10,6 +10,7 @@
 of various crystals and glasses used in nonlinear/ultrafast optics. 
 It is based on Sellmeier equartions :math:`n(\lambda)` and thermo-optic coefficients (*dn/dT*) 
 reported in literature.
+
 As an example, calculation of refractive indices of :math:`\beta`-BBO crystal 
 as a function of wavelength of light, 
 when the polar (:math:`\theta``) angle is :math:`\pi/2` radians,
@@ -18,7 +19,6 @@ and the light polarization is extraordinary,
 is written as following lines of code::
 
    >>> import ndispers
-   >>> import numpy as np
    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
    >>> wl_ar = np.arange(0.2, 1.2, 0.2) # in micrometer
    >>> bbo.n(wl_ar, 0.5*np.pi, 40, pol='e')
@@ -29,10 +29,20 @@ is written as following lines of code::
 General Overview
 ----------------
 
+There are some softwares available for nonlinear optics. 
+Probably the most famous and extensive one is SNLO by Arlee V. Smith (https://as-photonics.com/products/snlo/). 
+Other web applications exist to calculate refractive indices simply as a function of wavelength (https://refractiveindex.info/) 
+or phase-matching conditions of uniaxial crystals (http://toolbox.lightcon.com/).
+These apps are easy and quick to use, but most of them are *not open source* and *black box*; 
+users could not look into how it was calculated and often what paper it is based on 
+and are not allowed to extend the software by themselves for their particular purpose,
+which is important for reasearchers, engineers and students.
 
-
-
-
+This open-source Python project, ndispers, was created for those reasearchers, engineers and students 
+who want to study and employ in depth nonlinear/anisotropic crystals and dispersive media, 
+and is intended to be built in their numerical simulation programs.
+At the moment of writing this writing, the variety of crystals and glasses available is limited, 
+but you can request or develope by yourself to add more new crystals and methods.
 
 .. toctree::
    :maxdepth: 2
