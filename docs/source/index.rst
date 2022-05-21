@@ -19,8 +19,9 @@ and the light polarization is extraordinary,
 is written as following lines of code::
 
    >>> import ndispers
+   >>> import numpy as np
    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-   >>> wl_ar = np.arange(0.2, 1.2, 0.2) # in micrometer
+   >>> wl_ar = np.arange(0.2, 1.2, 0.2) # wavelength in micrometer
    >>> bbo.n(wl_ar, 0.5*np.pi, 40, pol='e')
    array([1.70199324, 1.56855192, 1.55177472, 1.54599759, 1.54305826])
 
