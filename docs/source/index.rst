@@ -34,12 +34,12 @@ Probably the most famous and extensive one is SNLO by Arlee V. Smith (https://as
 Other web applications exist to calculate refractive indices simply as a function of wavelength (https://refractiveindex.info/) 
 or phase-matching conditions of uniaxial crystals (http://toolbox.lightcon.com/).
 These apps are easy and quick to use, but most of them are *not open source* and *black box*; 
-users could not look into how it was calculated and often what paper it is based on 
+users could not look into how it was calculated and often what paper it is based on, 
 and are not allowed to extend the software by themselves for their particular purpose,
 which is important for reasearchers, engineers and students.
 
 This open-source Python project, ndispers, was created for those reasearchers, engineers and students 
-who want to study and employ in depth nonlinear/anisotropic crystals and dispersive media, 
+who want to study and employ *in depth* nonlinear/anisotropic crystals and dispersive media, 
 and is intended to be built in their numerical simulation programs and Jupyter notebooks.
 At the moment of this writing, the variety of crystals and glasses available is limited, 
 but you can request or contribute on GitHub to add more, new crystals and methods.
