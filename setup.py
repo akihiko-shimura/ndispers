@@ -6,7 +6,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name="ndispers",
-    version='0.2.5',
+    version='0.2.6',
     packages=find_packages(),
 
     author='Akihiko Shimura',
@@ -18,7 +18,8 @@ setup(
 
     install_requires=['numpy', 
                       'scipy', 
-                      'sympy'],
+                      'sympy',
+                      'mpmath'],
 
     classifiers=[
         'License :: OSI Approved :: MIT License',

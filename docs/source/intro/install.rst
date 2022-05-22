@@ -19,7 +19,7 @@ To uninstall::
 
 To update version::
 
-    $ pip uninstall -U ndispers
+    $ pip install -U ndispers
 
 
 Testing your installation

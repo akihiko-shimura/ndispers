@@ -3,7 +3,7 @@ base class for medium object - _baseclass.py
 """
 import sympy
 from sympy.utilities import lambdify
-wl = sympy.Symbol('wl')
+wl = sympy.Symbol('lambda')
 phi = sympy.Symbol('phi')
 theta = sympy.Symbol('theta')
 T = sympy.Symbol('T')
