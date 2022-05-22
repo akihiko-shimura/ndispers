@@ -48,6 +48,8 @@ but you can request or contribute on GitHub to add more, new crystals and method
    :maxdepth: 2
    :caption: Contents:
 
+   User guide <intro/index.rst>
+
 
 
 Indices and tables
