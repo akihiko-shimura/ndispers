@@ -3,8 +3,6 @@
 Installation
 ============
 
-.. include:: ../substitutions.sub
-
 ndispers works on Python_ 3.7 or higher.
 
 You can install it using pip_::
@@ -25,7 +23,7 @@ Testing your installation
 
 You can check that ndispers is working correctly by starting up a python shell.
 
-.. ipython::
+.. code::
 
     In [1]: import ndispers as nd
 
