@@ -17,20 +17,24 @@ To uninstall::
 
     $ pip uninstall ndispers
 
+To update version::
+
+    $ pip uninstall -U ndispers
+
 
 Testing your installation
 -------------------------
 
 You can check that ndispers is working correctly by starting up a python shell.
 
-.. code::
+.. code-block:: python
 
     In [1]: import ndispers as nd
 
     In [2]: nd.media.crystals.BetaBBO_Eimerl1987()
     Out[2]: <ndispers.media.crystals._betaBBO_Eimerl1987.BetaBBO at 0x105368d50>
 
-Here you can see that s beta-BBO object is created (Please do not forget that in In[2] '()' is needed to get a mediaum object).
+Here you can see that beta-BBO object is created (Please do not forget that in In[2] :code:`()` is needed to get a mediaum object).
 If it fails, feel free to open an issue in `issue tracker`_.
 
 .. note::
