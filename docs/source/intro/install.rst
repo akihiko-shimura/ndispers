@@ -39,7 +39,7 @@ If it fails, feel free to open an issue in `issue tracker`_.
 
 .. note::
 
-    It is strongly reccomended to use IPython_ shell or JupyterLab_ because they have `Tab completion`_ function, 
+    It is strongly reccomended using IPython_ shell or JupyterLab_ because they have `Tab completion`_ function, 
     which is very useful to search for available crystals and glasses.
 
 

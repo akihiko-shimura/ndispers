@@ -9,5 +9,5 @@ This section introduces users to basic usage of ndispers package.
     :maxdepth: 2
 
     install
-
+    basic
     

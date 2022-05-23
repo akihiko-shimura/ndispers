@@ -101,10 +101,10 @@ class BetaBBO(Medium):
     
     def n(self, wl_um, theta_rad, T_degC, pol='o'):
         """
-        Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
+        Refractive index as a function of wavelength, theta or phi angles for each eigen polarization of light.
 
         input
-        ------
+        -----
         wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
@@ -112,7 +112,7 @@ class BetaBBO(Medium):
 
         return
         -------
-        Refractive index, float or array_like
+        numpy.array
         """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 

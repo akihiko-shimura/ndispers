@@ -19,7 +19,7 @@ def sub(module):
     n_y_list = [1.6582, 1.6346, 1.6065, 1.5905]
     n_z_list = [1.6792, 1.6509, 1.6212, 1.6055]
 
-    T_degC = 50.0
+    T_degC = 20.0
     print("T=%.1f degC"  % T_degC)
 
     print("-"*80)
