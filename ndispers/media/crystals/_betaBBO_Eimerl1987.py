@@ -1,8 +1,9 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta, T
+from ndispers._baseclass import wl, phi, theta, T
+from ndispers.groups import Uniax_neg_3m
 from ndispers.helper import vars2
 
-class BetaBBO(Medium):
+class BetaBBO(Uniax_neg_3m):
     """
     β-BBO (β-Ba B_2 O_4) crystal
 
@@ -22,8 +23,14 @@ class BetaBBO(Medium):
 
     Ref
     ---
+    Sellmeier equation:
     - Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+
+    Thermo-optic coefficients:
     - Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+
+    Nonlinear optical coefficients:
+    - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
 
     Example
     -------
@@ -34,7 +41,8 @@ class BetaBBO(Medium):
     __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
                  "_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e",
-                 "_dndT_o", "_dndT_e"]
+                 "_dndT_o", "_dndT_e", 
+                 "_d31_1064shg", "_d22_1064shg"]
                  
     def __init__(self):
         super().__init__()
@@ -56,6 +64,9 @@ class BetaBBO(Medium):
         # dn/dT
         self._dndT_o = -16.6e-6 #/degC
         self._dndT_e = -9.3e-6 #/degC
+        # Second-order nonlinear optical coefficients
+        self._d31_1064shg = 0.04 #pm/V
+        self._d22_1064shg = 2.2 #pm/V
     
     @property
     def plane(self):
@@ -155,4 +166,13 @@ class BetaBBO(Medium):
     
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)
+    
+    #------------------------------------------------------------------------------------------
+    # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule
+    #------------------------------------------------------------------------------------------
+    def d22_sfg(self, wl1o, wl2o, T_degC):
+        return super().d22_sfg(wl1o, wl2o, T_degC, delta22=self.delta22(self._d22_1064shg, 1.064, 1.064, T_degC))
+
+    def d31_sfg(self, wl1o, wl2o, T_degC):
+        return super().d31_sfg(wl1o, wl2o, T_degC, delta31=self.delta31(self._d31_1064shg, 1.064, 1.064, T_degC))
     

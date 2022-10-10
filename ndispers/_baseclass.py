@@ -43,21 +43,27 @@ class Medium:
         self._cached_func_dict['dndT_expr'] = {'o': 0, 'e': 0}
     
     def clear(self):
-        """ clear cached functions """
+        """clear cached functions"""
         self.__init__()
 
     @property
     def help(self):
         print(self.__doc__)
+
     @property
     def plane(self):
         return self.__plane
+
     @property
     def theta_rad(self):
         return self.__theta_rad
+        
     @property
     def phi_rad(self):
         return self.__phi_rad
+    
+    def __repr__(self):
+        return f"{self.__class__}\n  plane: {self.plane}\n  theta_rad: {self.theta_rad}\n  phi_rad: {self.phi_rad}"
 
     def n_expr(self, pol):
         return 1.0
@@ -292,3 +298,5 @@ class Medium:
         L_um = L_mm * 1e3
         t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3) * L_um
         return (np.sin(t)/t)**2
+    
+ 

@@ -1,8 +1,9 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta, T
+from ndispers._baseclass import wl, phi, theta, T
+from ndispers.groups import Uniax_neg_3m
 from ndispers.helper import vars2
 
-class BetaBBO(Medium):
+class BetaBBO(Uniax_neg_3m):
     """
     β-BBO (β-Ba B_2 O_4) crystal
 
@@ -28,7 +29,11 @@ class BetaBBO(Medium):
 
     Ref
     ---
-    Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for β-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
+    Sellmeier equation:
+    - Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for β-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
+
+    Nonlinear optical coefficients:
+    - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
 
     Example
     -------
@@ -40,7 +45,8 @@ class BetaBBO(Medium):
                  "_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E_e",
                  "_F_o", "_G_o", "_H_o", "_I_o",
-                 "_F_e", "_G_e", "_H_e", "_I_e"]
+                 "_F_e", "_G_e", "_H_e", "_I_e",
+                 "_d31_1064shg", "_d22_1064shg"]
                  
     def __init__(self):
         super().__init__()
@@ -76,6 +82,9 @@ class BetaBBO(Medium):
         self._H_e = 0.4408e-5
         self._I_o = -1.5287e-5
         self._I_e = -1.2749e-5
+        # Second-order nonlinear optical coefficients
+        self._d31_1064shg = 0.04 #pm/V
+        self._d22_1064shg = 2.2 #pm/V
     
     @property
     def plane(self):
@@ -187,3 +196,12 @@ class BetaBBO(Medium):
     
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)
+    
+    #------------------------------------------------------------------------------------------
+    # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule
+    #------------------------------------------------------------------------------------------
+    def d22_sfg(self, wl1o, wl2o, T_degC):
+        return super().d22_sfg(wl1o, wl2o, T_degC, delta22=self.delta22(self._d22_1064shg, 1.064, 1.064, T_degC))
+
+    def d31_sfg(self, wl1o, wl2o, T_degC):
+        return super().d31_sfg(wl1o, wl2o, T_degC, delta31=self.delta31(self._d31_1064shg, 1.064, 1.064, T_degC))
