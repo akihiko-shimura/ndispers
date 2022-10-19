@@ -33,10 +33,10 @@ class KTP(Medium):
     In the current version, biaxial crystals are limited to the principal dielectric planes, 
     xy, yz or zx planes. In other words, a wavevector of light must be within any one of 
     the three planes. Correspondence between principal plane, polarization orientations of 
-    o-ray and e-ray, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
+    o-wave and e-wave, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
     to z and x principal axes, respectively, are shown in the table below.
 
-    plane  |  o-ray  |  e-ray  |  theta  |   phi   |
+    plane  |  o-wave  |  e-wave  |  theta  |   phi   |
     ================================================
     xy     |    z    |    xy   |   pi/2  |   var   |
     yz     |    x    |    yz   |   var   |   pi/2  |
@@ -135,12 +135,12 @@ class KTP_xy(KTP):
 
     def n_o_expr(self):
         """ sympy expresssion, 
-        dispersion formula for o-ray polarization for a given principal plane """
+        dispersion formula for o-wave polarization for a given principal plane """
         return super().n_z_expr()
     
     def n_e_expr(self):
         """ sympy expresssion, 
-        dispersion formula for e-ray polarization for a given principal plane """
+        dispersion formula for e-wave polarization for a given principal plane """
         return super().n_x_expr() * super().n_y_expr() / sympy.sqrt( super().n_x_expr()**2 * sympy.cos(phi)**2 + super().n_y_expr()**2 * sympy.sin(phi)**2 )
 
     def n_expr(self, pol):
@@ -240,12 +240,12 @@ class KTP_yz(KTP):
 
     def n_o_expr(self):
         """ sympy expresssion, 
-        dispersion formula for o-ray polarization for yx principal plane """
+        dispersion formula for o-wave polarization for yx principal plane """
         return super().n_x_expr()
     
     def n_e_expr(self):
         """ sympy expresssion, 
-        dispersion formula for e-ray polarization for yz principal plane """
+        dispersion formula for e-wave polarization for yz principal plane """
         return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.sin(theta)**2 + super().n_z_expr()**2 * sympy.cos(theta)**2 )
 
     def n_expr(self, pol):
@@ -345,12 +345,12 @@ class KTP_zx(KTP):
 
     def n_o_expr(self):
         """ sympy expresssion, 
-        dispersion formula for o-ray polarization for zx principal plane """
+        dispersion formula for o-wave polarization for zx principal plane """
         return super().n_y_expr()
     
     def n_e_expr(self):
         """ sympy expresssion, 
-        dispersion formula for e-ray polarization for zx principal plane """
+        dispersion formula for e-wave polarization for zx principal plane """
         return super().n_z_expr() * super().n_x_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(theta)**2 + super().n_x_expr()**2 * sympy.sin(theta)**2 )
 
     def n_expr(self, pol):

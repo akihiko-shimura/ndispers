@@ -15,13 +15,13 @@ class Calcite(Medium):
     Sellmeier equation
     ------------------
     n(wl) 
-    = sqrt(1 + A1_o * wl**2 / (wl**2 - B1_o**2) + A2_o * wl**2 / (wl**2 - B2_o**2) + A3_o * wl**2 / (wl**2 - B3_o**2) + A4_o * wl**2 / (wl**2 - B4_o**2)) for o-ray
-    = sqrt(1 + A1_e * wl**2 / (wl**2 - B1_e**2) + A2_e * wl**2 / (wl**2 - B2_e**2) + A3_e * wl**2 / (wl**2 - B3_e**2)) for e-ray
+    = sqrt(1 + A1_o * wl**2 / (wl**2 - B1_o**2) + A2_o * wl**2 / (wl**2 - B2_o**2) + A3_o * wl**2 / (wl**2 - B3_o**2) + A4_o * wl**2 / (wl**2 - B4_o**2)) for o-wave
+    = sqrt(1 + A1_e * wl**2 / (wl**2 - B1_e**2) + A2_e * wl**2 / (wl**2 - B2_e**2) + A3_e * wl**2 / (wl**2 - B3_e**2)) for e-wave
     
     Validity range
     ---------------
-    0.2 to 2.2 µm for o-ray
-    0.2 to 3.3 µm for e-ray
+    0.2 to 2.2 µm for o-wave
+    0.2 to 3.3 µm for e-wave
 
     Ref
     ----
@@ -83,11 +83,11 @@ class Calcite(Medium):
         print(vars2(self))
     
     def n_o_expr(self):
-        """ Sympy expression, dispersion formula for o-ray """
+        """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt(1 + self._A1_o * wl**2 / (wl**2 - self._B1_o**2) + self._A2_o * wl**2 / (wl**2 - self._B2_o**2) + self._A3_o * wl**2 / (wl**2 - self._B3_o**2) + self._A4_o * wl**2 / (wl**2 - self._B4_o**2))
     
     def n_e_expr(self):
-        """ Sympy expression, dispersion formula for theta=90 deg e-ray """
+        """ Sympy expression, dispersion formula for theta=90 deg e-wave """
         return sympy.sqrt(1 + self._A1_e * wl**2 / (wl**2 - self._B1_e**2) + self._A2_e * wl**2 / (wl**2 - self._B2_e**2) + self._A3_e * wl**2 / (wl**2 - self._B3_e**2))
 
     def n_expr(self, pol):

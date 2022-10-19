@@ -11,7 +11,7 @@ class BetaBBO(Uniax_neg_3m):
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 to 2.6 µm
+    - Tranparency range : 0.19 µm to 2.6 µm
 
     Sellmeier equation
     ------------------
@@ -107,11 +107,11 @@ class BetaBBO(Uniax_neg_3m):
         print(vars2(self))
     
     def _n_T20_o_expr(self):
-        """ Sympy expression, dispersion formula for o-ray at 20degC """
+        """ Sympy expression, dispersion formula for o-wave at 20degC """
         return sympy.sqrt(self._A_o + self._B_o/(wl**2 - self._C_o) + self._D_o/(wl**2 - self._E_o))
     
     def _n_T20_e_expr(self):
-        """ Sympy expression, dispersion formula for theta=90 deg e-ray at 20degC """
+        """ Sympy expression, dispersion formula for theta=90 deg e-wave at 20degC """
         return sympy.sqrt(self._A_e + self._B_e/(wl**2 - self._C_e) + self._D_e/(wl**2 - self._E_e))
     
     def dndT_o_expr(self):

@@ -3,32 +3,29 @@ from ndispers._baseclass import wl, phi, theta, T
 from ndispers.groups import Uniax_neg_3m
 from ndispers.helper import vars2
 
-class BetaBBO(Uniax_neg_3m):
+class SLN(Uniax_neg_3m):
     """
-    β-BBO (β-Ba B_2 O_4) crystal
+    1% MgO-doped stoichiometric Lithium niobate (Li Nb O_3) crystal
 
     - Point group : 3m  (C_{3v})
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.19 µm to 2.6 µm
+    - Tranparency range : 0.35 µm to 5.2 µm
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
-
-    Thermo-optic coefficient
-    ------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i  for i = o, e
-    R_i = wl**2/(wl**2 - wl0_i**2), where wl0_i = 0.0652 for i = o or wl0 = 0.0730  for i = e
+    n(wl) = sqrt(a1_i + b1 * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - a5_i**2) - a6_i * wl**2) for i=o,e
+    f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
 
     Ref
+    ---
+    Gayer, O., et al. "Temperature and wavelength dependent refractive index equations for MgO-doped congruent and stoichiometric LiNbO3." Applied Physics B 91.2 (2008): 343-348.
+    https://www.opt-oxide.com/products/sln/
+
+    Note
     ----
-    Sellmeier equation:
-    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
-    
-    Nonlinear optical coefficients:
-    - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
+    Sellmeier equation only for e-wave is given.
 
     Example
     -------
@@ -36,42 +33,34 @@ class BetaBBO(Uniax_neg_3m):
     >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
-    __slots__ = ["_BetaBBO__plane", "_BetaBBO__theta_rad", "_BetaBBO__phi_rad",
-                 "_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
-                 "_A_e", "_B_e", "_C_e", "_D_e", "_E_e",
-                 "_G_o", "_H_o", "_R_o",
-                 "_G_e", "_H_e", "_R_e",
-                 "_d31_1064shg", "_d22_1064shg"]
+    __slots__ = ["_LN__plane", "_LN__theta_rad", "_LN__phi_rad",
+                 "_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
+                 "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
+                 "_b1_o", "_b2_o", "_b3_o", "_b4_o",
+                 "_b1_e", "_b2_e", "_b3_e", "_b4_e"]
                  
     def __init__(self):
         super().__init__()
-        self._BetaBBO__plane = 'arb'
-        self._BetaBBO__theta_rad = 'var'
-        self._BetaBBO__phi_rad = 'arb'
+        self._LN__plane = 'arb'
+        self._LN__theta_rad = 'var'
+        self._LN__phi_rad = 'arb'
 
         """ Constants of dispersion formula """
-        # For ordinary ray
-        self._A_o = 1.7018379
-        self._B_o = 1.0357554
-        self._C_o = 0.018003440
-        self._D_o = 1.2479989
-        self._E_o = 91
-        # For extraordinary ray
-        self._A_e = 1.5920433
-        self._B_e = 0.7816893
-        self._C_e = 0.016067891
-        self._D_e = 0.8403893
-        self._E_e = 91
-        # dn/dT
-        self._G_o = -19.3007e-6
-        self._G_e = -141.421e-6
-        self._H_o = -34.9683e-6
-        self._H_e = 110.8630e-6
-        self._R_o = wl**2/(wl**2 - 0.0652**2)
-        self._R_e = wl**2/(wl**2 - 0.0730**2)
+        # 1% MgO-doped SLN
+        self._a1_o = 5.078
+        self._a2_o = 0.0964
+        self._a3_o = 0.2065
+        self._a4_o = 61.16
+        self._a5_o = 10.55
+        self._a6_o = 1.59e-2
+        self._b1_o = 4.677e-7
+        self._b2_o = 7.822e-8
+        self._b3_o = -2.653e-8
+        self._b4_o = 1.096e-4
+
         # Second-order nonlinear optical coefficients
-        self._d31_1064shg = 0.04 #pm/V
-        self._d22_1064shg = 2.2 #pm/V
+        self._d31_1064shg = 4.4 #pm/V
+        self._d22_1064shg = 25 #pm/V
     
     @property
     def plane(self):
@@ -80,11 +69,11 @@ class BetaBBO(Uniax_neg_3m):
     @property
     def theta_rad(self):
         return self._BetaBBO__theta_rad
-        
+
     @property
     def phi_rad(self):
         return self._BetaBBO__phi_rad
-    
+
     @property
     def symbols(self):
         return [wl, theta, phi, T]
@@ -93,54 +82,42 @@ class BetaBBO(Uniax_neg_3m):
     def constants(self):
         print(vars2(self))
     
-    def _n_T20_o_expr(self):
-        """ Sympy expression, dispersion formula for o-wave at 20degC """
-        return sympy.sqrt(self._A_o + self._B_o / (1 - self._C_o/wl**2) + self._D_o/(1 - self._E_o/wl**2))
-    
-    def _n_T20_e_expr(self):
-        """ Sympy expression, dispersion formula for theta=90 deg e-wave at 20degC """
-        return sympy.sqrt(self._A_e + self._B_e / (1 - self._C_e/wl**2) + self._D_e/(1 - self._E_e/wl**2))
-    
-    def dndT_o_expr(self):
-        return (self._G_o * self._R_o + self._H_o * self._R_o**2) / (2*self._n_T20_o_expr())
-    
-    def dndT_e_expr(self):
-        return (self._G_e * self._R_e + self._H_e * self._R_e**2) / (2*self._n_T20_e_expr())
-    
-    def n_o_expr(self):
-        return self._n_T20_o_expr() + self.dndT_o_expr() * (T - 20)
-    
     def n_e_expr(self):
-        return self._n_T20_e_expr() + self.dndT_e_expr() * (T - 20)
+        """ Sympy expression, dispersion formula for o-wave """
+        return sympy.sqrt( self._a1_e + self._b1_e * self.f_expr() + \
+            (self._a2_e + self._b2_e * self.f_expr()) / (wl**2 - (self._a3_e + self._b3_e * self.f_expr())**2) + \
+                (self._a4_e * + self._b4_e * self.f_expr()) / (wl**2 - self._a5_e**2) - self._a6_e * wl**2 )
+
+    def f_expr(self):
+        return (T - 24.5) * (T + 570.82)
 
     def n_expr(self, pol):
         """"
         Sympy expression, 
-        dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'.
+        dispersion formula,
+        only for e-wave
 
-        n(theta) = n_e / sqrt( sin(theta)**2 + (n_e/n_o)**2 * cos(theta)**2 )
         """
-        if pol == 'o':
-            return self.n_o_expr()
-        elif pol == 'e':
-            return self.n_e_expr() / sympy.sqrt( sympy.sin(theta)**2 + (self.n_e_expr()/self.n_o_expr())**2 * sympy.cos(theta)**2 )
+        if pol == 'e':
+            return self.n_e_expr()
         else:
-            raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
+            raise ValueError("pol = '%s' must be 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, T_degC, pol='o'):
+    def n(self, wl_um, theta_rad, T_degC, pol='e'):
         """
-        Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
+        Refractive index as a function of wavelength, theta or phi angles for each eigen polarization of light.
 
         input
-        ------
+        -----
         wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
         T_degC    :  float or array_like, temperature of crystal in degree C.
-        pol       :  {'o', 'e'}, optional, polarization of light
+        pol       :  {'e'}, optional, polarization of light
 
         return
         -------
-        Refractive index, float or array_like
+        numpy.array
+        
         """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
@@ -183,7 +160,7 @@ class BetaBBO(Uniax_neg_3m):
     
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)
-
+    
     #------------------------------------------------------------------------------------------
     # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule
     #------------------------------------------------------------------------------------------

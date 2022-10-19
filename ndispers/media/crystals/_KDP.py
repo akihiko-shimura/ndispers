@@ -73,11 +73,11 @@ class KDP(Medium):
         return [wl, theta, phi]
     
     def n_o_expr(self):
-        """ Sympy expression, dispersion formula for o-ray """
+        """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o / (wl**2 - 400))
     
     def n_e_expr(self):
-        """ Sympy expression, dispersion formula for theta=90 deg e-ray """
+        """ Sympy expression, dispersion formula for theta=90 deg e-wave """
         return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e / (wl**2 - 400))
 
     def n_expr(self, pol):

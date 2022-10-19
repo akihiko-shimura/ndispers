@@ -60,13 +60,13 @@ class LB4(Medium):
         self._C_e = 0.113483**2
         self._D_e = 0.012813
         # dn/dT coefficients
-        # for o-ray
+        # for o-wave
         self._At_o = 1.893e-5 #1/K
         self._Bt_o = -88.17e-6 #1/(µm*K)
         self._Ct_o = 1.497e-4 #1/(µm^2*K)
         self._Dt_o = -8.643e-5 #1/(µm^3*K)
         self._Et_o = -2.55e-8 #1/(K^2)
-        # for e-ray
+        # for e-wave
         self._At_e = 1.297e-5 #1/K
         self._Bt_e = -45.50e-6 #1/(µm*K)
         self._Ct_e = 0.714e-4 #1/(µm^2*K)
@@ -101,11 +101,11 @@ class LB4(Medium):
         return self._At_e + self._Bt_e * wl + self._Ct_e * wl**2 + self._Dt_e * wl**3 + self._Et_e * (T - 25)
     
     def n_o_expr(self):
-        """ Sympy expression, dispersion formula for o-ray """
+        """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2) + self.dndT_o_expr() * (T - 25)
     
     def n_e_expr(self):
-        """ Sympy expression, dispersion formula for theta=90 deg e-ray """
+        """ Sympy expression, dispersion formula for theta=90 deg e-wave """
         return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2) + self.dndT_e_expr() * (T - 25)
 
     def n_expr(self, pol):

@@ -43,7 +43,7 @@ To look into the material information,
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 1.9 to 2.6 µm
+    - Tranparency range : 0.19 µm to 2.6 µm
 
     Sellmeier equation
     ------------------
