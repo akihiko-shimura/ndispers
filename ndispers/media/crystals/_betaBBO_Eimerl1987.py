@@ -124,6 +124,7 @@ class BetaBBO(Uniax_neg_3m):
         return
         -------
         numpy.array
+        
         """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 

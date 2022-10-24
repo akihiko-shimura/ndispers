@@ -26,4 +26,6 @@ from ._KDP import KDP
 
 from ._KTP import KTP_xy, KTP_yz, KTP_zx
 
+from ._KBBF_Li2016 import KBBF
+
 from ._calcite import Calcite

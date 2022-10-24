@@ -107,6 +107,7 @@ class CLBO(Medium):
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'.
 
         n(theta) = n_e / sqrt( sin(theta)**2 + (n_e/n_o)**2 * cos(theta)**2 )
+        
         """
         if pol == 'o':
             return self.n_o_expr()
@@ -129,6 +130,7 @@ class CLBO(Medium):
         return
         -------
         Refractive index, float or array_like
+
         """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 

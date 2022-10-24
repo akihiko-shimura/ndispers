@@ -160,17 +160,20 @@ class LBO_xy(LBO):
 
     def n_o_expr(self):
         """ sympy expresssion, 
-        dispersion formula for o-wave polarization for a given principal plane """
+        dispersion formula for o-wave polarization for a given principal plane
+        """
         return super().n_z_expr()
     
     def n_e_expr(self):
         """ sympy expresssion, 
-        dispersion formula for e-wave polarization for a given principal plane """
+        dispersion formula for e-wave polarization for a given principal plane
+        """
         return super().n_x_expr() * super().n_y_expr() / sympy.sqrt( super().n_x_expr()**2 * sympy.cos(phi)**2 + super().n_y_expr()**2 * sympy.sin(phi)**2 )
 
     def n_expr(self, pol):
         """ sympy expresssion, 
-        dispersion formula for a given polarization """
+        dispersion formula for a given polarization
+        """
         if pol == 'o':
             return self.n_o_expr()
         elif pol == 'e':
@@ -192,6 +195,7 @@ class LBO_xy(LBO):
         return
         -------
         Refractive index, float or array_like
+
         """
         return super().n(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
@@ -265,17 +269,20 @@ class LBO_yz(LBO):
 
     def n_o_expr(self):
         """ sympy expresssion, 
-        dispersion formula for o-wave polarization for yx principal plane """
+        dispersion formula for o-wave polarization for yx principal plane
+        """
         return super().n_x_expr()
     
     def n_e_expr(self):
         """ sympy expresssion, 
-        dispersion formula for e-wave polarization for yz principal plane """
+        dispersion formula for e-wave polarization for yz principal plane
+        """
         return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.sin(theta)**2 + super().n_z_expr()**2 * sympy.cos(theta)**2 )
 
     def n_expr(self, pol):
         """ sympy expresssion, 
-        dispersion formula for a given polarization """
+        dispersion formula for a given polarization
+        """
         if pol == 'o':
             return self.n_o_expr()
         elif pol == 'e':
@@ -297,6 +304,7 @@ class LBO_yz(LBO):
         return
         -------
         Refractive index, float or array_like
+
         """
         return super().n(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
@@ -370,12 +378,14 @@ class LBO_zx(LBO):
 
     def n_o_expr(self):
         """ sympy expresssion, 
-        dispersion formula for o-wave polarization for zx principal plane """
+        dispersion formula for o-wave polarization for zx principal plane
+        """
         return super().n_y_expr()
     
     def n_e_expr(self):
         """ sympy expresssion, 
-        dispersion formula for e-wave polarization for zx principal plane """
+        dispersion formula for e-wave polarization for zx principal plane
+        """
         return super().n_z_expr() * super().n_x_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(theta)**2 + super().n_x_expr()**2 * sympy.sin(theta)**2 )
 
     def n_expr(self, pol):
@@ -402,6 +412,7 @@ class LBO_zx(LBO):
         return
         -------
         Refractive index, float or array_like
+        
         """
         return super().n(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
