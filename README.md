@@ -9,6 +9,7 @@ You can easily compute
 - Group velocity dispersion
 - Third-order dispersion
 - Walk-off angles
+- dn/dT values
 
 as a function of
 1. Wavelength of light
@@ -16,6 +17,12 @@ as a function of
 3. Temperature of crystal
 4. Polarization of light (ordinary- or extraordinary-ray)
 
+The crystals have nonlinear-optics methods:
+- Phase-mismacth, dk
+- Phase-matching angles
+- Phase-mathcing factor, sinc^2(dk*L/2)
+- Effective nonlinear coefficient, deff
+(In the latest publihsed version (v0.2.7), these methods are only for sum-frequency mixing, and deff method only for BetaBBO.)
 
 ## Installation
 
