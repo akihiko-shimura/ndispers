@@ -1,12 +1,13 @@
-from setuptools import setup, find_packages
 from codecs import open
+
+from setuptools import find_packages, setup
 
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name="ndispers",
-    version='0.2.6',
+    version='0.2.7',
     packages=find_packages(),
 
     author='Akihiko Shimura',
@@ -27,6 +28,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11'
         'Operating System :: OS Independent',
     ],
 )

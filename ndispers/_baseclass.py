@@ -269,7 +269,7 @@ class Medium:
 
     def pmFactor_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm):
         """
-        Phase-matching factor, sinc^2((0.5*dk*L)/(0.5*dk*L)), for sum-frequency generation (SFG).
+        Phase-matching factor, sin^2((0.5*dk*L)/(0.5*dk*L)), for sum-frequency generation (SFG).
 
         Parameters
         ----------

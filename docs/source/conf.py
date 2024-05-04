@@ -7,7 +7,7 @@ copyright = '2022, akihiko-shimura'
 author = ''
 
 release = '0.2'
-version = '0.2.5'
+version = '0.2.6'
 
 # -- General configuration
 
