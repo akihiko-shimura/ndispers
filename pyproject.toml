@@ -1,8 +1,43 @@
 [build-system]
-requires = ["flit_core >=3.7,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "ndispers"
-authors = [{name = "akihiko-shimura", email = "akhksh@gmail.com"}]
-dynamic = ["version", "description"]
+dynamic = ["version"]
+description = "Python package for calculating refractive index dispersion of various materials"
+readme = "README.md"
+license = ""
+authors = [
+    { name = "Akihiko Shimura", email = "akhksh@gmail.com" },
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "mpmath",
+    "numpy",
+    "scipy",
+    "sympy",
+]
+
+[project.urls]
+Homepage = "https://github.com/akihiko-shimura/ndispers"
+
+[tool.hatch.version]
+path = "ndispers/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/ndispers",
+]
+
+[tool.hatch.version]
+source = "vcs"

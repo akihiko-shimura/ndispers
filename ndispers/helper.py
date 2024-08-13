@@ -28,3 +28,8 @@ def fullWidth(x_ar, y_ar, threshold=0.5, N=1):
     x_3dB = x[idx_3dB]
     width_3dB = x_3dB[-1] - x_3dB[0]
     return width_3dB
+
+def peak_position(x_ar, y_ar, N=1):
+    x, y = resample(x_ar, y_ar, N=N)
+    idx_peak = np.argmax(y_ar)
+    return x_peak[idx_peak]

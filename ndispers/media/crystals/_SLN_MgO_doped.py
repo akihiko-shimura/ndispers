@@ -1,7 +1,9 @@
 import sympy
-from ndispers._baseclass import wl, phi, theta, T
+
+from ndispers._baseclass import T, phi, theta, wl
 from ndispers.groups import Uniax_neg_3m
 from ndispers.helper import vars2
+
 
 class SLN(Uniax_neg_3m):
     """
@@ -64,15 +66,15 @@ class SLN(Uniax_neg_3m):
     
     @property
     def plane(self):
-        return self._BetaBBO__plane
+        return self._LN__plane
 
     @property
     def theta_rad(self):
-        return self._BetaBBO__theta_rad
+        return self._LN__theta_rad
 
     @property
     def phi_rad(self):
-        return self._BetaBBO__phi_rad
+        return self._LN__phi_rad
 
     @property
     def symbols(self):
@@ -89,7 +91,7 @@ class SLN(Uniax_neg_3m):
                 (self._a4_e * + self._b4_e * self.f_expr()) / (wl**2 - self._a5_e**2) - self._a6_e * wl**2 )
 
     def f_expr(self):
-        return (T - 24.5) * (T + 570.82)
+        return (T - 24.5) * (T + 24.5 + 2 * 273.16)
 
     def n_expr(self, pol):
         """"
@@ -101,7 +103,7 @@ class SLN(Uniax_neg_3m):
         if pol == 'e':
             return self.n_e_expr()
         else:
-            raise ValueError("pol = '%s' must be 'e'" % pol)
+            raise ValueError("pol = '%s' must be 'e'. Sellmeier equation for pol='o' is not implemented for this module." % pol)
     
     def n(self, wl_um, theta_rad, T_degC, pol='e'):
         """
