@@ -24,7 +24,6 @@ The crystals have nonlinear-optics methods:
 - Phase-mathcing factor, sinc^2(dk*L/2)
 - Effective nonlinear coefficient, deff
 
-In the latest version v0.2.7, these methods are only for sum-frequency mixing, and deff method only for BetaBBO.
 
 ## Installation
 
