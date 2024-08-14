@@ -1,6 +1,18 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "ndispers/__init__.py"
+# source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/ndispers",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ndispers"]
 
 [project]
 name = "ndispers"
@@ -30,14 +42,3 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/akihiko-shimura/ndispers"
-
-[tool.hatch.version]
-path = "vcs"
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/ndispers",
-]
-
-[tool.hatch.version]
-source = "vcs"
