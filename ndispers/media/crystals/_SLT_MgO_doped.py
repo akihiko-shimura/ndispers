@@ -13,7 +13,7 @@ class SLT(Uniax_neg_3m):
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.35 µm to 6 µm
+    - Tranparency range : 0.28 µm to 5.6 µm
 
     Sellmeier equation
     ------------------
