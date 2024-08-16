@@ -34,7 +34,7 @@ pip install ndispers
 
 ## Simple example
 
-Firstly, make an object of β-BBO crystal.
+At first, make an object of β-BBO crystal.
 
 ```python
 >>> import ndispers as nd
@@ -72,7 +72,7 @@ To look into the material information,
     >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
 ```
 
-To compute refractive indices,
+To compute a refractive index,
 
 ```python
 >>> bbo.n(0.532, 0, 25, pol='o')
