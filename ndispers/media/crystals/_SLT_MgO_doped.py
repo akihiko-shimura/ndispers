@@ -104,13 +104,13 @@ class SLT(Uniax_neg_3m):
         """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt( self._a1_o + self._b1_o * self.f_expr() + \
             (self._a2_o + self._b2_o * self.f_expr()) / (wl**2 - (self._a3_o + self._b3_o * self.f_expr())**2) + \
-                (self._a4_o * + self._b4_o * self.f_expr()) / (wl**2 - (self._a5_o + self._b5_o * self.f_expr())**2) - self._a6_o * wl**2 )
+                (self._a4_o + self._b4_o * self.f_expr()) / (wl**2 - (self._a5_o + self._b5_o * self.f_expr())**2) - self._a6_o * wl**2 )
                 
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt( self._a1_e + self._b1_e * self.f_expr() + \
             (self._a2_e + self._b2_e * self.f_expr()) / (wl**2 - (self._a3_e + self._b3_e * self.f_expr())**2) + \
-                (self._a4_e * + self._b4_e * self.f_expr()) / (wl**2 - (self._a5_e + self._b5_e * self.f_expr())**2) - self._a6_e * wl**2 )
+                (self._a4_e + self._b4_e * self.f_expr()) / (wl**2 - (self._a5_e + self._b5_e * self.f_expr())**2) - self._a6_e * wl**2 )
 
     def f_expr(self):
         return (T - 24.5) * (T + 24.5 + 2 * 273.16)
