@@ -19,7 +19,7 @@ name = "ndispers"
 dynamic = ["version"]
 description = "Python package for calculating refractive index dispersion of various materials"
 readme = "README.md"
-license = ""
+license = {file = "LICENSE"}
 authors = [
     { name = "Akihiko Shimura", email = "akhksh@gmail.com" },
 ]
