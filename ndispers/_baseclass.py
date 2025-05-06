@@ -3,19 +3,23 @@ base class for medium object - _baseclass.py
 """
 import sympy
 from sympy.utilities import lambdify
+
 wl = sympy.Symbol('lambda')
 phi = sympy.Symbol('phi')
 theta = sympy.Symbol('theta')
 T = sympy.Symbol('T')
 
 from math import pi
+
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
 c_umfs = c_ms * 1e-9  #(µm/fs)
 
-import numpy as np
 from collections import defaultdict
 
-from .helper import (returnShape, arg_signchange)
+import numpy as np
+
+from .helper import arg_signchange, returnShape
+
 
 class Medium:
     """
@@ -215,7 +219,7 @@ class Medium:
         dk_sfg = 2*pi * (n3/wl3 - n2/wl2 - n1/wl1)
         return dk_sfg
 
-    def pmAngles_sfg(self, wl1, wl2, T_degC, tol_deg=0.005, deg=False):
+    def pmAngles_sfg(self, wl1, wl2, T_degC, tol_deg=0.001, deg=False):
         """
         Phase-matching (PM) angles for sum-frequency generation (SFG) and sum-frequency wavelength.
 

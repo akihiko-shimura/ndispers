@@ -29,5 +29,6 @@ from ._LBO_KK2018 import LBO_zx as LBO_KK2018_zx
 from ._LBO_Newlight import LBO_xy as LBO_Newlight_xy
 from ._LBO_Newlight import LBO_yz as LBO_Newlight_yz
 from ._LBO_Newlight import LBO_zx as LBO_Newlight_zx
+from ._RBBF_Chen2009 import RBBF
 from ._SLN_MgO_doped import SLN
 from ._SLT_MgO_doped import SLT
