@@ -162,7 +162,7 @@ class RBBF(Medium):
         -------
         Refractive index, float or array_like
         
-        Notes
+        Implementation notes
         -----
         When calling the parent class method, we pass 0 for phi_rad since RBBF is a uniaxial crystal
         where the refractive index doesn't depend on the azimuthal angle phi.
@@ -204,16 +204,6 @@ class RBBF(Medium):
     
     def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
         return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
-
-    def dndT_expr(self, pol):
-        """ Sympy expression for dn/dT """
-        # Override the base class method to use our custom formulas
-        if pol == 'o':
-            return self.dndT_o_expr()
-        elif pol == 'e':
-            return self.dndT_e_expr()
-        else:
-            raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
         """Thermo-optic coefficient (dn/dT) [1/°C]
