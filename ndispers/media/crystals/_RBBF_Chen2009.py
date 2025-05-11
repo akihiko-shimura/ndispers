@@ -7,7 +7,7 @@ from ndispers.helper import vars2
 class RBBF(Medium):
     """
     RBBF (RbBe2BO3F2, Rubidium Beryllium Borate Fluoride) crystal
-
+    
     - Point group : 32  (D_3)
     - Crystal system : Trigonal
     - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
@@ -21,14 +21,31 @@ class RBBF(Medium):
     n_o^2 = 1 + 1.18675λ²/(λ² - 0.00750) - 0.00910λ²  (λ is in µm)
     n_e^2 = 1 + 0.97530λ²/(λ² - 0.00665) - 0.00145λ²  (λ is in µm)
     
+    Thermo-optic dispersion equation
+    ------------------------------
+    dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶  (λ is in µm)
+    
+    For ordinary ray (n_o):
+    A = 0.099911, B = -0.553474, C = 1.454609, D = -13.260115
+    
+    For extraordinary ray (n_e):
+    A = 0.285633, B = -2.482927, C = 6.916728, D = -16.153736
+    
     Validity range
     ---------------
-    Deep UV to near infrared
+    Sellmeier equation: Deep UV to near infrared
+    Thermo-optic equation: 0.194µm ≤ λ ≤ 1.014µm
+    
+    Implementation notes
+    ------------------
+    RBBF is a uniaxial crystal where the refractive index doesn't depend on the azimuthal angle phi.
+    In all method calls to the parent class, a value of 0 is passed for the phi_rad parameter.
 
     Ref
     ----
-    Chen, C., Wu, Y., Li, Y., Wang, J., Wu, B., Jiang, M., Zhang, G., & Ye, N. (2009). Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2. Journal of the Optical Society of America B, 26(8), 1519-1525. https://opg.optica.org/josab/abstract.cfm?uri=josab-26-8-1519
-    
+    - Chen, C., Wu, Y., Li, Y., Wang, J., Wu, B., Jiang, M., Zhang, G., & Ye, N. (2009). Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2. Journal of the Optical Society of America B, 26(8), 1519-1525. https://opg.optica.org/josab/abstract.cfm?uri=josab-26-8-1519
+    - Zhai, N., Wang, L., Liu, L., Wang, X., Zhu, Y., & Chen, C. (2013). Measurement of thermal refractive index coefficients of nonlinear optical crystal RbBe2BO3F2. Optical Materials, 36(2), 333-336.
+
     Example
     -------
     >>> rbbf = ndispers.media.crystals.RBBF()
@@ -38,7 +55,8 @@ class RBBF(Medium):
     __slots__ = ["_RBBF__plane", "_RBBF__theta_rad", "_RBBF__phi_rad",
                  "_B_o", "_C_o", "_D_o", 
                  "_B_e", "_C_e", "_D_e",
-                 "_dndT_o", "_dndT_e"]
+                 "_dndT_o_A", "_dndT_o_B", "_dndT_o_C", "_dndT_o_D",
+                 "_dndT_e_A", "_dndT_e_B", "_dndT_e_C", "_dndT_e_D"]
 
     def __init__(self):
         super().__init__()
@@ -57,10 +75,20 @@ class RBBF(Medium):
         self._C_e = 0.00665  # Denominator constant of first term
         self._D_e = 0.00145  # Coefficient of λ² term
         
-        # dn/dT
-        # not accessible from the paper
-        self._dndT_o = 0.0 #/degC
-        self._dndT_e = 0.0 #/degC
+        # dn/dT coefficients from Zhai et al. (2013)
+        # Formula: dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶
+        # Valid for 0.194μm ≤ λ ≤ 1.014μm
+        # Ordinary ray
+        self._dndT_o_A = 0.099911  # coefficient of 1/λ³
+        self._dndT_o_B = -0.553474  # coefficient of 1/λ²
+        self._dndT_o_C = 1.454609  # coefficient of 1/λ
+        self._dndT_o_D = -13.260115  # coefficient of constant term
+        
+        # Extraordinary ray
+        self._dndT_e_A = 0.285633  # coefficient of 1/λ³
+        self._dndT_e_B = -2.482927  # coefficient of 1/λ²
+        self._dndT_e_C = 6.916728  # coefficient of 1/λ
+        self._dndT_e_D = -16.153736  # coefficient of constant term
     
     @property
     def plane(self):
@@ -82,13 +110,27 @@ class RBBF(Medium):
     def symbols(self):
         return [wl, theta, phi, T]
 
+    def dndT_o_expr(self):
+        """ Sympy expression for thermo-optic coefficient of o-wave (dn/dT) """
+        # Formula: dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶
+        return (self._dndT_o_A / wl**3 + self._dndT_o_B / wl**2 + self._dndT_o_C / wl + self._dndT_o_D) * 1e-6
+    
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
-        return sympy.sqrt(1 + self._B_o * wl**2 / (wl**2 - self._C_o) - self._D_o * wl**2) + self._dndT_o * (T - 20)
+        n_o = sympy.sqrt(1 + self._B_o * wl**2 / (wl**2 - self._C_o) - self._D_o * wl**2)
+        # Add temperature dependence
+        return n_o + self.dndT_o_expr() * (T - 24)  # T_ref = 24°C in the paper
     
+    def dndT_e_expr(self):
+        """ Sympy expression for thermo-optic coefficient of e-wave (dn/dT) """
+        # Formula: dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶
+        return (self._dndT_e_A / wl**3 + self._dndT_e_B / wl**2 + self._dndT_e_C / wl + self._dndT_e_D) * 1e-6
+        
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-wave """
-        return sympy.sqrt(1 + self._B_e * wl**2 / (wl**2 - self._C_e) - self._D_e * wl**2) + self._dndT_e * (T - 20)
+        n_e = sympy.sqrt(1 + self._B_e * wl**2 / (wl**2 - self._C_e) - self._D_e * wl**2)
+        # Add temperature dependence
+        return n_e + self.dndT_e_expr() * (T - 24)  # T_ref = 24°C in the paper
 
     def n_expr(self, pol):
         """
@@ -119,7 +161,12 @@ class RBBF(Medium):
         return
         -------
         Refractive index, float or array_like
-
+        
+        Notes
+        -----
+        When calling the parent class method, we pass 0 for phi_rad since RBBF is a uniaxial crystal
+        where the refractive index doesn't depend on the azimuthal angle phi.
+        The argument order in the parent class is (wl_um, theta_rad, phi_rad, T_degC, pol).
         """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
@@ -158,5 +205,31 @@ class RBBF(Medium):
     def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
         return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
 
+    def dndT_expr(self, pol):
+        """ Sympy expression for dn/dT """
+        # Override the base class method to use our custom formulas
+        if pol == 'o':
+            return self.dndT_o_expr()
+        elif pol == 'e':
+            return self.dndT_e_expr()
+        else:
+            raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
+    
     def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
+        """Thermo-optic coefficient (dn/dT) [1/°C]
+        
+        Formula: dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶
+        Valid for 0.194μm ≤ λ ≤ 1.014μm
+        
+        input
+        ------
+        wl_um     :  float or array_like, wavelength in µm
+        theta_rad :  float or array_like, 0 to pi radians
+        T_degC    :  float or array_like, temperature of crystal in degree C.
+        pol       :  {'o', 'e'}, optional, polarization of light
+        
+        return
+        -------
+        dn/dT in 1/°C, float or array_like
+        """
         return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)

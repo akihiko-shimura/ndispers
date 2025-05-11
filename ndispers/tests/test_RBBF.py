@@ -1,7 +1,8 @@
 """ 
-Compare refractive indices and phase-matching angles to the experimentally measured values.
+Compare refractive indices, thermo-optic coefficients, and phase-matching angles to the experimentally measured values.
 RBBF (RbBe2BO3F2)
 """
+import numpy as np
 from numpy import pi
 
 from ndispers.media.crystals import _RBBF_Chen2009
@@ -138,13 +139,74 @@ def sub(module):
     
     print("-"*80)
 
+def test_dndT(module):
+    """Test thermo-optic coefficients (dn/dT) against experimental values from Zhai et al. 2013"""
+    module_name = module.__name__
+    print("[[ Module : %s - Thermo-optic Coefficients ]]" % module_name)
+    
+    rbbf = module.RBBF()
+    
+    # Data from Table 2 in Zhai et al. 2013, Optical Materials 36(2), 333-336
+    # Format: wavelength (µm), experimental dn/dT for o-ray (×10⁻⁶), calculated dn/dT for o-ray (×10⁻⁶),
+    #        experimental dn/dT for e-ray (×10⁻⁶), calculated dn/dT for e-ray (×10⁻⁶)
+    dndT_data = [
+        [0.194, -6.78, -6.78, -7.35, -7.35],
+        [0.254, -10.00, -9.99, -9.98, -9.97],
+        [0.363, -11.29, -11.36, -9.91, -9.97],
+        [0.405, -11.54, -11.54, -9.95, -9.91],
+        [0.435, -11.67, -11.63, -9.92, -9.91],
+        [0.546, -11.85, -11.84, -10.09, -10.06],
+        [0.644, -11.95, -11.96, -10.30, -10.33],
+        [0.706, -12.02, -12.03, -10.52, -10.52],
+        [1.014, -12.27, -12.27, -11.48, -11.47]
+    ]
+    
+    T_degC = 24.0  # Reference temperature from the paper
+    
+    print("T=%.1f degC" % T_degC)
+    print("-"*100)
+    print("Wavelength(µm) | dn_o/dT (×10⁻⁶) |                | dn_e/dT (×10⁻⁶) |               ")
+    print("              | Experimental   | Calculated     | Experimental   | Calculated    ")
+    print("              |                | (Difference)   |                | (Difference)  ")
+    print("-"*100)
+    
+    for data in dndT_data:
+        wl, dndT_o_exp, dndT_o_cal_paper, dndT_e_exp, dndT_e_cal_paper = data
+        
+        # Calculate dn/dT using our implementation
+        dndT_o_calc = rbbf.dndT(wl, 0, T_degC, pol='o') * 1e6  # Convert to ×10⁻⁶
+        dndT_e_calc = rbbf.dndT(wl, pi/2, T_degC, pol='e') * 1e6  # Convert to ×10⁻⁶
+        
+        # Calculate differences
+        diff_o = dndT_o_calc - dndT_o_exp
+        diff_e = dndT_e_calc - dndT_e_exp
+        
+        print("{:14.3f} | {:14.2f} | {:14.2f} | {:14.2f} | {:14.2f}".format(
+            wl, dndT_o_exp, dndT_o_calc, dndT_e_exp, dndT_e_calc))
+        print("              |                | ({:+10.2f})   |                | ({:+10.2f})  ".format(
+            diff_o, diff_e))
+    
+    print("-"*100)
+    
+    # Calculate average absolute differences
+    avg_diff_o = np.mean([abs(data[1] - rbbf.dndT(data[0], 0, T_degC, pol='o') * 1e6) for data in dndT_data])
+    avg_diff_e = np.mean([abs(data[3] - rbbf.dndT(data[0], pi/2, T_degC, pol='e') * 1e6) for data in dndT_data])
+    
+    print("Average absolute difference (o-ray): {:.4f} × 10⁻⁶".format(avg_diff_o))
+    print("Average absolute difference (e-ray): {:.4f} × 10⁻⁶".format(avg_diff_e))
+    print()
+
 def main():
-    print("="*80)
-    print("Compare refractive indices and phase-matching angles to the experimentally measured values.")
-    print("Ref: %s\n"  % ('Chen, C., et al. "Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2." Journal of the Optical Society of America B, 26(8), 1519-1525 (2009)'))
+    print("="*100)
+    print("Compare refractive indices, thermo-optic coefficients, and phase-matching angles to the experimentally measured values.")
+    print("Refs:\n  - Chen, C., et al. \"Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2.\" Journal of the Optical Society of America B, 26(8), 1519-1525 (2009)")
+    print("  - Zhai, N., et al. \"Measurement of thermal refractive index coefficients of nonlinear optical crystal RbBe2BO3F2.\" Optical Materials, 36(2), 333-336 (2013)")
+    print()
+    
     for module in modules:
         sub(module)
-    print("="*80)
+        test_dndT(module)
+    print("="*100)
 
 if __name__ == "__main__":
     main()
