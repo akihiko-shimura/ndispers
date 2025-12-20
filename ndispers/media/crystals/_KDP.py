@@ -1,6 +1,8 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta
+
+from ndispers._baseclass import Medium, T, phi, theta, wl
 from ndispers.helper import vars2
+
 
 class KDP(Medium):
     """
@@ -15,10 +17,15 @@ class KDP(Medium):
     Sellmeier equation
     ------------------
     n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2/(wl_um**2 - 400))  for i = o, e
+
+    Thermo-optic coefficient
+    -------------------------
+    dn_o/dT = 0 # to be incorporated
+    dn_e/dT = 0 # to be incorporated
     
     Validity range
     ---------------
-    
+    T = 24.8 degC
 
     Ref
     ----
@@ -70,15 +77,21 @@ class KDP(Medium):
 
     @property
     def symbols(self):
-        return [wl, theta, phi]
+        return [wl, theta, phi, T]
+    
+    def dndT_o_expr(self):
+        return 0
+    
+    def dndT_e_expr(self):
+        return 0
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
-        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o / (wl**2 - 400))
+        return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o / (wl**2 - 400)) + self.dndT_o_expr() * (T - 24.8)
     
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-wave """
-        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e / (wl**2 - 400))
+        return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e / (wl**2 - 400)) + self.dndT_e_expr() * (T - 24.8)
 
     def n_expr(self, pol):
         """"
@@ -95,7 +108,7 @@ class KDP(Medium):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, pol='o'):
+    def n(self, wl_um, theta_rad, T_degC, pol='o'):
         """
         Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
 
@@ -103,6 +116,7 @@ class KDP(Medium):
         ------
         wl_um     :  float or array_like, wavelength in µm
         theta_rad :  float or array_like, 0 to pi radians
+        T_degC    :  float or array_like, temperature of crystal in degree C.
         pol       :  {'o' or 'e'}, optional, polarization of light
 
         return
@@ -110,36 +124,36 @@ class KDP(Medium):
         Refractive index, float or array_like
 
         """
-        return super().n(wl_um, theta_rad, 0, pol=pol)
+        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0, pol=pol)
+    def dn_wl(self, wl_um, theta_rad, T_deg, pol='o'):
+        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0, pol=pol)
+    def d2n_wl(self, wl_um, theta_rad, T_deg, pol='o'):
+        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0, pol=pol)
+    def d3n_wl(self, wl_um, theta_rad, T_deg, pol='o'):
+        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, pol='o'):
+    def GD(self, wl_um, theta_rad, T_deg, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0, pol=pol)
+        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, pol='o'):
+    def GV(self, wl_um, theta_rad, T_deg, pol='o'):
         """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0, pol=pol)
+        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, pol='o'):
+    def ng(self, wl_um, theta_rad, T_deg, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0, pol=pol)
+        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, pol='o'):
+    def GVD(self, wl_um, theta_rad, T_deg, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, pol='o'):
+    def TOD(self, wl_um, theta_rad, T_deg, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0, T_deg, pol=pol)
     
     def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
         return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
