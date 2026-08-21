@@ -44,7 +44,7 @@ At first, make an object of β-BBO crystal.
 To look into the material information, 
 
 ```
->>> bbo.help
+>>> help(bbo)
 β-BBO (β-Ba B_2 O_4) crystal
 
     - Point group : 3m  (C_{3v})

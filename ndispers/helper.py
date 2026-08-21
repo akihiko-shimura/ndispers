@@ -1,7 +1,8 @@
 import numpy as np
 
 def vars2(obj):
-    return {k: getattr(obj, k) for k in obj.__slots__}
+    slots = [s for klass in type(obj).__mro__ for s in getattr(klass, "__slots__", ())]
+    return {k: getattr(obj, k) for k in slots if hasattr(obj, k)}
 
 def returnShape(*args):
     return np.broadcast(*args).shape

@@ -18,14 +18,14 @@ import numpy as np
 
 from scipy.optimize import brentq
 
-from .helper import returnShape
+from .helper import returnShape, vars2
 
 
 class Medium:
     """
     Medium object base class. Vacuum with n=1.0.
     """
-    __slots__ = ["__plane", "__theta_rad", "__phi_rad"]
+    __slots__ = ["_plane", "_theta_rad", "_phi_rad"]
 
     # Lambdified functions, keyed (class, expression name, pol). Class-level:
     # a medium's constants are fixed in __init__ and its expressions depend only
@@ -33,10 +33,14 @@ class Medium:
     # This is what makes the second instance's first call cheap.
     _lambdified = {}
 
+    # what pol means when the caller does not say; SLN overrides with 'e'
+    # because its Sellmeier equation exists only for the extraordinary ray
+    _default_pol = 'o'
+
     def __init__(self):
-        self.__plane = 'arb'
-        self.__theta_rad = 'arb'
-        self.__phi_rad = 'arb'
+        self._plane = 'arb'
+        self._theta_rad = 'arb'
+        self._phi_rad = 'arb'
 
     def clear(self):
         """clear this medium's cached functions"""
@@ -54,16 +58,26 @@ class Medium:
 
     @property
     def plane(self):
-        return self.__plane
+        return self._plane
 
     @property
     def theta_rad(self):
-        return self.__theta_rad
-        
+        return self._theta_rad
+
     @property
     def phi_rad(self):
-        return self.__phi_rad
-    
+        return self._phi_rad
+
+    @property
+    def symbols(self):
+        return [wl, theta, phi, T]
+
+    @property
+    def constants(self):
+        """dispersion-formula constants of this medium, with their sources' names"""
+        return {k: v for k, v in vars2(self).items()
+                if k not in ("_plane", "_theta_rad", "_phi_rad")}
+
     def __repr__(self):
         return f"{self.__class__}\n  plane: {self.plane}\n  theta_rad: {self.theta_rad}\n  phi_rad: {self.phi_rad}"
 
@@ -125,10 +139,10 @@ class Medium:
         """
         Fill in the angle this medium holds fixed.
 
-        Each medium wraps the public methods to inject its fixed angle, so those
-        already pass one value per symbol and are handed straight back. A method
-        with no such wrapper is reached with only the angle that varies, and gets
-        the fixed one inserted here rather than at every call site.
+        Callers pass one value per *varying* symbol - (wl, angle, T) for a
+        crystal, (wl, T) for a glass - and the fixed angle is inserted here.
+        A call that already carries one value per symbol passes through, so
+        internal code like dk_sfg may spell out all four.
         """
         if len(args) == len(self.symbols):
             return args
@@ -139,7 +153,9 @@ class Medium:
             return (args[0], self.theta_rad, args[1]) + tuple(args[2:])
         return args
 
-    def _func(self, expr, *args, pol='o'):
+    def _func(self, expr, *args, pol=None):
+        if pol is None:
+            pol = self._default_pol
         args = self._full_args(args)
         array_args = map(np.asarray, args)
         key = (type(self), expr.__name__, pol)
@@ -151,7 +167,7 @@ class Medium:
         # scalar in, scalar out - not a 0-d ndarray
         return out.item() if out.ndim == 0 else out
     
-    def n(self, *args, pol='o'):
+    def n(self, *args, pol=None):
         """
         Refractive index for one eigen polarization of light.
 
@@ -181,28 +197,28 @@ class Medium:
         """
         return self._func(self.n_expr, *args, pol=pol)
     
-    def dn_wl(self, *args, pol='o'):
+    def dn_wl(self, *args, pol=None):
         return self._func(self.dn_wl_expr, *args, pol=pol)
     
-    def d2n_wl(self, *args, pol='o'):
+    def d2n_wl(self, *args, pol=None):
         return self._func(self.d2n_wl_expr, *args, pol=pol)
 
-    def d3n_wl(self, *args, pol='o'):
+    def d3n_wl(self, *args, pol=None):
         return self._func(self.d3n_wl_expr, *args, pol=pol)
 
-    def GD(self, *args, pol='o'):
+    def GD(self, *args, pol=None):
         return self._func(self.GD_expr, *args, pol=pol)
     
-    def GV(self, *args, pol='o'):
+    def GV(self, *args, pol=None):
         return self._func(self.GV_expr, *args, pol=pol)
     
-    def ng(self, *args, pol='o'):
+    def ng(self, *args, pol=None):
         return self._func(self.ng_expr, *args, pol=pol)
     
-    def GVD(self, *args, pol='o'):
+    def GVD(self, *args, pol=None):
         return self._func(self.GVD_expr, *args, pol=pol)
     
-    def TOD(self, *args, pol='o'):
+    def TOD(self, *args, pol=None):
         return self._func(self.TOD_expr, *args, pol=pol)
 
     def woa_theta(self, *args, pol='e'):
@@ -213,7 +229,7 @@ class Medium:
         """ Azimuthal walk-off angle (rad) """
         return self._func(self.woa_phi_expr, *args, pol=pol)
 
-    def dndT(self, *args, pol='o'):
+    def dndT(self, *args, pol=None):
         """
         dn/dT function for given arguments (angle, temperature and polarization)
 
@@ -223,7 +239,7 @@ class Medium:
         """
         return self._func(self.dndT_expr, *args, pol=pol)
     
-    def dndT2(self, *args, pol='o'):
+    def dndT2(self, *args, pol=None):
         """ d^2n/dT^2 """
         return self._func(self.dndT2_expr, *args, pol=pol)
 

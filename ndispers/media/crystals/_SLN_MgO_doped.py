@@ -4,7 +4,6 @@ from ndispers._baseclass import T, phi, theta, wl
 from ndispers.groups import Uniax_neg_3m
 from ndispers.helper import vars2
 
-
 class SLN(Uniax_neg_3m):
     """
     1% MgO-doped stoichiometric Lithium niobate (Li Nb O_3) crystal
@@ -45,17 +44,18 @@ class SLN(Uniax_neg_3m):
     >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
-    __slots__ = ["_LN__plane", "_LN__theta_rad", "_LN__phi_rad",
-                 "_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
+    __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
                  "_b1_o", "_b2_o", "_b3_o", "_b4_o",
                  "_b1_e", "_b2_e", "_b3_e", "_b4_e"]
                  
+    _default_pol = 'e'   # no o-ray Sellmeier set exists for SLN
+
     def __init__(self):
         super().__init__()
-        self._LN__plane = 'arb'
-        self._LN__theta_rad = 'var'
-        self._LN__phi_rad = 'arb'
+        self._plane = 'arb'
+        self._theta_rad = 'var'
+        self._phi_rad = 'arb'
 
         """ Constants of dispersion formula """
         # 1% MgO-doped SLN (e-ray only; Gayer 2008 gives no o-ray set for SLN)
@@ -76,25 +76,7 @@ class SLN(Uniax_neg_3m):
         self._d31_1064shg = 4.4 #pm/V
         self._d22_1064shg = 25 #pm/V
 
-    @property
-    def plane(self):
-        return self._LN__plane
-
-    @property
-    def theta_rad(self):
-        return self._LN__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._LN__phi_rad
-
-    @property
-    def symbols(self):
-        return [wl, theta, phi, T]
     
-    @property
-    def constants(self):
-        return vars2(self)
     
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for e-wave """
@@ -117,48 +99,17 @@ class SLN(Uniax_neg_3m):
         else:
             raise ValueError("pol = '%s' must be 'e'. Sellmeier equation for pol='o' is not implemented for this module." % pol)
     
-    def n(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        """ Polar walk-off angle [rad] """
-        return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        """ Azimuthal walk-off angle [rad] """
-        return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     #------------------------------------------------------------------------------------------
     # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule

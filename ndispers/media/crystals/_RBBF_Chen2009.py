@@ -3,7 +3,6 @@ import sympy
 from ndispers._baseclass import Medium, T, phi, theta, wl
 from ndispers.helper import vars2
 
-
 class RBBF(Medium):
     """
     RBBF (RbBe2BO3F2, Rubidium Beryllium Borate Fluoride) crystal
@@ -52,17 +51,16 @@ class RBBF(Medium):
     >>> rbbf.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
-    __slots__ = ["_RBBF__plane", "_RBBF__theta_rad", "_RBBF__phi_rad",
-                 "_B_o", "_C_o", "_D_o", 
+    __slots__ = ["_B_o", "_C_o", "_D_o", 
                  "_B_e", "_C_e", "_D_e",
                  "_dndT_o_A", "_dndT_o_B", "_dndT_o_C", "_dndT_o_D",
                  "_dndT_e_A", "_dndT_e_B", "_dndT_e_C", "_dndT_e_D"]
 
     def __init__(self):
         super().__init__()
-        self._RBBF__plane = 'arb'
-        self._RBBF__theta_rad = 'var'
-        self._RBBF__phi_rad = 'arb'
+        self._plane = 'arb'
+        self._theta_rad = 'var'
+        self._phi_rad = 'arb'
 
         """ Constants of dispersion formula """
         # For ordinary ray (from the paper's equation: n_o^2 = 1 + 1.18675λ²/(λ² - 0.00750) - 0.00910λ²)
@@ -90,25 +88,8 @@ class RBBF(Medium):
         self._dndT_e_C = 6.916728  # coefficient of 1/λ
         self._dndT_e_D = -16.153736  # coefficient of constant term
     
-    @property
-    def plane(self):
-        return self._RBBF__plane
 
-    @property
-    def theta_rad(self):
-        return self._RBBF__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._RBBF__phi_rad
-
-    @property
-    def constants(self):
-        return vars2(self)
     
-    @property
-    def symbols(self):
-        return [wl, theta, phi, T]
 
     def dndT_o_expr(self):
         """ Sympy expression for thermo-optic coefficient of o-wave (dn/dT) """
@@ -147,59 +128,14 @@ class RBBF(Medium):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Thermo-optic coefficient (dn/dT) [1/°C]
-        
-        Formula: dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶
-        Valid for 0.194μm ≤ λ ≤ 1.014μm
-        
-        input
-        ------
-        wl_um     :  float or array_like, wavelength in µm
-        theta_rad :  float or array_like, 0 to pi radians
-        T_degC    :  float or array_like, temperature of crystal in degree C.
-        pol       :  {'o', 'e'}, optional, polarization of light
-        
-        return
-        -------
-        dn/dT in 1/°C, float or array_like
-        """
-        return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)

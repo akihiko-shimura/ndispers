@@ -83,13 +83,7 @@ class KTP(Medium):
         self._dndT_y = (0.1997/wl**3 - 0.4063/wl**2 + 0.5154/wl + 0.5425)*1e-5 #1/K
         self._dndT_z = (0.9221/wl**3 - 2.9220/wl**2 + 3.6677/wl - 0.1897)*1e-5 #1/K
     
-    @property
-    def symbols(self):
-        return [wl, theta, phi, T]
 
-    @property
-    def constants(self):
-        return vars2(self)
     
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
@@ -103,32 +97,15 @@ class KTP(Medium):
         """ sympy expresssion, dispersion formula of z-axis (principal dielectric axis) """
         return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) + self._D_z/(wl**2 - self._E_z)) + self._dndT_z * (T - 20)
 
-
 class KTP_xy(KTP):
-    __slots__ = ["_KTP_xy__plane", "_KTP_xy__theta_rad", "_KTP_xy__phi_rad"]
+    __slots__ = []
 
     def __init__(self):
         super().__init__()
-        self._KTP_xy__plane = 'xy'
-        self._KTP_xy__theta_rad = 0.5*pi
-        self._KTP_xy__phi_rad = 'var'
+        self._plane = 'xy'
+        self._theta_rad = 0.5*pi
+        self._phi_rad = 'var'
     
-
-    @property
-    def plane(self):
-        return self._KTP_xy__plane
-
-    @property
-    def theta_rad(self):
-        return self._KTP_xy__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._KTP_xy__phi_rad
-
-    @property
-    def constants(self):
-        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -152,88 +129,25 @@ class KTP_xy(KTP):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    def n(self, wl_um, phi_rad, T_degC, pol='o'):
-        """
-        Refractive index in xy plane.
-
-        input
-        ------
-        wl_um     :  float, wavelength in µm
-        pol       :  str, 'o' or 'e', polarization of light
-        phi_rad   :  float, 0 to 2pi radians
-        (Note: theta_rad is fixed at 0.5*pi in xy principal plane.)
-
-        return
-        -------
-        Refractive index, float
-
-        """
-        return super().n(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
-
-    def dn_wl(self, wl_um, phi_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, phi_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, phi_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
+    
+    
 
-    def GD(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def GV(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def ng(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, .5*pi, phi_rad, T_degC, pol=pol)
-
-    def GVD(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
-
-    def TOD(self, wl_um, phi_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
-    def woa_theta(self, wl_um, phi_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
-    
-    def woa_phi(self, wl_um, phi_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
-    
-    def dndT(self, wl_um, phi_rad, T_degC, pol='o'):
-        return super().dndT(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
-
 
 class KTP_yz(KTP):
-    __slots__ = ["_KTP_yz__plane", "_KTP_yz__theta_rad", "_KTP_yz__phi_rad"]
+    __slots__ = []
 
     def __init__(self):
         super().__init__()
-        self._KTP_yz__plane = 'yz'
-        self._KTP_yz__phi_rad = 0.5*pi
-        self._KTP_yz__theta_rad = 'var'
+        self._plane = 'yz'
+        self._phi_rad = 0.5*pi
+        self._theta_rad = 'var'
     
     
-    @property
-    def plane(self):
-        return self._KTP_yz__plane
-
-    @property
-    def theta_rad(self):
-        return self._KTP_yz__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._KTP_yz__phi_rad
-
-    @property
-    def constants(self):
-        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -258,88 +172,27 @@ class KTP_yz(KTP):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    def n(self, wl_um, theta_rad, T_degC, pol='o'):
-        """
-        Refractive index in yz plane.
-
-        input
-        ------
-        wl_um     :  float, wavelength in µm
-        pol       :  str, 'o' or 'e', polarization of light
-        theta_rad :  float, 0 to 2pi radians
-        (Note: phi_rad is fixed at 0.5*pi in yz principal plane.)
-
-        return
-        -------
-        Refractive index, float
-
-        """
-        return super().n(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
-    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    
 
-    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
-    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
-    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-    
-    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-    
-    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dndT(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
 
 class KTP_zx(KTP):
-    __slots__ = ["_KTP_zx__plane", "_KTP_zx__theta_rad", "_KTP_zx__phi_rad"]
+    __slots__ = []
 
     def __init__(self):
         super().__init__()
-        self._KTP_zx__plane = 'zx'
-        self._KTP_zx__theta_rad = 'var'
-        self._KTP_zx__phi_rad = 0.5*pi
+        self._plane = 'zx'
+        self._theta_rad = 'var'
+        self._phi_rad = 0.5*pi
     
     
-    @property
-    def plane(self):
-        return self._KTP_zx__plane
 
-    @property
-    def theta_rad(self):
-        return self._KTP_zx__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._KTP_zx__phi_rad
     
-    @property
-    def constants(self):
-        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -364,58 +217,11 @@ class KTP_zx(KTP):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    def n(self, wl_um, theta_rad, T_degC, pol='o'):
-        """
-        Refractive index in zx plane.
-
-        input
-        ------
-        wl_um     :  float, wavelength in µm
-        pol       :  str, 'o' or 'e', polarization of light
-        theta_rad :  float, 0 to 2pi radians
-        (Note: phi_rad is fixed at 0.5*pi in zx principal plane.)
-
-        return
-        -------
-        Refractive index, float
-        
-        """
-        return super().n(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
-    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
+    
+    
 
-    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
-    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-
-    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
     
-    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-    
-    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
-    
-    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dndT(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)

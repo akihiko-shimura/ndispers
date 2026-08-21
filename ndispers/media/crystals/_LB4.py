@@ -36,17 +36,16 @@ class LB4(Medium):
     >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
-    __slots__ = ["_LB4__plane", "_LB4__theta_rad", "_LB4__phi_rad",
-                 "_A_o", "_B_o", "_C_o", "_D_o", 
+    __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e",
                  "_At_o", "_Bt_o", "_Ct_o", "_Dt_o", "_Et_o",
                  "_At_e", "_Bt_e", "_Ct_e", "_Dt_e", "_Et_e"]
 
     def __init__(self):
         super().__init__()
-        self._LB4__plane = 'arb'
-        self._LB4__theta_rad = 'var'
-        self._LB4__phi_rad = 'arb'
+        self._plane = 'arb'
+        self._theta_rad = 'var'
+        self._phi_rad = 'arb'
 
         """ Constants of dispersion formula """
         # For ordinary ray
@@ -74,25 +73,9 @@ class LB4(Medium):
         self._Et_e = -2.08e-8 #1/(K^2)
 
     
-    @property
-    def plane(self):
-        return self._LB4__plane
 
-    @property
-    def theta_rad(self):
-        return self._LB4__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._LB4__phi_rad
     
-    @property
-    def symbols(self):
-        return [wl, theta, phi, T]
     
-    @property
-    def constants(self):
-        return vars2(self)
     
     def dndT_o_expr(self):
         return self._At_o + self._Bt_o * wl + self._Ct_o * wl**2 + self._Dt_o * wl**3 + self._Et_o * (T - 25)
@@ -123,43 +106,14 @@ class LB4(Medium):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def dndT(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dndT(wl_um, theta_rad, 0, T_degC, pol=pol)

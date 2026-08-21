@@ -53,54 +53,16 @@ class CaF2(Medium):
     def symbols(self):
         return [wl, T]
      
-    @property
-    def constants(self):
-        return vars2(self)
     
     def n_expr(self, pol='o'):
         """ Sympy expression, dispersion formula """
         return sympy.sqrt(1 + self._A1 * wl**2 / (wl**2 - self._B1**2) + self._A2 * wl**2 / (wl**2 - self._B2**2) + self._A3 * wl**2 / (wl**2 - self._B3**2)) + self._dndT * (T - 24)
     
-    def n(self, wl_um, T_deg):
-        """
-        Refractive index as a function of wavelength
 
-        input
-        ------
-        wl_um   :  float or array_like, wavelength in µm
-        T_degC  :  float or array_like, temperature of crystal in degree C.
-        
-        return
-        -------
-        Refractive index, float
-        """
-        return super().n(wl_um, T_deg, pol='o')
+    
 
-    def dn_wl(self, wl_um, T_deg):
-        return super().dn_wl(wl_um, T_deg, pol='o')
     
-    def d2n_wl(self, wl_um, T_deg):
-        return super().d2n_wl(wl_um, T_deg, pol='o')
-
-    def d3n_wl(self, wl_um, T_deg):
-        return super().d3n_wl(wl_um, T_deg, pol='o')
     
-    def GD(self, wl_um, T_deg):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, T_deg, pol='o')
     
-    def GV(self, wl_um, T_deg):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, T_deg, pol='o')
     
-    def ng(self, wl_um, T_deg):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, T_deg, pol='o')
     
-    def GVD(self, wl_um, T_deg):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, T_deg, pol='o')
-    
-    def TOD(self, wl_um, T_deg):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, T_deg, pol='o')

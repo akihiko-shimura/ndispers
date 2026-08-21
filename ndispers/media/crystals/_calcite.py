@@ -34,15 +34,14 @@ class Calcite(Medium):
     >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
     
     """
-    __slots__ = ["_Calcite__plane", "_Calcite__theta_rad", "_Calcite__phi_rad",
-                 "_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",
+    __slots__ = ["_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",
                  "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e"]
 
     def __init__(self):
         super().__init__()
-        self._Calcite__plane = 'arb'
-        self._Calcite__theta_rad = 'var'
-        self._Calcite__phi_rad = 'arb'
+        self._plane = 'arb'
+        self._theta_rad = 'var'
+        self._phi_rad = 'arb'
 
         """ Constants of dispersion formula """
         # For ordinary ray
@@ -62,25 +61,8 @@ class Calcite(Medium):
         self._A3_e = 0.317
         self._B3_e = 11.468
     
-    @property
-    def plane(self):
-        return self._Calcite__plane
 
-    @property
-    def theta_rad(self):
-        return self._Calcite__theta_rad
-
-    @property
-    def phi_rad(self):
-        return self._Calcite__phi_rad
-
-    @property
-    def symbols(self):
-        return [wl, theta, phi, T]
     
-    @property
-    def constants(self):
-        return vars2(self)
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
@@ -105,34 +87,11 @@ class Calcite(Medium):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
-        """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
