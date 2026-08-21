@@ -14,8 +14,6 @@ from math import pi
 c_ms = 2.99792458e8 #(m/s) speed of light in vacuum
 c_umfs = c_ms * 1e-9  #(µm/fs)
 
-from collections import defaultdict
-
 import numpy as np
 
 from .helper import arg_signchange, returnShape
@@ -25,22 +23,28 @@ class Medium:
     """
     Medium object base class. Vacuum with n=1.0.
     """
-    __slots__ = ["__plane", "__theta_rad", "__phi_rad", "_cached_func_dict"]
+    __slots__ = ["__plane", "__theta_rad", "__phi_rad"]
+
+    # Lambdified functions, keyed (class, expression name, pol). Class-level:
+    # a medium's constants are fixed in __init__ and its expressions depend only
+    # on the class, so two instances of the same class share every function.
+    # This is what makes the second instance's first call cheap.
+    _lambdified = {}
 
     def __init__(self):
         self.__plane = 'arb'
         self.__theta_rad = 'arb'
         self.__phi_rad = 'arb'
-        self._cached_func_dict = defaultdict(dict)
-    
+
     def clear(self):
-        """clear cached functions"""
-        self.__init__()
+        """clear this medium's cached functions"""
+        cls = type(self)
+        for key in [k for k in Medium._lambdified if k[0] is cls]:
+            del Medium._lambdified[key]
 
     def __reduce__(self):
-        # The lambdified functions in _cached_func_dict are unpicklable closures.
-        # All other state is fixed in __init__ and never mutated, so calling the
-        # class again restores an equivalent instance; the cache rebuilds lazily.
+        # State is fixed in __init__ and never mutated, so calling the class
+        # again restores an equivalent instance.
         # ponytail: assumes no-arg __init__ (true for every medium in v0.5.2);
         # pass constructor args here if any medium ever takes them.
         return (self.__class__, ())
@@ -139,11 +143,11 @@ class Medium:
     def _func(self, expr, *args, pol='o'):
         args = self._full_args(args)
         array_args = map(np.asarray, args)
-        cache = self._cached_func_dict[expr.__name__]
-        func = cache.get(pol)
+        key = (type(self), expr.__name__, pol)
+        func = Medium._lambdified.get(key)
         if func is None:
             func = lambdify(self.symbols, expr(pol), 'numpy')
-            cache[pol] = func
+            Medium._lambdified[key] = func
         return np.resize(func(*args), returnShape(*array_args))
     
     def n(self, *args, pol='o'):
