@@ -14,7 +14,7 @@ class KTP(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i/(wl**2 - E_i))  for i = x, y, z
+    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i))  for i = x, y, z
     
     Thermo-optic coefficient
     -------------------------
@@ -81,7 +81,7 @@ class KTP(Medium):
         #dn/dT
         self._dndT_x = (0.1717/wl**3 - 0.5353/wl**2 + 0.8416/wl + 0.1627)*1e-5 #1/K
         self._dndT_y = (0.1997/wl**3 - 0.4063/wl**2 + 0.5154/wl + 0.5425)*1e-5 #1/K
-        self._dndT_y = (0.9221/wl**3 - 2.9220/wl**2 + 3.6677/wl - 0.1897)*1e-5 #1/K
+        self._dndT_z = (0.9221/wl**3 - 2.9220/wl**2 + 3.6677/wl - 0.1897)*1e-5 #1/K
     
     @property
     def symbols(self):
@@ -93,15 +93,15 @@ class KTP(Medium):
     
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x/(wl**2 - self._E_x)) + self._dndT_x * (T - 20)
+        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) + self._D_x/(wl**2 - self._E_x)) + self._dndT_x * (T - 20)
     
     def n_y_expr(self):
         """ sympy expresssion, dispersion formula of y-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) - self._D_y/(wl**2 - self._E_y)) + self._dndT_y * (T - 20)
+        return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) + self._D_y/(wl**2 - self._E_y)) + self._dndT_y * (T - 20)
 
     def n_z_expr(self):
         """ sympy expresssion, dispersion formula of z-axis (principal dielectric axis) """
-        return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z/(wl**2 - self._E_z)) + self._dndT_z * (T - 20)
+        return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) + self._D_z/(wl**2 - self._E_z)) + self._dndT_z * (T - 20)
 
 
 class KTP_xy(KTP):
@@ -174,7 +174,7 @@ class KTP_xy(KTP):
         return super().n(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
 
     def dn_wl(self, wl_um, phi_rad, T_degC, pol='o'):
-        return super().dn_wl(wl_um, pol, 0.5*pi, phi_rad,  T_degC, pol=pol)
+        return super().dn_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
     
     def d2n_wl(self, wl_um, phi_rad, T_degC, pol='o'):
         return super().d2n_wl(wl_um, 0.5*pi, phi_rad, T_degC, pol=pol)
@@ -327,7 +327,7 @@ class KTP_zx(KTP):
     def __init__(self):
         super().__init__()
         self._KTP_zx__plane = 'zx'
-        self._KTP_zx__theta_rad = 'arb'
+        self._KTP_zx__theta_rad = 'var'
         self._KTP_zx__phi_rad = 0.5*pi
     
     @property
