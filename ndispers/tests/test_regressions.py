@@ -147,27 +147,32 @@ def test_dndT2_runs_and_is_nonzero_for_e_ray():
     assert clbo.dndT2(0.532, 0.5, 100.0, pol='e') != 0     # n_e(theta) is not
 
 
-@pytest.mark.parametrize("name", [nm for nm in sorted(dir(C))
-                                  if not nm.startswith('_') and isinstance(getattr(C, nm), type)])
-def test_injected_angle_matches_hand_written_wrapper(name):
-    """_func now fills in the fixed angle itself. Each medium still carries its
-    own hand-written wrappers doing the same thing, so they pin the base against
-    34 independent statements of what the answer should be."""
-    from ndispers._baseclass import Medium
-    x = getattr(C, name)()
-    args = (0.532, 0.3, 25) if len(x.symbols) == 4 else (0.532, 0.3)
-    for pol in ('o', 'e'):
-        try:
-            by_wrapper = float(x.n(*args, pol=pol))
-        except ValueError:
-            continue
-        assert float(Medium.n(x, *x._full_args(args), pol=pol)) == by_wrapper
-
-
 ALL_MEDIA = [nm for nm in sorted(dir(C))
              if not nm.startswith('_') and isinstance(getattr(C, nm), type)]
 DISPERSION_METHODS = ['n', 'dn_wl', 'd2n_wl', 'd3n_wl', 'GD', 'GV', 'ng', 'GVD',
                       'TOD', 'woa_theta', 'woa_phi', 'dndT', 'dndT2']
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
+def test_injected_angle_matches_hand_written_wrapper(name):
+    """Every method, not just n: a wrapper that drops an argument is no longer a
+    TypeError now that _func fills the angle in, because a short call is exactly
+    what _func expects. The ten LBO yz/zx d3n_wl wrappers dropped T_degC and so
+    silently pushed 0.5*pi into the temperature slot. Comparing each wrapper
+    against the base is what catches that, and nothing else does."""
+    from ndispers._baseclass import Medium
+    x = getattr(C, name)()
+    n_sym = len(x.symbols)
+    for args in ([(0.4, 0.0, 20), (0.532, 0.3, 25), (1.064, 1.2, 150)] if n_sym == 4
+                 else [(0.4, 0.0), (0.532, 0.3), (1.064, 1.2)]):
+        for meth in DISPERSION_METHODS:
+            for pol in ('o', 'e'):
+                try:
+                    by_wrapper = float(getattr(x, meth)(*args, pol=pol))
+                except ValueError:
+                    continue
+                by_base = float(getattr(Medium, meth)(x, *x._full_args(args), pol=pol))
+                assert by_base == by_wrapper, (name, meth, args, pol)
 
 
 @pytest.mark.parametrize("name", ALL_MEDIA)

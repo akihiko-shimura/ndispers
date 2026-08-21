@@ -118,21 +118,6 @@ class SLN(Uniax_neg_3m):
             raise ValueError("pol = '%s' must be 'e'. Sellmeier equation for pol='o' is not implemented for this module." % pol)
     
     def n(self, wl_um, theta_rad, T_degC, pol='e'):
-        """
-        Refractive index as a function of wavelength, theta or phi angles for each eigen polarization of light.
-
-        input
-        -----
-        wl_um     :  float or array_like, wavelength in µm
-        theta_rad :  float or array_like, 0 to pi radians
-        T_degC    :  float or array_like, temperature of crystal in degree C.
-        pol       :  {'e'}, optional, polarization of light
-
-        return
-        -------
-        numpy.array
-        
-        """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
     def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):

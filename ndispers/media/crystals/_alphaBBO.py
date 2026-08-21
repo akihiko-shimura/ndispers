@@ -1,5 +1,5 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta
+from ndispers._baseclass import Medium, wl, phi, theta, T
 from ndispers.helper import vars2
 
 class AlphaBBO(Medium):
@@ -62,7 +62,7 @@ class AlphaBBO(Medium):
 
     @property
     def symbols(self):
-        return [wl, theta, phi]
+        return [wl, theta, phi, T]
     
     @property
     def constants(self):
@@ -90,47 +90,34 @@ class AlphaBBO(Medium):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
     
-    def n(self, wl_um, theta_rad, pol='o'):
-        """
-        Refractive index as a function of wavelength, theta and phi angles for each eigen polarization of light.
+    def n(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-        input
-        ------
-        wl_um     :  float, wavelength in µm
-        theta_rad :  float, 0 to pi radians
-        pol       :  str, 'o' or 'e', polarization of light
-
-        return
-        -------
-        Refractive index, float or array_like
-        """
-        return super().n(wl_um, theta_rad, 0, pol=pol)
-
-    def dn_wl(self, wl_um, theta_rad, pol='o'):
-        return super().dn_wl(wl_um, theta_rad, 0, pol=pol)
+    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d2n_wl(wl_um, theta_rad, 0, pol=pol)
+    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0, pol=pol)
+    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
+        return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, pol='o'):
+    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
-        return super().GD(wl_um, theta_rad, 0, pol=pol)
+        return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, pol='o'):
+    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Velocity [µm/fs]"""
-        return super().GV(wl_um, theta_rad, 0, pol=pol)
+        return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, pol='o'):
+    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
-        return super().ng(wl_um, theta_rad, 0, pol=pol)
+        return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, pol='o'):
+    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
-        return super().GVD(wl_um, theta_rad, 0, pol=pol)
+        return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, pol='o'):
+    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)

@@ -313,7 +313,7 @@ class LBO_yz(LBO):
         return super().d2n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
     def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().d3n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
     def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
@@ -399,7 +399,7 @@ class LBO_zx(LBO):
 
     def n(self, wl_um, theta_rad, T_degC, pol='o'):
         """
-        Refractive index in yz plane.
+        Refractive index in zx plane.
 
         input
         ------
@@ -422,7 +422,7 @@ class LBO_zx(LBO):
         return super().d2n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
     def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
-        return super().d3n_wl(wl_um, theta_rad, 0.5*pi, pol=pol)
+        return super().d3n_wl(wl_um, theta_rad, 0.5*pi, T_degC, pol=pol)
 
     def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
