@@ -115,10 +115,10 @@ class BetaBBO(Uniax_neg_3m):
         return sympy.sqrt(self._A_e + self._B_e/(wl**2 - self._C_e) + self._D_e/(wl**2 - self._E_e))
     
     def dndT_o_expr(self):
-        return self._F_o/wl**3 + self._G_o/wl**2 + self._I_o/wl + self._I_o
+        return self._F_o/wl**3 + self._G_o/wl**2 + self._H_o/wl + self._I_o
 
     def dndT_e_expr(self):
-        return self._F_e/wl**3 + self._G_e/wl**2 + self._I_e/wl + self._I_e
+        return self._F_e/wl**3 + self._G_e/wl**2 + self._H_e/wl + self._I_e
     
     def n_o_expr(self):
         return self._n_T20_o_expr() + self.dndT_o_expr() * (T - 20)
