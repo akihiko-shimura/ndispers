@@ -83,7 +83,7 @@ class KBBF(Uniax_neg_32):
     
     @property
     def constants(self):
-        print(vars2(self))
+        return vars2(self)
     
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """

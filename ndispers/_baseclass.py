@@ -16,7 +16,9 @@ c_umfs = c_ms * 1e-9  #(µm/fs)
 
 import numpy as np
 
-from .helper import arg_signchange, returnShape
+from scipy.optimize import brentq
+
+from .helper import returnShape
 
 
 class Medium:
@@ -49,9 +51,6 @@ class Medium:
         # pass constructor args here if any medium ever takes them.
         return (self.__class__, ())
 
-    @property
-    def help(self):
-        print(self.__doc__)
 
     @property
     def plane(self):
@@ -148,7 +147,9 @@ class Medium:
         if func is None:
             func = lambdify(self.symbols, expr(pol), 'numpy')
             Medium._lambdified[key] = func
-        return np.resize(func(*args), returnShape(*array_args))
+        out = np.resize(func(*args), returnShape(*array_args))
+        # scalar in, scalar out - not a 0-d ndarray
+        return out.item() if out.ndim == 0 else out
     
     def n(self, *args, pol='o'):
         """
@@ -273,8 +274,8 @@ class Medium:
             1st pump wavelength in µm.
         wl2 : float or array_like
             2nd pump wavelength in µm.
-        tol_deg : float, defalut=0.005
-            Tolerance error of angle in degree.
+        tol_deg : float, default=0.001
+            Absolute tolerance of the returned angle in degrees.
         deg : bool, default=False
             If returned angles are expressed in radians (False) or degrees (True).
 
@@ -290,16 +291,21 @@ class Medium:
         wl3 = 1./(1./wl1 + 1./wl2)
 
         def pmAngle_for_pol(pol1, pol2, pol3):
-            angle_ar = np.arange(0, 90, tol_deg) * pi/180
-            angle_pm = angle_ar[arg_signchange(self.dk_sfg(wl1, wl2, angle_ar, T_degC, pol1, pol2, pol3))]
+            # coarse grid locates each sign change, brentq refines it
+            angle_ar = np.linspace(0, 0.5*pi, 361)
+            dk_ar = self.dk_sfg(wl1, wl2, angle_ar, T_degC, pol1, pol2, pol3)
+            crossings = np.nonzero(np.diff(np.signbit(dk_ar)))[0]
+            dk = lambda a: float(self.dk_sfg(wl1, wl2, a, T_degC, pol1, pol2, pol3))
+            angle_pm = [brentq(dk, angle_ar[i], angle_ar[i+1], xtol=tol_deg*pi/180)
+                        for i in crossings]
             if deg:
-                angle_pm *= 180/pi
+                angle_pm = [a * 180/pi for a in angle_pm]
             pm_angles = dict()
             if self.theta_rad == 'var':
-                pm_angles['theta'] = angle_pm.tolist()
+                pm_angles['theta'] = angle_pm
                 pm_angles['phi'] = None
             elif self.phi_rad == 'var':
-                pm_angles['phi'] = angle_pm.tolist()
+                pm_angles['phi'] = angle_pm
                 pm_angles['theta'] = None
             return pm_angles
         

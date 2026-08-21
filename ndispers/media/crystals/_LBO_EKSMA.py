@@ -89,7 +89,7 @@ class LBO(Medium):
     
     @property
     def constants(self):
-        print(vars2(self))
+        return vars2(self)
 
     @property
     def symbols(self):
@@ -138,9 +138,6 @@ class LBO_xy(LBO):
         self._LBO_xy__theta_rad = 0.5*pi
         self._LBO_xy__phi_rad = 'var'
     
-    @property
-    def help(self):
-        print(super().__doc__)
 
     @property
     def plane(self):
@@ -156,7 +153,7 @@ class LBO_xy(LBO):
 
     @property
     def constants(self):
-        print({**vars2(super()), **vars2(self)})
+        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -247,9 +244,6 @@ class LBO_yz(LBO):
         self._LBO_yz__phi_rad = 0.5*pi
         self._LBO_yz__theta_rad = 'var'
     
-    @property
-    def help(self):
-        print(super().__doc__)
 
     @property
     def plane(self):
@@ -265,7 +259,7 @@ class LBO_yz(LBO):
 
     @property
     def constants(self):
-        print({**vars2(super()), **vars2(self)})
+        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -356,9 +350,6 @@ class LBO_zx(LBO):
         self._LBO_zx__theta_rad = 'var'
         self._LBO_zx__phi_rad = 0.5*pi
     
-    @property
-    def help(self):
-        print(super().__doc__)
 
     @property
     def plane(self):
@@ -374,7 +365,7 @@ class LBO_zx(LBO):
 
     @property
     def constants(self):
-        print({**vars2(super()), **vars2(self)})
+        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 

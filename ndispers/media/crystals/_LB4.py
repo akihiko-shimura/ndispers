@@ -92,7 +92,7 @@ class LB4(Medium):
     
     @property
     def constants(self):
-        print(vars2(self))
+        return vars2(self)
     
     def dndT_o_expr(self):
         return self._At_o + self._Bt_o * wl + self._Ct_o * wl**2 + self._Dt_o * wl**3 + self._Et_o * (T - 25)

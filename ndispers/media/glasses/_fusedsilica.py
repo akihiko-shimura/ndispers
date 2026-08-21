@@ -53,7 +53,7 @@ class FusedSilica(Medium):
      
     @property
     def constants(self):
-        print(vars2(self))
+        return vars2(self)
     
     def n_expr(self, pol='o'):
         """ Sympy expression, dispersion formula """

@@ -89,7 +89,7 @@ class KTP(Medium):
 
     @property
     def constants(self):
-        print(vars2(self))
+        return vars2(self)
     
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
@@ -113,9 +113,6 @@ class KTP_xy(KTP):
         self._KTP_xy__theta_rad = 0.5*pi
         self._KTP_xy__phi_rad = 'var'
     
-    @property
-    def help(self):
-        print(super().__doc__)
 
     @property
     def plane(self):
@@ -131,7 +128,7 @@ class KTP_xy(KTP):
 
     @property
     def constants(self):
-        print({**vars2(super()), **vars2(self)})
+        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -221,9 +218,6 @@ class KTP_yz(KTP):
         self._KTP_yz__phi_rad = 0.5*pi
         self._KTP_yz__theta_rad = 'var'
     
-    @property
-    def help(self):
-        print(super().__doc__)
     
     @property
     def plane(self):
@@ -239,7 +233,7 @@ class KTP_yz(KTP):
 
     @property
     def constants(self):
-        print({**vars2(super()), **vars2(self)})
+        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 
@@ -330,9 +324,6 @@ class KTP_zx(KTP):
         self._KTP_zx__theta_rad = 'var'
         self._KTP_zx__phi_rad = 0.5*pi
     
-    @property
-    def help(self):
-        print(super().__doc__)
     
     @property
     def plane(self):
@@ -348,7 +339,7 @@ class KTP_zx(KTP):
     
     @property
     def constants(self):
-        print({**vars2(super()), **vars2(self)})
+        return {**vars2(super()), **vars2(self)}
 
     def n_o_expr(self):
         """ sympy expresssion, 

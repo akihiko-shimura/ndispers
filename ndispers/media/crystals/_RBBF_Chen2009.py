@@ -104,7 +104,7 @@ class RBBF(Medium):
 
     @property
     def constants(self):
-        print(vars2(self))
+        return vars2(self)
     
     @property
     def symbols(self):
