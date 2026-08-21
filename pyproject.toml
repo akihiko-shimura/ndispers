@@ -20,6 +20,7 @@ dynamic = ["version"]
 description = "Python package for calculating refractive index dispersion of various materials"
 readme = "README.md"
 license = {file = "LICENSE"}
+requires-python = ">=3.9"
 authors = [
     { name = "Akihiko Shimura", email = "akhksh@gmail.com" },
 ]
@@ -27,11 +28,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "mpmath",
@@ -39,6 +40,9 @@ dependencies = [
     "scipy",
     "sympy",
 ]
+
+[dependency-groups]
+dev = ["pytest"]
 
 [project.urls]
 Homepage = "https://github.com/akihiko-shimura/ndispers"
