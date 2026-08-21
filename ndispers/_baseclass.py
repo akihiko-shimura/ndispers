@@ -50,6 +50,14 @@ class Medium:
         """clear cached functions"""
         self.__init__()
 
+    def __reduce__(self):
+        # The lambdified functions in _cached_func_dict are unpicklable closures.
+        # All other state is fixed in __init__ and never mutated, so calling the
+        # class again restores an equivalent instance; the cache rebuilds lazily.
+        # ponytail: assumes no-arg __init__ (true for every medium in v0.5.2);
+        # pass constructor args here if any medium ever takes them.
+        return (self.__class__, ())
+
     @property
     def help(self):
         print(self.__doc__)
