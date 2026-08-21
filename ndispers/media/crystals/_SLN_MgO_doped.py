@@ -23,11 +23,21 @@ class SLN(Uniax_neg_3m):
     Ref
     ---
     Gayer, O., et al. "Temperature and wavelength dependent refractive index equations for MgO-doped congruent and stoichiometric LiNbO3." Applied Physics B 91.2 (2008): 343-348.
+    Erratum: Applied Physics B 101.2 (2010): 481. (b1 corrected to 4.677e-6)
     https://www.opt-oxide.com/products/sln/
 
     Note
     ----
     Sellmeier equation only for e-wave is given.
+
+    Gayer's coefficients were fitted to quasi-phase-matching measurements, i.e. to
+    index *differences*. Phase matching is reproduced well (this equation gives
+    1544 nm at 40 degC and 1571 nm at 200 degC for SHG in a 19.36 µm period
+    crystal, matching Fig. 4 of the paper), but the absolute thermo-optic
+    coefficient is not constrained by that data: dn_e/dT comes out around
+    +5e-4 /K at 1.064 µm, an order of magnitude above the accepted ~3e-5 /K for
+    LiNbO3. The same holds for the other Gayer sets. Use dndT/dndT2 from this
+    class for phase-matching work, not as absolute thermo-optic values.
 
     Example
     -------
@@ -48,22 +58,24 @@ class SLN(Uniax_neg_3m):
         self._LN__phi_rad = 'arb'
 
         """ Constants of dispersion formula """
-        # 1% MgO-doped SLN
-        self._a1_o = 5.078
-        self._a2_o = 0.0964
-        self._a3_o = 0.2065
-        self._a4_o = 61.16
-        self._a5_o = 10.55
-        self._a6_o = 1.59e-2
-        self._b1_o = 4.677e-7
-        self._b2_o = 7.822e-8
-        self._b3_o = -2.653e-8
-        self._b4_o = 1.096e-4
+        # 1% MgO-doped SLN (e-ray only; Gayer 2008 gives no o-ray set for SLN)
+        self._a1_e = 5.078
+        self._a2_e = 0.0964
+        self._a3_e = 0.2065
+        self._a4_e = 61.16
+        self._a5_e = 10.55
+        self._a6_e = 1.59e-2
+        # b1 is 4.677e-6, not the 4.677e-7 printed in Table 1 of the 2008 paper:
+        # that single value is what the 2010 erratum exists to correct.
+        self._b1_e = 4.677e-6
+        self._b2_e = 7.822e-8
+        self._b3_e = -2.653e-8
+        self._b4_e = 1.096e-4
 
         # Second-order nonlinear optical coefficients
         self._d31_1064shg = 4.4 #pm/V
         self._d22_1064shg = 25 #pm/V
-    
+
     @property
     def plane(self):
         return self._LN__plane
@@ -85,10 +97,10 @@ class SLN(Uniax_neg_3m):
         print(vars2(self))
     
     def n_e_expr(self):
-        """ Sympy expression, dispersion formula for o-wave """
+        """ Sympy expression, dispersion formula for e-wave """
         return sympy.sqrt( self._a1_e + self._b1_e * self.f_expr() + \
             (self._a2_e + self._b2_e * self.f_expr()) / (wl**2 - (self._a3_e + self._b3_e * self.f_expr())**2) + \
-                (self._a4_e * + self._b4_e * self.f_expr()) / (wl**2 - self._a5_e**2) - self._a6_e * wl**2 )
+                (self._a4_e + self._b4_e * self.f_expr()) / (wl**2 - self._a5_e**2) - self._a6_e * wl**2 )
 
     def f_expr(self):
         return (T - 24.5) * (T + 24.5 + 2 * 273.16)
