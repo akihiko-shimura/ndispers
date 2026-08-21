@@ -139,8 +139,10 @@ def sub(module):
     
     print("-"*80)
 
-def test_dndT(module):
+def test_dndT(module=None):
     """Test thermo-optic coefficients (dn/dT) against experimental values from Zhai et al. 2013"""
+    if module is None:
+        module = modules[0]
     module_name = module.__name__
     print("[[ Module : %s - Thermo-optic Coefficients ]]" % module_name)
     

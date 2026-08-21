@@ -1,0 +1,148 @@
+"""Regression tests for bugs fixed in _baseclass.py and the KTP / SLN modules."""
+import pickle
+
+import pytest
+
+import ndispers.media.crystals as C
+
+PLANES = ['KTP_xy', 'KTP_yz', 'KTP_zx']
+
+
+@pytest.mark.parametrize("cls", PLANES)
+@pytest.mark.parametrize("pol", ['o', 'e'])
+def test_ktp_all_planes_and_pols(cls, pol):
+    """_dndT_z was clobbered by a duplicate _dndT_y assignment, so half of these
+    raised AttributeError and the rest silently used the z coefficient for n_y."""
+    n = getattr(C, cls)().n(1.064, 0.3, 100, pol=pol)
+    assert 1.7 < n < 1.9
+
+
+# o-wave of each principal plane is one principal index: xy->z, yz->x, zx->y
+@pytest.mark.parametrize("cls,n_lit", [('KTP_xy', 1.8302), ('KTP_yz', 1.7377), ('KTP_zx', 1.7453)])
+def test_ktp_principal_indices(cls, n_lit):
+    """The Sellmeier D term had a flipped sign, putting every index 0.17-0.61 high."""
+    assert getattr(C, cls)().n(1.064, 0.3, 20, pol='o') == pytest.approx(n_lit, abs=2e-3)
+
+
+def test_ktp_type2_shg_angle():
+    """Type-II SHG of 1.064 um in the xy plane is near phi = 23.3 deg."""
+    phi = C.KTP_xy().pmAngles_sfg(1.064, 1.064, 20, deg=True)['oee']['phi']
+    assert phi and phi[0] == pytest.approx(23.5, abs=0.5)
+
+
+def test_ktp_dndT_y_is_not_dndT_z():
+    ktp = C.KTP_xy()
+    # y and z thermo-optic coefficients are different expressions in Kato 2002
+    assert ktp._dndT_y != ktp._dndT_z
+
+
+# o-wave of each plane again: xy->z, yz->x, zx->y. Kato 2002 gives dn_x < dn_y < dn_z.
+# The index tests above all sit at T=20 degC, where dndT_i*(T-20) vanishes, so this
+# is what actually pins the _dndT_y/_dndT_z fix.
+@pytest.mark.parametrize("cls,dndT_lit", [
+    ('KTP_yz', 6.2338e-6), ('KTP_zx', 8.3379e-6), ('KTP_xy', 1.4418e-5)])
+def test_ktp_dndT_per_axis(cls, dndT_lit):
+    assert getattr(C, cls)().dndT(1.064, 0.3, 20, pol='o') == pytest.approx(dndT_lit, rel=1e-3)
+
+
+def test_ktp_zx_has_variable_theta():
+    """theta_rad was 'arb', so pmAngles_sfg took neither branch and returned {}.
+    Whether a given interaction has a solution is a separate question - what this
+    checks is that the angle is reported under 'theta'."""
+    zx = C.KTP_zx()
+    assert zx.theta_rad == 'var'
+    assert zx.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe'] == {'theta': [], 'phi': None}
+
+
+def test_sln_is_callable():
+    """SLN assigned only _o constants while n_expr accepts only 'e'."""
+    # value at the reference temperature, cross-checked against
+    # refractiveindex.info Gayer-1-e (1% MgO stoichiometric LiNbO3, e-ray)
+    assert C.SLN().n(1.064, 0.3, 24.5, pol='e') == pytest.approx(2.1432, abs=1e-4)
+
+
+@pytest.mark.parametrize("T_degC,wl_nm", [(40, 1544), (200, 1571)])
+def test_sln_qpm_matches_gayer_figure4(T_degC, wl_nm):
+    """b1 was the pre-erratum 4.677e-7. Only the corrected 4.677e-6 reproduces
+    Fig. 4 of Gayer 2008 (SHG in a 19.36 um period crystal); the old value drifts
+    to 1614 nm at 200 degC. Room-temperature n is nearly insensitive to b1, so
+    phase matching is what pins it."""
+    from scipy.optimize import brentq
+    sln = C.SLN()
+    period = 19.36 * (1 + 1.54e-5 * (T_degC - 25))       # a-axis thermal expansion
+
+    def mismatch(wl_f):
+        n = lambda w: float(sln.n(w, 0.3, T_degC, pol='e'))
+        return wl_f / (2 * (n(wl_f / 2) - n(wl_f))) - period
+
+    assert brentq(mismatch, 1.30, 1.90) * 1000 == pytest.approx(wl_nm, abs=3)
+
+
+@pytest.mark.parametrize("cls", ['CLBO', 'KTP_zx', 'SLN', 'BetaBBO_Eimerl1987'])
+def test_picklable_after_use(cls):
+    """lambdify caches made used instances unpicklable, breaking multiprocessing."""
+    x = getattr(C, cls)()
+    before = x.n(1.064, 0.3, 100, pol='e')      # populate the cache
+    y = pickle.loads(pickle.dumps(x))
+    assert y.n(1.064, 0.3, 100, pol='e') == before
+    assert (y.plane, y.theta_rad, y.phi_rad) == (x.plane, x.theta_rad, x.phi_rad)
+
+
+# ndispers ships several independent parameterisations of the same crystal, so they
+# can check each other without any external reference data. This is what caught the
+# _betaBBO_KK2010 dn/dT bug (_I used twice, _H never), and it is the only automated
+# defence against a transcription error that returns a plausible wrong number
+# instead of raising - the class of bug the KTP Sellmeier sign error belonged to.
+SAME_CRYSTAL = {
+    'BBO': ['BetaBBO_Eimerl1987', 'BetaBBO_Ghosh1995', 'BetaBBO_KK2010',
+            'BetaBBO_Tamosauskas2018'],
+    **{f'LBO_{p}': [f'LBO_{s}_{p}' for s in
+                    ('Castech', 'Ghosh1995', 'KK1994', 'KK2018', 'Newlight')]
+       for p in ('xy', 'yz', 'zx')},
+}
+
+
+def _spread(names, meth, wl, T, pol):
+    v = [float(getattr(getattr(C, nm)(), meth)(wl, 0.3, T, pol=pol)) for nm in names]
+    return max(v) - min(v)
+
+
+@pytest.mark.parametrize("group", sorted(SAME_CRYSTAL))
+@pytest.mark.parametrize("wl,T", [(0.4, 20), (0.532, 20), (1.064, 20), (1.064, 100), (1.55, 20)])
+@pytest.mark.parametrize("pol", ['o', 'e'])
+def test_sources_agree_on_index(group, wl, T, pol):
+    """Observed worst case is 1.6e-3; anything past 5e-3 is a transcription error,
+    not source scatter (the KTP sign bug was 0.17-0.61)."""
+    assert _spread(SAME_CRYSTAL[group], 'n', wl, T, pol) < 5e-3
+
+
+@pytest.mark.parametrize("wl", [0.532, 1.064])
+@pytest.mark.parametrize("pol", ['o', 'e'])
+def test_bbo_sources_agree_on_dndT(wl, pol):
+    """All four BBO sources agree to 5e-7 once _H is used. Note this check is only
+    meaningful for BBO: the five LBO sources genuinely disagree on dn/dT by up to
+    1e-5 (vendor values vs Kato's fits), so no useful bound exists for them and a
+    KK2010-sized error would hide inside that scatter."""
+    assert _spread(SAME_CRYSTAL['BBO'], 'dndT', wl, 20, pol) < 2e-6
+
+
+def test_betaBBO_KK2010_uses_H_coefficient():
+    """dndT_o_expr had _I_o in both the 1/wl and the constant slot, leaving _H_o
+    unused and dn_o/dT 1.76x too large."""
+    x = C.BetaBBO_KK2010()
+    assert x.dndT(1.064, 0.3, 20, pol='o') == pytest.approx(-1.61e-5, rel=5e-3)
+
+
+@pytest.mark.parametrize("meth", ['n', 'dn_wl', 'd2n_wl', 'd3n_wl', 'GD', 'GV', 'ng',
+                                  'GVD', 'TOD', 'dndT'])
+def test_kdp_methods_callable(meth):
+    """Every KDP wrapper but n and TOD declared T_deg and passed T_degC."""
+    getattr(C.KDP(), meth)(0.532, 0.3, 20, pol='o')
+
+
+@pytest.mark.xfail(reason="dndT2 still unfixed: unseeded cache + no phi injection", strict=True)
+def test_dndT2_runs_and_is_nonzero_for_e_ray():
+    """dndT2 raised KeyError (unseeded cache), then TypeError (no phi injection)."""
+    clbo = C.CLBO()
+    assert clbo.dndT2(0.532, 0.5, 100.0, pol='o') == 0     # n_o is linear in T
+    assert clbo.dndT2(0.532, 0.5, 100.0, pol='e') != 0     # n_e(theta) is not
