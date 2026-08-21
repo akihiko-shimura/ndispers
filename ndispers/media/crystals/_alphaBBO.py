@@ -134,9 +134,3 @@ class AlphaBBO(Medium):
     def TOD(self, wl_um, theta_rad, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
         return super().TOD(wl_um, theta_rad, 0, pol=pol)
-    
-    def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
-    
-    def woa_phi(self, wl_um, theta_rad, T_degC, pol='e'):
-        return super().woa_phi(wl_um, theta_rad, 0, T_degC, pol=pol)

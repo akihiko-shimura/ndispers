@@ -140,9 +140,48 @@ def test_kdp_methods_callable(meth):
     getattr(C.KDP(), meth)(0.532, 0.3, 20, pol='o')
 
 
-@pytest.mark.xfail(reason="dndT2 still unfixed: unseeded cache + no phi injection", strict=True)
 def test_dndT2_runs_and_is_nonzero_for_e_ray():
     """dndT2 raised KeyError (unseeded cache), then TypeError (no phi injection)."""
     clbo = C.CLBO()
     assert clbo.dndT2(0.532, 0.5, 100.0, pol='o') == 0     # n_o is linear in T
     assert clbo.dndT2(0.532, 0.5, 100.0, pol='e') != 0     # n_e(theta) is not
+
+
+@pytest.mark.parametrize("name", [nm for nm in sorted(dir(C))
+                                  if not nm.startswith('_') and isinstance(getattr(C, nm), type)])
+def test_injected_angle_matches_hand_written_wrapper(name):
+    """_func now fills in the fixed angle itself. Each medium still carries its
+    own hand-written wrappers doing the same thing, so they pin the base against
+    34 independent statements of what the answer should be."""
+    from ndispers._baseclass import Medium
+    x = getattr(C, name)()
+    args = (0.532, 0.3, 25) if len(x.symbols) == 4 else (0.532, 0.3)
+    for pol in ('o', 'e'):
+        try:
+            by_wrapper = float(x.n(*args, pol=pol))
+        except ValueError:
+            continue
+        assert float(Medium.n(x, *x._full_args(args), pol=pol)) == by_wrapper
+
+
+ALL_MEDIA = [nm for nm in sorted(dir(C))
+             if not nm.startswith('_') and isinstance(getattr(C, nm), type)]
+DISPERSION_METHODS = ['n', 'dn_wl', 'd2n_wl', 'd3n_wl', 'GD', 'GV', 'ng', 'GVD',
+                      'TOD', 'woa_theta', 'woa_phi', 'dndT', 'dndT2']
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
+def test_every_dispersion_method_is_wired(name):
+    """Each medium used to re-implement all ~12 public methods as a wrapper that
+    only injects its fixed angle, and any one of them could be forgotten: dndT2
+    was missing everywhere, d3n_wl in the eight LBO yz/zx classes, and AlphaBBO
+    and Calcite demanded a T_degC they have no symbol for. _func fills the angle
+    in now, so a missing wrapper is no longer a missing method."""
+    x = getattr(C, name)()
+    args = (0.532, 0.3, 25) if len(x.symbols) == 4 else (0.532, 0.3)
+    for meth in DISPERSION_METHODS:
+        for pol in ('o', 'e'):
+            try:
+                getattr(x, meth)(*args, pol=pol)
+            except ValueError:
+                pass          # medium legitimately refuses this polarization

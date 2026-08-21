@@ -32,19 +32,6 @@ class Medium:
         self.__theta_rad = 'arb'
         self.__phi_rad = 'arb'
         self._cached_func_dict = defaultdict(dict)
-        self._cached_func_dict['n_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['dn_wl_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['d2n_wl_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['d3n_wl_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['GD_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['GV_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['ng_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['GD_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['GVD_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['TOD_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['woa_theta_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['woa_phi_expr'] = {'o': 0, 'e': 0}
-        self._cached_func_dict['dndT_expr'] = {'o': 0, 'e': 0}
     
     def clear(self):
         """clear cached functions"""
@@ -131,15 +118,33 @@ class Medium:
         return sympy.diff(self.dndT_expr(pol), T)
 
     """ lambdified functions """
+    def _full_args(self, args):
+        """
+        Fill in the angle this medium holds fixed.
+
+        Each medium wraps the public methods to inject its fixed angle, so those
+        already pass one value per symbol and are handed straight back. A method
+        with no such wrapper is reached with only the angle that varies, and gets
+        the fixed one inserted here rather than at every call site.
+        """
+        if len(args) == len(self.symbols):
+            return args
+        if self.theta_rad == 'var':
+            phi_rad = 0 if isinstance(self.phi_rad, str) else self.phi_rad
+            return (args[0], args[1], phi_rad) + tuple(args[2:])
+        if self.phi_rad == 'var':
+            return (args[0], self.theta_rad, args[1]) + tuple(args[2:])
+        return args
+
     def _func(self, expr, *args, pol='o'):
+        args = self._full_args(args)
         array_args = map(np.asarray, args)
-        func = self._cached_func_dict[expr.__name__][pol]
-        if func:
-            return np.resize(func(*args), returnShape(*array_args))
-        else:
+        cache = self._cached_func_dict[expr.__name__]
+        func = cache.get(pol)
+        if func is None:
             func = lambdify(self.symbols, expr(pol), 'numpy')
-            self._cached_func_dict[expr.__name__][pol] = func
-            return np.resize(func(*args), returnShape(*array_args))
+            cache[pol] = func
+        return np.resize(func(*args), returnShape(*array_args))
     
     def n(self, *args, pol='o'):
         return self._func(self.n_expr, *args, pol=pol)
