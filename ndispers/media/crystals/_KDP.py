@@ -126,34 +126,34 @@ class KDP(Medium):
         """
         return super().n(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def dn_wl(self, wl_um, theta_rad, T_deg, pol='o'):
+    def dn_wl(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().dn_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def d2n_wl(self, wl_um, theta_rad, T_deg, pol='o'):
+    def d2n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().d2n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
 
-    def d3n_wl(self, wl_um, theta_rad, T_deg, pol='o'):
+    def d3n_wl(self, wl_um, theta_rad, T_degC, pol='o'):
         return super().d3n_wl(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GD(self, wl_um, theta_rad, T_deg, pol='o'):
+    def GD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay [fs/mm]"""
         return super().GD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GV(self, wl_um, theta_rad, T_deg, pol='o'):
+    def GV(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Velocity [µm/fs]"""
         return super().GV(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def ng(self, wl_um, theta_rad, T_deg, pol='o'):
+    def ng(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group index, c/Group velocity"""
         return super().ng(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def GVD(self, wl_um, theta_rad, T_deg, pol='o'):
+    def GVD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Group Delay Dispersion [fs^2/mm]"""
         return super().GVD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
-    def TOD(self, wl_um, theta_rad, T_deg, pol='o'):
+    def TOD(self, wl_um, theta_rad, T_degC, pol='o'):
         """Third Order Dispersion [fs^3/mm]"""
-        return super().TOD(wl_um, theta_rad, 0, T_deg, pol=pol)
+        return super().TOD(wl_um, theta_rad, 0, T_degC, pol=pol)
     
     def woa_theta(self, wl_um, theta_rad, T_degC, pol='e'):
         return super().woa_theta(wl_um, theta_rad, 0, T_degC, pol=pol)
