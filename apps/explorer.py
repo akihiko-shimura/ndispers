@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.9.1", "numpy", "matplotlib"]
+# dependencies = ["ndispers==0.9.1", "numpy", "plotly"]
 # ///
 """Refractive index explorer — browse ndispers media interactively.
 
@@ -23,7 +23,7 @@ def _():
 
     _t0 = time.perf_counter()
     import numpy as np
-    import matplotlib.pyplot as plt
+    import plotly.graph_objects as go
     import sympy
     import ndispers as nd
     import ndispers.media.crystals as _C
@@ -36,7 +36,7 @@ def _():
             if isinstance(_obj, type):
                 MEDIA[_name] = _obj
     IMPORT_S = time.perf_counter() - _t0
-    return IMPORT_S, MEDIA, nd, np, plt, sympy, time
+    return IMPORT_S, MEDIA, go, nd, np, sympy, time
 
 
 @app.cell(hide_code=True)
@@ -81,12 +81,9 @@ def _(MEDIA, mo):
         options=list(MEDIA), value="BetaBBO_Eimerl1987", label="Medium"
     )
     pol = mo.ui.radio(options=["o", "e"], value="o", label="Polarization", inline=True)
-    T = mo.ui.slider(-50, 300, value=25, step=5, label="Temperature (°C)", show_value=True)
-    angle = mo.ui.slider(
-        0, 90, value=0, step=1, label="Angle θ or φ (deg)", show_value=True
-    )
-    mo.hstack([mo.vstack([medium, pol], gap=0.25),
-              mo.vstack([T, angle], gap=0.25)], justify="start", gap=0.75)
+    T = mo.ui.number(-50, 300, value=25, step=1, label="Temperature (°C)")
+    angle = mo.ui.number(0, 90, value=0, step=0.1, label="Angle θ or φ (deg)")
+    mo.hstack([medium, pol], justify="start", gap=0.75)
     return T, angle, medium, pol
 
 
@@ -137,7 +134,6 @@ def _(IS_ISOTROPIC, mo, pol, sympy, x):
 @app.cell(hide_code=True)
 def _(mo):
     wl0 = mo.ui.number(0.2, 4.0, value=1.064, step=0.001, label="Wavelength (µm)")
-    wl0
     return (wl0,)
 
 
@@ -150,13 +146,23 @@ def _(IS_ISOTROPIC, QUANTITIES, VARIABLES, mo):
     _vars = {v[0]: k for k, v in VARIABLES.items()
              if not (IS_ISOTROPIC and k == "angle")}
     variable = mo.ui.dropdown(options=_vars, value="wavelength", label="against")
-    mo.hstack([quantity, variable], justify="start", gap=0.75)
     return quantity, variable
 
 
 @app.cell(hide_code=True)
+def _(IS_ISOTROPIC, T, angle, mo, quantity, variable, wl0):
+    # the held values and the plot selectors, right above the figure
+    mo.vstack([
+        mo.hstack([wl0, T] + ([] if IS_ISOTROPIC else [angle]),
+                  justify="start", gap=0.75),
+        mo.hstack([quantity, variable], justify="start", gap=0.75),
+    ], gap=0.25)
+    return
+
+
+@app.cell(hide_code=True)
 def _(
-    IS_ISOTROPIC, QUANTITIES, T, VARIABLES, angle, mo, np, plt, pol,
+    IS_ISOTROPIC, QUANTITIES, T, VARIABLES, angle, go, mo, np, pol,
     quantity, time, variable, wl0, x,
 ):
     _q, _v = quantity.value, variable.value
@@ -186,18 +192,30 @@ def _(
         if k != _v and not (IS_ISOTROPIC and k == "angle")
     )
 
-    plt.rcParams.update({"font.size": 8})
-    _fig, _ax = plt.subplots(figsize=(5.25, 2.7))
-    _ax.plot(_sweep, np.broadcast_to(_y, _sweep.shape))
-    _ax.set_xlabel(f"{_vlabel} ({_vunit})")
-    _ax.set_ylabel(f"{_qlabel}" + (f" ({_qunit})" if _qunit else ""))
-    _ax.set_title(
-        f"{type(x).__name__}   {_fixed}"
-        + ("" if IS_ISOTROPIC else f", pol = {pol.value}"),
-        fontsize=8,
+    _ylab = _qlabel + (f" ({_qunit})" if _qunit else "")
+    _fig = go.Figure(
+        go.Scatter(
+            x=_sweep, y=np.broadcast_to(_y, _sweep.shape), mode="lines",
+            hovertemplate=f"{_vlabel} %{{x:.4g}} {_vunit}<br>"
+                          f"{_qlabel} %{{y:.6g}} {_qunit}<extra></extra>",
+        )
     )
-    _ax.grid(alpha=0.3)
-    plt.tight_layout()
+    _fig.update_layout(
+        title=dict(
+            text=f"{type(x).__name__}   {_fixed}"
+                 + ("" if IS_ISOTROPIC else f", pol = {pol.value}"),
+            font_size=11, x=0, xanchor="left", y=0.97, yanchor="top",
+        ),
+        xaxis_title=f"{_vlabel} ({_vunit})",
+        yaxis_title=_ylab,
+        width=560,
+        margin=dict(l=60, r=20, t=58, b=45),
+        height=310,
+        font_size=11,
+        template="plotly_white",
+        showlegend=False,
+        modebar=dict(orientation="v"),
+    )
 
     # a flat curve is usually physics, not a bug: say which
     _yy = np.asarray(_y)

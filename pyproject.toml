@@ -45,7 +45,7 @@ dependencies = [
 dev = ["pytest"]
 # for running examples/basic_usage.ipynb and exploring interactively;
 # kept out of dev so CI's uv sync stays lean
-notebook = ["matplotlib", "ipython", "jupyterlab", "marimo"]
+notebook = ["matplotlib", "plotly", "ipython", "jupyterlab", "marimo"]
 
 [project.urls]
 Homepage = "https://github.com/akihiko-shimura/ndispers"
