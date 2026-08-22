@@ -20,8 +20,8 @@ class RBBF(Medium):
     n_o^2 = 1 + 1.18675λ²/(λ² - 0.00750) - 0.00910λ²  (λ is in µm)
     n_e^2 = 1 + 0.97530λ²/(λ² - 0.00665) - 0.00145λ²  (λ is in µm)
     
-    Thermo-optic dispersion equation
-    --------------------------------
+    Thermo-optic coefficient
+    ------------------------
     dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶  (λ is in µm)
     
     For ordinary ray (n_o):
@@ -30,16 +30,13 @@ class RBBF(Medium):
     For extraordinary ray (n_e):
     A = 0.285633, B = -2.482927, C = 6.916728, D = -16.153736
     
+    The temperature correction dn/dT * (T - 24) vanishes at 24 degC.
+
     Validity range
     ---------------
     Sellmeier equation: Deep UV to near infrared
     Thermo-optic equation: 0.194µm ≤ λ ≤ 1.014µm
     
-    Implementation notes
-    --------------------
-    RBBF is a uniaxial crystal where the refractive index doesn't depend on the azimuthal angle phi.
-    In all method calls to the parent class, a value of 0 is passed for the phi_rad parameter.
-
     Ref
     ----
     - Chen, C., Wu, Y., Li, Y., Wang, J., Wu, B., Jiang, M., Zhang, G., & Ye, N. (2009). Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2. Journal of the Optical Society of America B, 26(8), 1519-1525. https://opg.optica.org/josab/abstract.cfm?uri=josab-26-8-1519

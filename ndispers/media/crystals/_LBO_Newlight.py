@@ -20,12 +20,10 @@ class LBO(Medium):
     ------------------------
     dn/dT = (F_i + G_i * wl)  for i=x,y,z
     
+    The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
+
     Validity range
     --------------
-
-    Ref
-    ---
-    https://www.newlightphotonics.com/Nonlinear-Optical-Crystals/LBO-Crystals
 
     Note
     ----
@@ -42,6 +40,11 @@ class LBO(Medium):
         zx     |    y     |    zx    |   var   |   pi/2
         ------------------------------------------------
         var : variable
+
+    Ref
+    ---
+    https://www.newlightphotonics.com/Nonlinear-Optical-Crystals/LBO-Crystals
+
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

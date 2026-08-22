@@ -19,12 +19,6 @@ class SLN(Uniax_neg_3m):
     n(wl) = sqrt(a1_i + b1 * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - a5_i**2) - a6_i * wl**2) for i=o,e
     f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
 
-    Ref
-    ---
-    Gayer, O., et al. "Temperature and wavelength dependent refractive index equations for MgO-doped congruent and stoichiometric LiNbO3." Applied Physics B 91.2 (2008): 343-348.
-    Erratum: Applied Physics B 101.2 (2010): 481. (b1 corrected to 4.677e-6)
-    https://www.opt-oxide.com/products/sln/
-
     Note
     ----
     Sellmeier equation only for e-wave is given.
@@ -37,6 +31,13 @@ class SLN(Uniax_neg_3m):
     +5e-4 /K at 1.064 µm, an order of magnitude above the accepted ~3e-5 /K for
     LiNbO3. The same holds for the other Gayer sets. Use dndT/dndT2 from this
     class for phase-matching work, not as absolute thermo-optic values.
+
+    Ref
+    ---
+    Gayer, O., et al. "Temperature and wavelength dependent refractive index equations for MgO-doped congruent and stoichiometric LiNbO3." Applied Physics B 91.2 (2008): 343-348.
+    Erratum: Applied Physics B 101.2 (2010): 481. (b1 corrected to 4.677e-6)
+    https://www.opt-oxide.com/products/sln/
+
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",

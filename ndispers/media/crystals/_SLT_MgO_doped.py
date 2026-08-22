@@ -19,6 +19,10 @@ class SLT(Uniax_neg_3m):
     n(wl) = sqrt(a1_i + b1_i * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - (a5_i + b5_i * f)**2) - a6_i * wl**2) for i=o,e
     f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
 
+    Note
+    ----
+    d coefficients are of *congrunet* LT crystal, not of stoichiometric.
+
     Ref
     ---
     - Sellmeier equation, ratio of d22 vs d33:
@@ -26,9 +30,6 @@ class SLT(Uniax_neg_3m):
     - Second order nonlinear-optical coefficients, d33, d31:
       Shoji, I., et al. "Absolute scale of second-order nonlinear-optical coefficients," J. Opt. Soc. Am. B 14 (1997): 2268-2294
     
-    Note
-    ----
-    d coefficients are of *congrunet* LT crystal, not of stoichiometric.
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",

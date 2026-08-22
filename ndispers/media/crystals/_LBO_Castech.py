@@ -21,12 +21,10 @@ class LBO(Medium):
     dn/dT = F_i  for i=x,y
     dn/dT = F_i + G_i*wl  for i=z
     
+    The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
+
     Validity range
     --------------
-
-    Ref
-    ---
-    https://www.castech.com/product/LBO-121.html
 
     Note
     ----
@@ -43,6 +41,11 @@ class LBO(Medium):
         zx     |    y     |    zx    |   var   |   pi/2
         ------------------------------------------------
         var : variable
+
+    Ref
+    ---
+    https://www.castech.com/product/LBO-121.html
+
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

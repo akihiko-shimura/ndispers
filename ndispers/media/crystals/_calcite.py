@@ -23,6 +23,11 @@ class Calcite(Medium):
     0.2 to 2.2 µm for o-wave
     0.2 to 3.3 µm for e-wave
 
+    Note
+    ----
+    The Sellmeier equation has no temperature term: T_degC is accepted
+    for signature uniformity and ignored, and dndT returns 0.
+
     Ref
     ----
     Handbook of Optics: Devices, Measurements, and Properties, Volume II, by Michael Bass (ed),

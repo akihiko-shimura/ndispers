@@ -19,13 +19,10 @@ class LBO(Medium):
     -------------------------
     dn/dT = F_i + G_i * wl   for i = x,y,z
     
+    The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
+
     Validity range
     --------------
-
-    Ref
-    ---
-    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
-    Kato, K., S. G. Grechin, and N. Umemura. "New thermo-optic dispersion formula for LiB3O5." Laser Physics 28.9 (2018): 095403.
 
     Note
     ----
@@ -42,6 +39,12 @@ class LBO(Medium):
         zx     |    y     |    zx    |   var   |   pi/2
         ------------------------------------------------
         var : variable
+
+    Ref
+    ---
+    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
+    Kato, K., S. G. Grechin, and N. Umemura. "New thermo-optic dispersion formula for LiB3O5." Laser Physics 28.9 (2018): 095403.
+
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",

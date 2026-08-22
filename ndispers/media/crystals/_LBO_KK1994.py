@@ -22,10 +22,6 @@ class LBO(Medium):
     Validity range
     --------------
 
-    Ref
-    ---
-    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
-
     Note
     ----
     In the current version, biaxial crystals are limited to the principal dielectric planes, 
@@ -41,6 +37,11 @@ class LBO(Medium):
         zx     |    y     |    zx    |   var   |   pi/2
         ------------------------------------------------
         var : variable
+
+    Ref
+    ---
+    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
+
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",

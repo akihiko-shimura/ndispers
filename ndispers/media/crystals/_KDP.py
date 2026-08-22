@@ -22,9 +22,16 @@ class KDP(Medium):
     dn_o/dT = 0 # to be incorporated
     dn_e/dT = 0 # to be incorporated
     
+    The temperature correction dn/dT * (T - 24.8) vanishes at 24.8 degC.
+
     Validity range
     ---------------
     T = 24.8 degC
+
+    Note
+    ----
+    The thermo-optic coefficients are currently set to zero, so n is
+    independent of T and the dndT method returns 0.
 
     Ref
     ----

@@ -20,14 +20,12 @@ class KTP(Medium):
     -------------------------
     dn/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
 
+    The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
+
     Validity range
     ---------------
     dn/dT : 0.43 to 1.58 µm
 
-    Ref
-    ----
-    Kato, Kiyoshi, and Eiko Takaoka. "Sellmeier and thermo-optic dispersion formulas for KTP." Applied optics 41.24 (2002): 5040-5044.
-    
     Note
     ----
     In the current version, biaxial crystals are limited to the principal dielectric planes, 
@@ -43,6 +41,11 @@ class KTP(Medium):
         zx     |    y     |    zx    |   var   |   pi/2
         ------------------------------------------------
         var : variable
+
+    Ref
+    ----
+    Kato, Kiyoshi, and Eiko Takaoka. "Sellmeier and thermo-optic dispersion formulas for KTP." Applied optics 41.24 (2002): 5040-5044.
+    
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

@@ -16,6 +16,11 @@ class AlphaBBO(Medium):
     ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
+    Note
+    ----
+    The Sellmeier equation has no temperature term: T_degC is accepted
+    for signature uniformity and ignored, and dndT returns 0.
+
     Ref
     ---
     https://www.castech.com/product/%CE%B1-BBO-90.html

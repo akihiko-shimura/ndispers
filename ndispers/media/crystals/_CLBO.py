@@ -21,6 +21,8 @@ class CLBO(Medium):
     dn_o/dT = (At_o + Bt_o/wl)*1e-6
     dn_e/dT = (At_e + Bt_e/wl + Ct_e/wl**2 + Dt_e/wl**3)*1e-6
     
+    The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
+
     Validity range
     ---------------
     0.1914 to 2.09 µm
