@@ -146,3 +146,37 @@ case λ₁ = λ₂.
   `tol_deg` is the absolute tolerance of the returned angle in degrees.
 - `pmFactor_sfg` returns sinc²(Δk·L/2), the relative conversion
   efficiency of a crystal of length `L_mm`.
+
+## Second-order nonlinearity
+
+Crystals whose point group allows a second-order nonlinearity inherit a
+class from `ndispers.groups` (3m, 32, 4̄2m, 4mm or mm2) and carry one
+reference measurement per independent tensor component in `_d_ref`:
+
+```
+_d_ref = {"d22": (2.2, 1.064, 1.064)}     # pm/V, for SFG of wl1 and wl2 in µm
+```
+
+- `d_sfg("d22", wl1, wl2, T_degC)` (also spelled `d22_sfg(wl1, wl2, T_degC)`)
+  returns the component scaled to other wavelengths by **Miller's rule**,
+  d_ijk ∝ χ_ii(ω₃) χ_jj(ω₁) χ_kk(ω₂) with χ_ii = n_i² − 1 the principal
+  susceptibilities of the crystal frame. It reproduces the reference value
+  exactly at the reference wavelengths. Miller's rule is an empirical,
+  single-parameter estimate: good for BBO, KDP and LiNbO₃, rough for KTP,
+  untested for several others — each crystal's `_d_note` says what is known.
+- `deff_sfg(wl1, wl2, theta_rad, phi_rad, T_degC, pol1, pol2, pol3)` is
+  the effective coefficient, d_eff = ê₃·d:(ê₁ê₂), contracted with the
+  unit **E**-field vectors of the three waves. Walk-off is included (the
+  e-wave field is perpendicular to the Poynting vector, not to k). The
+  overall sign is a convention; compare magnitudes. For a principal plane of
+  a biaxial crystal pass `None` for the angle the plane fixes.
+- Kleinman symmetry is assumed throughout (transparency range). Under it
+  d14 of class 32 vanishes, and type-II d_eff of class 4mm vanishes.
+- Component names (d31, d32, ...) follow each crystal's literature. For LBO
+  the dielectric axes are x, y, z = a, −c, b, so the polar axis c is
+  dielectric y and "d31" means d_{c a a}, not d_{z x x}; `Biax_mm2` handles
+  the mapping through the crystal's `_mm2_axes`.
+
+The derivation and the closed forms per point group are in
+`docs/dev/deff_theory.tex` (and checked numerically in
+`ndispers/tests/test_nonlinear.py`).

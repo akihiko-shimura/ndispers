@@ -36,6 +36,7 @@ nav:
       - Crystals: api/crystals.md
       - Glasses: api/glasses.md
       - Base class: api/base.md
+      - Point groups (d_eff): api/groups.md
 
 plugins:
   - search

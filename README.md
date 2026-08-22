@@ -30,7 +30,7 @@ The crystals also have nonlinear-optics methods:
 - Phase mismatch, dk
 - Phase-matching angles
 - Phase-matching factor, sinc²(dk·L/2)
-- Effective nonlinear coefficient, deff
+- Effective nonlinear coefficient, d_eff, with the tensor components scaled to the working wavelengths by Miller's rule (every non-centrosymmetric crystal in the package)
 
 ## Installation
 
@@ -110,6 +110,18 @@ Phase-matching angles for sum-frequency generation are solved directly. For Type
 ```
 
 `dk_sfg` and `pmFactor_sfg` give the phase mismatch and the sinc² phase-matching factor for arbitrary angles.
+
+The effective nonlinear coefficient at that angle, for the φ = 90° cut:
+
+```python
+>>> bbo.deff_sfg(1.064, 1.064, np.radians(22.88), np.radians(90), 25, 'o', 'o', 'e')
+-1.9937...  # pm/V (the overall sign is a convention); d22 = 2.2 pm/V at 1.064 µm SHG
+            # (Shoji et al. 1999), walk-off included
+>>> bbo.d_sfg("d22", 0.8, 0.8, 25)
+2.3300...   # d22 for 800 nm SHG by Miller's rule
+```
+
+Every non-centrosymmetric crystal has this (KDP, CLBO, LBO, KTP, ...); `help(bbo.deff_sfg)` and the *Conventions* page describe the sign and angle conventions, and each crystal's `_d_note` says where its coefficients come from and how far Miller scaling has been tested for it.
 
 ## Available media
 
