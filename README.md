@@ -138,7 +138,8 @@ Medium objects are picklable, including after use, so they can be passed directl
 
 ## Documentation
 
-See [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) for more features and examples.
+- [Tutorial notebook](examples/basic_usage.ipynb) — the basic workflow, from inspecting a crystal's Sellmeier equation to phase-matching curves, viewable directly on GitHub.
+- [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — quick start and the catalog of all media with their formulas and references.
 
 ## Development
 
