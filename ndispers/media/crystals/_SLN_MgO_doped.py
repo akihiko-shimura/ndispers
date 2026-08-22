@@ -47,7 +47,8 @@ class SLN(Uniax_neg_3m):
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
                  "_b1_o", "_b2_o", "_b3_o", "_b4_o",
-                 "_b1_e", "_b2_e", "_b3_e", "_b4_e"]
+                 "_b1_e", "_b2_e", "_b3_e", "_b4_e",
+                 "_d31_1064shg", "_d22_1064shg"]
                  
     _default_pol = 'e'   # no o-ray Sellmeier set exists for SLN
 

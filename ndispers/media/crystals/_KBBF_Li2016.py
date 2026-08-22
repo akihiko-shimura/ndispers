@@ -17,6 +17,12 @@ class KBBF(Uniax_neg_32):
     ------------------
     n(wl) = sqrt(A_i + B1_i * wl**2 / (wl**2 - C1_i**2) + B2_i * wl**2 / (wl**2 - C2_i**2) - D_i * wl**2)  + dndT_i * (T - 22) for i = o, e
 
+    Note
+    ----
+    No thermo-optic coefficients (dn/dT) have been reported in the literature
+    for KBBF, so the temperature dependence cannot be computed: dndT_i above
+    is set to zero, n is independent of T, and the dndT method returns 0.
+
     Ref
     ---
     Sellmeier equation:
@@ -33,7 +39,8 @@ class KBBF(Uniax_neg_32):
     """
     __slots__ = ["_A_o", "_B1_o", "_B2_o", "_C1_o", "_C2_o",  "_D_o",
                  "_A_e", "_B1_e", "_B2_e", "_C1_e", "_C2_e",  "_D_e",
-                 "_d11_1064shg", "_d14_1064shg"]
+                 "_d11_1064shg", "_d14_1064shg",
+                 "_dndT_o", "_dndT_e"]
                  
     def __init__(self):
         super().__init__()

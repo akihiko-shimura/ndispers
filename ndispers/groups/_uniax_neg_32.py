@@ -2,6 +2,7 @@ from ndispers._baseclass import Medium
 import numpy as np
 
 class Uniax_neg_32(Medium):
+    __slots__ = []
     """
     Class of negative uniaxial crystals of point group 32.
 

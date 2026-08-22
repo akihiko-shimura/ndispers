@@ -79,12 +79,19 @@ package. As implemented:
 | Media | Temperature term vanishes at |
 |---|---|
 | β-BBO (all four sources), CLBO, LBO (all sources), KTP | 20 °C |
-| KBBF | 22 °C |
 | RBBF, fused silica, CaF₂ | 24 °C |
 | SLN, SLT (Gayer 2008 form) | 24.5 °C |
-| KDP | 24.8 °C (coefficients currently zero — n is T-independent) |
 | LB4 | 25 °C |
+| KDP | 24.8 °C in the implemented form, but the thermo-optic coefficients are set to zero — n is T-independent, `dndT` is 0 |
+| KBBF | **no thermo-optic coefficients have been reported in the literature**, so the temperature dependence cannot be computed: the implemented coefficients are zero, n is T-independent and `dndT` is 0 |
 | α-BBO, Calcite | no temperature term; `T_degC` is accepted and ignored, `dndT` is 0 |
+
+Not every material property is known for every crystal. A method that
+exists on all media is no guarantee that the underlying coefficients
+have ever been measured — when they have not, the class implements
+zeros. If a temperature dependence matters to your calculation, check
+that `x.dndT(...)` is nonzero (or read the class docstring) before
+relying on it.
 
 ## Dispersion quantities
 
