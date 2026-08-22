@@ -152,6 +152,8 @@ uv sync
 uv run pytest
 ```
 
+Releases are published to PyPI by pushing a version tag; see [docs/RELEASING.md](docs/RELEASING.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
