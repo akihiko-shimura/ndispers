@@ -1,0 +1,45 @@
+# Browser apps
+
+Two [marimo](https://marimo.io) notebooks that run entirely in the browser —
+no server, no install. ndispers is a pure-Python wheel and numpy, scipy and
+sympy all ship with Pyodide, so the whole calculation happens client-side.
+
+| app | what it does |
+|---|---|
+| `explorer.py` | refractive index and its derived quantities (n_g, GVD, TOD, dn/dT, walk-off) for every medium |
+| `phasematching.py` | collinear SFG: phase-matching angles, acceptance bandwidths, walk-off, effective nonlinearity |
+
+## Run locally
+
+```
+uv sync --group notebook
+uv run marimo edit apps/explorer.py
+```
+
+## Build the static site
+
+```
+uv run marimo export html-wasm apps/explorer.py -o site/explorer --mode run
+uv run marimo export html-wasm apps/phasematching.py -o site/phasematching --mode run
+```
+
+Each export is self-contained and can be served by any static host. Measured
+on the explorer: about 3.7 s from page load to first result (Pyodide plus the
+scientific stack is ~28 MB, cached by the browser afterwards), then ~60 ms to
+redraw a 400-point dispersion curve and ~0.6 s when switching crystal, since
+that rebuilds the symbolic derivatives.
+
+## Notes on the physics
+
+`phasematching.py` computes acceptance bandwidths as the full width of
+sinc²(ΔkL/2) at a chosen threshold, solved with Brent's method rather than by
+stepping to the first zero. Cross-checked against the step-and-`fullWidth`
+implementation in `opt-workspace/notebooks/pmbandwidth_calc.py`, it agrees to
+better than 0.1%. For β-BBO Type-I SHG of 1.064 µm the results are
+0.51 mrad·cm, 36 °C·cm and 2.1 nm·cm.
+
+The azimuthal cut φ is a control rather than a fixed value. A refractive index
+in a uniaxial crystal does not depend on φ — which is why ndispers reports
+`phi_rad` as `'arb'` — but d_eff does, through a sin(3φ) or cos(3φ) factor. At
+φ = 0 the d22 term of a 3m crystal vanishes entirely: β-BBO Type-I SHG gives
+0.018 pm/V there against 1.96 pm/V at the conventional φ = 30° cut.

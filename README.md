@@ -140,6 +140,7 @@ Medium objects are picklable, including after use, so they can be passed directl
 
 ## Documentation
 
+- **[Browser apps](apps/)** — a refractive-index explorer and a phase-matching calculator that run client-side, with no install.
 - [Tutorial notebook](examples/basic_usage.ipynb) — the basic workflow, from inspecting a crystal's Sellmeier equation to phase-matching curves, viewable directly on GitHub.
 - [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — conventions (units, angles, sign conventions) and the [media catalog](https://ndispers.readthedocs.io/en/latest/api/crystals/) of every crystal and glass with its formula, validity range and references.
 
