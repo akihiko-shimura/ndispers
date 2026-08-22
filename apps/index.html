@@ -1,0 +1,58 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ndispers — browser apps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Refractive index dispersion and phase matching for nonlinear optical crystals, computed in your browser.">
+<style>
+  :root { color-scheme: light dark; --fg: #1a1a1a; --dim: #666; --line: #ddd; --card: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg: #e8e8e8; --dim: #999; --line: #333; --card: #1c1c1c; }
+    body { background: #131313; }
+  }
+  body { font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+         color: var(--fg); max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem; }
+  h1 { font-size: 1.9rem; margin: 0 0 .3rem; }
+  .sub { color: var(--dim); margin: 0 0 2.5rem; }
+  a.card { display: block; border: 1px solid var(--line); border-radius: 10px;
+           background: var(--card); padding: 1.1rem 1.3rem; margin-bottom: 1rem;
+           text-decoration: none; color: inherit; }
+  a.card:hover { border-color: #6a9; }
+  a.card h2 { margin: 0 0 .3rem; font-size: 1.15rem; }
+  a.card p { margin: 0; color: var(--dim); font-size: .94rem; }
+  footer { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--line);
+           color: var(--dim); font-size: .88rem; }
+  footer a { color: inherit; }
+  code { background: rgba(128,128,128,.15); padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+</style>
+
+<h1>ndispers</h1>
+<p class="sub">
+  Refractive index dispersion and phase matching for crystals and glasses used
+  in nonlinear and ultrafast optics — computed in your browser, with nothing to
+  install.
+</p>
+
+<a class="card" href="explorer/">
+  <h2>Refractive index explorer →</h2>
+  <p>Every medium in the package: n(λ) with group index, group-velocity
+     dispersion, third-order dispersion, dn/dT and walk-off, alongside the
+     Sellmeier equation, its validity range and the papers it came from.</p>
+</a>
+
+<a class="card" href="phasematching/">
+  <h2>Phase-matching calculator →</h2>
+  <p>Collinear sum-frequency generation: phase-matching angles for every
+     polarization combination, acceptance bandwidths in wavelength, angle and
+     temperature, walk-off, and the effective nonlinearity for a given
+     azimuthal cut.</p>
+</a>
+
+<footer>
+  <p>The first load fetches Python and the scientific stack (~28 MB) and takes
+     a few seconds; afterwards it is cached. Nothing is sent to a server — the
+     calculation runs on your machine.</p>
+  <p>Built on <a href="https://github.com/akihiko-shimura/ndispers">ndispers</a>
+     · <a href="https://ndispers.readthedocs.io/">documentation</a>
+     · <a href="https://pypi.org/project/ndispers/">PyPI</a>
+     · MIT licensed</p>
+</footer>
