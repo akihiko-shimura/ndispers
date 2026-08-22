@@ -176,6 +176,49 @@ ALL_MEDIA = [nm for nm in sorted(dir(C))
              if not nm.startswith('_') and isinstance(getattr(C, nm), type)]
 
 
+# A point group belongs to exactly one crystal system, and only a
+# non-centrosymmetric one can have a second-order nonlinearity at all. Both
+# facts are checkable against the docstring header.
+#
+# Note what this does not catch: alpha-BBO carried beta-BBO's point group (3m
+# where it should be 3̄m), and since both are trigonal no consistency check
+# would have flagged it - that one needed reading the literature.
+POINT_GROUPS = {                    # point group: (crystal system, centrosymmetric)
+    '3m': ('trigonal', False), '3̄m': ('trigonal', True), '32': ('trigonal', False),
+    '4̄2m': ('tetragonal', False), '4mm': ('tetragonal', False),
+    'mm2': ('orthorhombic', False), 'm3̄m': ('cubic', True),
+}
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
+def test_point_group_matches_crystal_system(name):
+    import re
+    doc = getattr(C, name).__doc__
+    pg = re.search(r'Point group\s*:\s*(\S+)', doc)
+    cs = re.search(r'Crystal system\s*:\s*(\w+)', doc)
+    assert pg and cs, f"{name}: header is missing point group or crystal system"
+    entry = POINT_GROUPS.get(pg.group(1))
+    assert entry, f"{name}: unrecognised point group {pg.group(1)!r}"
+    system, _ = entry
+    assert cs.group(1).lower() == system, (
+        f"{name}: crystal system {cs.group(1)!r} contradicts point group {pg.group(1)!r}")
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
+def test_centrosymmetric_media_have_no_nonlinear_coefficients(name):
+    """Second-order nonlinearity vanishes in a centrosymmetric crystal, so a
+    medium carrying d coefficients must not be labelled with a centrosymmetric
+    point group, and vice versa."""
+    import re
+    x = getattr(C, name)()
+    pg = re.search(r'Point group\s*:\s*(\S+)', type(x).__doc__).group(1)
+    _, centrosymmetric = POINT_GROUPS[pg]
+    has_d = any('shg' in k for k in x.constants)
+    assert not (centrosymmetric and has_d), (
+        f"{name}: point group {pg} is centrosymmetric but the class defines "
+        f"second-harmonic coefficients")
+
+
 @pytest.mark.parametrize("name", ALL_MEDIA)
 def test_docstring_template(name):
     """The class docstrings are the source of the documentation's media catalog,

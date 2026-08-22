@@ -6,11 +6,12 @@ class AlphaBBO(Medium):
     """
     α-BBO (α-BaB₂O₄, barium borate) crystal
 
-    - Point group : 3m  (C3v)
+    - Point group : 3̄m  (D3d); centrosymmetric, so unlike β-BaB₂O₄ this phase
+      has no second-order nonlinearity and is used as a birefringent optic
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Transparency range : 0.19 µm to 2.6 µm
+    - Transparency range : 0.19 to 3.5 µm
 
     Sellmeier equation
     ------------------
@@ -27,7 +28,9 @@ class AlphaBBO(Medium):
 
     Ref
     ---
-    https://www.castech.com/product/%CE%B1-BBO-90.html
+    Sellmeier equation: CASTECH vendor data for α-BBO.
+    Structure and transparency range:
+    Fedorov, P. P., A. E. Kokh, and N. G. Kononova. "Barium borate β-BaB₂O₄ as a material for nonlinear optics." Russian Chemical Reviews 71.8 (2002): 651-671.
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e"]
