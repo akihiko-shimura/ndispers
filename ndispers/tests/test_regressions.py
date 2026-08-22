@@ -159,7 +159,7 @@ def test_docstring_template(name):
     not come back."""
     doc = getattr(C, name).__doc__
     assert doc, f"{name} has no docstring"
-    for section in ("Sellmeier equation", "Ref"):
+    for section in ("Sellmeier equation", "Validity range", "Ref"):
         assert section in doc, f"{name}: missing '{section}' section"
     for banned in ("Dielectic", "Tranparency", "Example\n", "Usage\n"):
         assert banned not in doc, f"{name}: contains {banned.strip()!r}"
