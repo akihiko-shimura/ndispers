@@ -82,7 +82,7 @@ package. As implemented:
 | RBBF, fused silica, CaF₂ | 24 °C |
 | SLN, SLT (Gayer 2008 form) | 24.5 °C |
 | LB4 | 25 °C |
-| KDP | 24.8 °C in the implemented form, but the thermo-optic coefficients are set to zero — n is T-independent, `dndT` is 0 |
+| KDP | 24.8 °C |
 | KBBF | **no thermo-optic coefficients have been reported in the literature**, so the temperature dependence cannot be computed: the implemented coefficients are zero, n is T-independent and `dndT` is 0 |
 | α-BBO, Calcite | no temperature term; `T_degC` is accepted and ignored, `dndT` is 0 |
 

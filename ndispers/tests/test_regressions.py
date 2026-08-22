@@ -1,6 +1,8 @@
 """Regression tests for bugs fixed in _baseclass.py and the KTP / SLN modules."""
 import pickle
 
+import numpy as np
+
 import pytest
 
 import ndispers.media.crystals as C
@@ -138,6 +140,29 @@ def test_betaBBO_KK2010_uses_H_coefficient():
 def test_kdp_methods_callable(meth):
     """Every KDP wrapper but n and TOD declared T_deg and passed T_degC."""
     getattr(C.KDP(), meth)(0.532, 0.3, 20, pol='o')
+
+
+# Zernike's measured indices, the data Ghosh's Sellmeier coefficients were
+# fitted to. The previous implementation dropped the wl**2 factor of the
+# lattice term and flipped its sign, putting n_o 0.023 high at 1.064 um.
+@pytest.mark.parametrize("wl_um,n_o,n_e", [
+    (0.4047, 1.52449, 1.47787), (0.5461, 1.51152, 1.47044),
+    (0.6943, 1.50529, 1.46685), (1.0642, 1.49384, 1.46041)])
+def test_kdp_indices(wl_um, n_o, n_e):
+    kdp = C.KDP()
+    assert kdp.n(wl_um, 0, 24.8, pol='o') == pytest.approx(n_o, abs=2e-3)
+    assert kdp.n(wl_um, np.pi/2, 24.8, pol='e') == pytest.approx(n_e, abs=2e-3)
+
+
+def test_kdp_thermo_optic_is_populated():
+    """The coefficients were zero placeholders until the Ghosh 1992 values were
+    entered; KDP is a negative thermo-optic crystal with |dn_o/dT| > |dn_e/dT|."""
+    kdp = C.KDP()
+    dn_o = kdp.dndT(1.0642, 0, 24.8, pol='o')
+    dn_e = kdp.dndT(1.0642, np.pi/2, 24.8, pol='e')
+    assert dn_o == pytest.approx(-3.72e-5, rel=2e-2)
+    assert dn_e == pytest.approx(-2.32e-5, rel=2e-2)
+    assert dn_o < dn_e < 0
 
 
 def test_dndT2_runs_and_is_nonzero_for_e_ray():

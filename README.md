@@ -132,7 +132,7 @@ Several crystals are provided in more than one parameterisation, named after the
 
 For biaxial crystals (LBO, KTP), one class per principal dielectric plane is provided; the angle argument is the one that varies in that plane (phi in xy, theta in yz and zx). The `theta_rad` and `phi_rad` attributes of an instance tell which one it is.
 
-Media whose Sellmeier equation carries no temperature term (α-BBO, Calcite, KDP) still take the temperature argument for a uniform signature and simply ignore it — their `dndT` returns 0.
+Media whose Sellmeier equation carries no temperature term (α-BBO, Calcite) still take the temperature argument for a uniform signature and simply ignore it — their `dndT` returns 0.
 
 ## Parallel processing
 
