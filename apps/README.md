@@ -8,7 +8,7 @@ sympy all ship with Pyodide, so the whole calculation happens client-side.
 
 | app | what it does |
 |---|---|
-| `explorer.py` | refractive index and its derived quantities (n_g, GVD, TOD, dn/dT, walk-off) for every medium |
+| `explorer.py` | plot any of n, n_g, GVD, TOD, dn/dT or walk-off against any of wavelength, temperature or angle, for every medium |
 | `phasematching.py` | collinear SFG: phase-matching angles, acceptance bandwidths, walk-off, effective nonlinearity |
 
 ## Run locally
