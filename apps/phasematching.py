@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.9.1", "numpy", "scipy", "sympy", "matplotlib"]
+# dependencies = ["ndispers==0.10.0", "numpy", "scipy", "sympy", "matplotlib"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 
@@ -344,16 +344,22 @@ def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, WL3, mo, np, x):
 
 @app.cell(hide_code=True)
 def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, np, x):
-    # |d_eff| carries a sin(3φ) or cos(3φ) factor for a 3m crystal, so the
-    # azimuthal cut sets it — even though the refractive index does not depend
-    # on φ at all, which is why ndispers reports phi_rad as 'arb'.
-    PHI_FREE = hasattr(x, "deff_sfg") and x.phi_rad == "arb"
+    # For a uniaxial crystal the refractive index does not depend on φ (ndispers
+    # reports phi_rad as 'arb'), but |d_eff| does through sin 3φ, cos 2φ, ...,
+    # so the azimuthal cut is a free choice. A principal plane of a biaxial
+    # crystal fixes one angle; deff_sfg takes None for that one.
+    HAS_DEFF = hasattr(x, "deff_sfg")
+    PHI_FREE = HAS_DEFF and x.phi_rad == "arb"
+
+    def deff_args(angle, phi):
+        """(theta, phi) for deff_sfg: the swept angle plus the fixed/chosen one."""
+        if x.theta_rad == "var":
+            return (angle, phi if PHI_FREE else None)
+        return (None, angle)
+
     if HAS_PM and PHI_FREE:
         _p = np.linspace(0, 180, 1801)
-        _d = np.array([
-            abs(float(x.deff_sfg(WL1, WL2, ANGLE_PM, np.radians(v), T_C, *POLS)))
-            for v in _p
-        ])
+        _d = np.abs(x.deff_sfg(WL1, WL2, ANGLE_PM, np.radians(_p), T_C, *POLS))
         _peak = _d.max()
         _best = _p[_d > _peak * 0.9999]
         PHI_OPT = [_best[0]]
@@ -363,7 +369,7 @@ def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, np, x):
         DEFF_MAX = _peak
     else:
         PHI_OPT, DEFF_MAX = [], np.nan
-    return DEFF_MAX, PHI_OPT, PHI_FREE
+    return DEFF_MAX, HAS_DEFF, PHI_FREE, PHI_OPT, deff_args
 
 
 @app.cell(hide_code=True)
@@ -378,25 +384,34 @@ def _(PHI_FREE, PHI_OPT, mo):
 
 @app.cell(hide_code=True)
 def _(
-    ANGLE_PM, DEFF_MAX, HAS_PM, PHI_FREE, PHI_OPT, PLOT_TITLE, POLS, T_C,
-    WL1, WL2, mo, np, phi_cut, plt, x,
+    ANGLE_PM, DEFF_MAX, HAS_DEFF, HAS_PM, PHI_FREE, PHI_OPT, PLOT_TITLE, POLS,
+    T_C, WL1, WL2, deff_args, mo, np, phi_cut, plt, x,
 ):
+    # closed forms per point group (walk-off angles ρ_m of the e-waves included);
+    # the library evaluates the tensor contraction directly, these are for reading
     _EXPR = {
-        ("o", "o", "e"): r"d_\mathrm{eff} = d_{31}\sin(\theta+\rho_3) - d_{22}\cos(\theta+\rho_3)\sin 3\phi",
-        ("o", "e", "e"): r"d_\mathrm{eff} = d_{22}\cos(\theta+\rho_2)\cos(\theta+\rho_3)\cos 3\phi",
-        ("e", "o", "e"): r"d_\mathrm{eff} = d_{22}\cos(\theta+\rho_1)\cos(\theta+\rho_3)\cos 3\phi",
+        ("Uniax_3m", "ooe"): r"d_{31}\sin(\theta+\rho_3) - d_{22}\cos(\theta+\rho_3)\sin 3\phi",
+        ("Uniax_3m", "oee"): r"d_{22}\cos(\theta+\rho_2)\cos(\theta+\rho_3)\cos 3\phi",
+        ("Uniax_3m", "eoe"): r"d_{22}\cos(\theta+\rho_1)\cos(\theta+\rho_3)\cos 3\phi",
+        ("Uniax_32", "ooe"): r"d_{11}\cos(\theta+\rho_3)\cos 3\phi",
+        ("Uniax_32", "oee"): r"d_{11}\cos(\theta+\rho_2)\cos(\theta+\rho_3)\sin 3\phi",
+        ("Uniax_32", "eoe"): r"d_{11}\cos(\theta+\rho_1)\cos(\theta+\rho_3)\sin 3\phi",
+        ("Uniax_42m", "ooe"): r"d_{36}\sin(\theta+\rho_3)\sin 2\phi",
+        ("Uniax_42m", "oee"): r"d_{36}\sin(2\theta+\rho_2+\rho_3)\cos 2\phi",
+        ("Uniax_42m", "eoe"): r"d_{36}\sin(2\theta+\rho_1+\rho_3)\cos 2\phi",
+        ("Uniax_4mm", "ooe"): r"d_{31}\sin(\theta+\rho_3)",
     }
-    if HAS_PM and hasattr(x, "deff_sfg"):
-        _phi = np.radians(phi_cut.value) if PHI_FREE else float(x.phi_rad)
+    _group = type(x).__mro__[1].__name__
+    _pols = "".join(POLS)
+    if HAS_PM and HAS_DEFF:
+        _phi = np.radians(phi_cut.value) if PHI_FREE else None
         try:
-            _at = abs(float(x.deff_sfg(WL1, WL2, ANGLE_PM, _phi, T_C, *POLS)))
+            _at = abs(float(x.deff_sfg(WL1, WL2, *deff_args(ANGLE_PM, _phi), T_C, *POLS)))
             _a = np.linspace(0.02, np.pi / 2 - 0.02, 200)
-            _curve = np.array([
-                abs(float(x.deff_sfg(WL1, WL2, _t, _phi, T_C, *POLS))) for _t in _a
-            ])
+            _curve = np.abs(x.deff_sfg(WL1, WL2, *deff_args(_a, _phi), T_C, *POLS))
             plt.rcParams.update({"font.size": 8})
             _fig, _ax = plt.subplots(figsize=(5.25, 2.25))
-            _ax.set_title(PLOT_TITLE + f", φ = {np.degrees(_phi):.0f}°", fontsize=8)
+            _ax.set_title(PLOT_TITLE + (f", φ = {phi_cut.value:.0f}°" if PHI_FREE else ""), fontsize=8)
             _ax.plot(np.degrees(_a), _curve)
             _ax.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
             _ax.set_xlabel("angle (deg)")
@@ -410,24 +425,32 @@ def _(
                 + f"** with {DEFF_MAX:.4g} pm/V"
                 if PHI_OPT else ""
             )
+            _expr = _EXPR.get((_group, _pols))
+            _formula = (f"$$|d_\\mathrm{{eff}}| = \\left|{_expr}\\right|$$\n\n" if _expr else
+                        "d_eff is the contraction of the d tensor with the field "
+                        "directions of the three waves, walk-off included.\n\n")
+            # the tensor components, at their reference wavelengths and scaled to these
+            _rows = "\n".join(
+                f"| {il} | {d0:g} | {wl1 * 1e3:g} + {wl2 * 1e3:g} | "
+                f"{x.d_sfg(il, WL1, WL2, T_C):.4g} |"
+                for il, (d0, wl1, wl2) in x._d_ref.items())
             _out = mo.vstack([
                 mo.md(
-                    "## Effective nonlinearity\n\n"
-                    f"$${_EXPR.get(POLS, r'd_\mathrm{eff}')}$$\n\n"
-                    f"At the phase-matching angle and φ = {np.degrees(_phi):.0f}°: "
-                    f"**{_at:.4g} pm/V**.{_opt}. Scaled from the 1.064 µm value by "
-                    "Miller's rule; ρ are the walk-off angles."
+                    "## Effective nonlinearity\n\n" + _formula
+                    + f"At the phase-matching angle{f' and φ = {phi_cut.value:.0f}°' if PHI_FREE else ''}: "
+                    f"**{_at:.4g} pm/V**{_opt}.\n\n"
+                    "| component | reference (pm/V) | measured at (nm) | scaled to these wavelengths |\n"
+                    "|---|---|---|---|\n" + _rows + "\n\n"
+                    f"<sub>Reference values and how far to trust the Miller-rule scaling: {x._d_note}</sub>"
                 ),
                 _fig,
             ])
         except ValueError as _e:
-            _out = mo.md(f"## Effective nonlinearity\n\n*Not defined for `{POLS}`: {_e}*")
+            _out = mo.md(f"## Effective nonlinearity\n\n*Not available for `{_pols}`: {_e}*")
     elif HAS_PM:
         _out = mo.md(
             "## Effective nonlinearity\n\n"
-            f"*`{type(x).__name__}` carries no second-order coefficients, so "
-            "d_eff cannot be computed. Available for the β-BBO parameterisations, "
-            "KBBF, SLN and SLT.*"
+            f"*`{type(x).__name__}` is centrosymmetric: no second-order nonlinearity.*"
         )
     else:
         _out = mo.md("")

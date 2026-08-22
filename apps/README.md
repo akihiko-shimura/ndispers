@@ -59,4 +59,9 @@ The azimuthal cut φ is a control rather than a fixed value. A refractive index
 in a uniaxial crystal does not depend on φ — which is why ndispers reports
 `phi_rad` as `'arb'` — but d_eff does, through a sin(3φ) or cos(3φ) factor. At
 φ = 0 the d22 term of a 3m crystal vanishes entirely: β-BBO Type-I SHG gives
-0.018 pm/V there against 1.96 pm/V at the conventional φ = 30° cut.
+0.018 pm/V there against 1.96 pm/V at the conventional φ = 30° cut. For a
+principal plane of a biaxial crystal (LBO, KTP) the plane fixes one angle, so
+there is no φ slider. d_eff is available for every non-centrosymmetric crystal
+in the package since ndispers 0.10; the table under the plot lists the tensor
+components, their reference measurement, and the Miller-rule value at the
+chosen wavelengths.
