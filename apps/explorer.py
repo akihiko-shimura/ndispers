@@ -65,7 +65,8 @@ def _(MEDIA, mo):
     angle = mo.ui.slider(
         0, 90, value=0, step=1, label="Angle θ or φ (deg)", show_value=True
     )
-    mo.hstack([mo.vstack([medium, pol]), mo.vstack([T, angle])], justify="start", gap=2)
+    mo.hstack([mo.vstack([medium, pol], gap=0.25),
+              mo.vstack([T, angle], gap=0.25)], justify="start", gap=0.75)
     return T, angle, medium, pol
 
 
@@ -81,7 +82,15 @@ def _(MEDIA, T, angle, medium, np, pol):
             return f(wl, T.value)
         return f(wl, np.radians(angle.value), T.value, pol=pol.value)
 
-    return IS_ISOTROPIC, call, x
+    def title():
+        """The state a plotted curve was computed at, for its title."""
+        if IS_ISOTROPIC:
+            return f"{medium.value}   T = {T.value} °C"
+        _ang = "θ" if x.theta_rad == "var" else "φ"
+        return (f"{medium.value}   T = {T.value} °C, "
+                f"{_ang} = {angle.value}°, pol = {pol.value}")
+
+    return IS_ISOTROPIC, call, title, x
 
 
 @app.cell(hide_code=True)
@@ -98,17 +107,34 @@ def _(mo, x):
 
 
 @app.cell(hide_code=True)
-def _(IS_ISOTROPIC, call, medium, mo, np, plt, time, x):
+def _(IS_ISOTROPIC, mo, pol, sympy, x):
+    _pols = ["o"] if IS_ISOTROPIC else [pol.value]
+    _md = "\n\n".join(
+        f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$" for _p in _pols
+    )
+    mo.accordion({
+        "Sellmeier equation as evaluated": mo.md(
+            "What ndispers differentiates and evaluates, with the coefficients "
+            "already substituted — not a quotation from the paper. **λ is in µm "
+            "and T in °C in this expression.**\n\n" + _md
+        )
+    })
+    return
+
+
+@app.cell(hide_code=True)
+def _(IS_ISOTROPIC, call, mo, np, plt, time, title):
     _t0 = time.perf_counter()
     _wl = np.linspace(0.25, 2.0, 400)
     _n = call("n", _wl)
     _curve_s = time.perf_counter() - _t0
 
-    _fig, _ax = plt.subplots(figsize=(7, 3.6))
+    plt.rcParams.update({"font.size": 8})
+    _fig, _ax = plt.subplots(figsize=(5.25, 2.7))
     _ax.plot(_wl, _n)
     _ax.set_xlabel("wavelength (µm)")
     _ax.set_ylabel("refractive index")
-    _ax.set_title(medium.value)
+    _ax.set_title(title(), fontsize=8)
     _ax.grid(alpha=0.3)
     plt.tight_layout()
 
@@ -161,22 +187,6 @@ def _(call, mo, time, wl0):
         + f"\n\n<sub>all eight quantities: {1e3 * _derived_s:.0f} ms"
         " (first call per medium builds the symbolic derivatives)</sub>"
     )
-    return
-
-
-@app.cell(hide_code=True)
-def _(IS_ISOTROPIC, mo, pol, sympy, x):
-    _pols = ["o"] if IS_ISOTROPIC else [pol.value]
-    _md = "\n\n".join(
-        f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$" for _p in _pols
-    )
-    mo.accordion({
-        "Sellmeier equation as evaluated": mo.md(
-            "What ndispers differentiates and evaluates, with the coefficients "
-            "already substituted — not a quotation from the paper. **λ is in µm "
-            "and T in °C in this expression.**\n\n" + _md
-        )
-    })
     return
 
 

@@ -70,12 +70,12 @@ def _(XTALS, mo):
 def _(L, T, mo, shg, wl1, wl2, xtal):
     mo.hstack(
         [
-            mo.vstack([xtal, shg]),
+            mo.vstack([xtal, shg], gap=0.25),
             mo.vstack([wl1, wl2 if not shg.value else mo.md("<sub>λ₂ = λ₁</sub>")]),
-            mo.vstack([T, L]),
+            mo.vstack([T, L], gap=0.25),
         ],
         justify="start",
-        gap=2,
+        gap=0.75,
     )
     return
 
@@ -102,6 +102,27 @@ def _(mo, x):
         + (x.__doc__ or "").strip().replace("&", "&amp;").replace("<", "&lt;")
         + "</div>"
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(HAS_PM, POLS, mo, sympy, x):
+    if HAS_PM:
+        _md = "\n\n".join(
+            f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$"
+            for _p in dict.fromkeys(POLS)
+        )
+        _out = mo.accordion({
+            "Sellmeier equation as evaluated": mo.md(
+                "What ndispers differentiates and evaluates, with the "
+                "coefficients already substituted — not a quotation from the "
+                "paper. **λ is in µm and T in °C in this expression**, unlike "
+                "the nm inputs above.\n\n" + _md
+            )
+        })
+    else:
+        _out = mo.md("")
+    _out
     return
 
 
@@ -151,22 +172,30 @@ def _(SOLUTIONS, mo):
 
 
 @app.cell(hide_code=True)
-def _(SOLUTIONS, np, pmtype):
+def _(ANGLE_KEY, SOLUTIONS, T_C, np, pmtype, xtal):
     HAS_PM = bool(SOLUTIONS) and pmtype.value in SOLUTIONS
     ANGLE_PM = np.radians(SOLUTIONS[pmtype.value]) if HAS_PM else np.nan
     POLS = tuple(pmtype.value) if HAS_PM else ("o", "o", "e")
-    return ANGLE_PM, HAS_PM, POLS
+    # the state every plot below was computed at
+    PLOT_TITLE = (
+        f"{xtal.value}   T = {T_C:g} °C, {ANGLE_KEY} = "
+        f"{SOLUTIONS[pmtype.value]:.3f}°, pol = {pmtype.value}"
+        if HAS_PM else ""
+    )
+    return ANGLE_PM, HAS_PM, PLOT_TITLE, POLS
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_PM, HAS_PM, L, POLS, T_C, WL1, WL2, mo, np, plt, x):
+def _(ANGLE_PM, HAS_PM, L, PLOT_TITLE, POLS, T_C, WL1, WL2, mo, np, plt, x):
     if HAS_PM:
         _w = np.radians(0.15)
         _a = np.linspace(ANGLE_PM - _w, ANGLE_PM + _w, 400)
         _dk = x.dk_sfg(WL1, WL2, _a, T_C, *POLS)
         _sinc = x.pmFactor_sfg(WL1, WL2, _a, T_C, *POLS, L.value)
 
-        _fig, (_a1, _a2) = plt.subplots(2, 1, sharex=True, figsize=(7, 4.4))
+        plt.rcParams.update({"font.size": 8})
+        _fig, (_a1, _a2) = plt.subplots(2, 1, sharex=True, figsize=(5.25, 3.3))
+        _a1.set_title(PLOT_TITLE, fontsize=8)
         _a1.plot(np.degrees(_a), _dk)
         _a1.axhline(0, color="gray", lw=0.8)
         _a1.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
@@ -221,7 +250,7 @@ def _(mo):
                  "µrad": 1e6, "deg": 180 / 3.141592653589793}
     wl_unit = mo.ui.dropdown(options=list(WL_UNITS), value="pm", label="Wavelength unit")
     ang_unit = mo.ui.dropdown(options=list(ANG_UNITS), value="mdeg", label="Angle unit")
-    mo.hstack([threshold, wl_unit, ang_unit], justify="start", gap=2)
+    mo.hstack([threshold, wl_unit, ang_unit], justify="start", gap=0.75)
     return ANG_UNITS, WL_UNITS, ang_unit, threshold, wl_unit
 
 
@@ -349,8 +378,8 @@ def _(PHI_FREE, PHI_OPT, mo):
 
 @app.cell(hide_code=True)
 def _(
-    ANGLE_PM, DEFF_MAX, HAS_PM, PHI_FREE, PHI_OPT, POLS, T_C, WL1, WL2,
-    mo, np, phi_cut, plt, x,
+    ANGLE_PM, DEFF_MAX, HAS_PM, PHI_FREE, PHI_OPT, PLOT_TITLE, POLS, T_C,
+    WL1, WL2, mo, np, phi_cut, plt, x,
 ):
     _EXPR = {
         ("o", "o", "e"): r"d_\mathrm{eff} = d_{31}\sin(\theta+\rho_3) - d_{22}\cos(\theta+\rho_3)\sin 3\phi",
@@ -365,7 +394,9 @@ def _(
             _curve = np.array([
                 abs(float(x.deff_sfg(WL1, WL2, _t, _phi, T_C, *POLS))) for _t in _a
             ])
-            _fig, _ax = plt.subplots(figsize=(7, 3.0))
+            plt.rcParams.update({"font.size": 8})
+            _fig, _ax = plt.subplots(figsize=(5.25, 2.25))
+            _ax.set_title(PLOT_TITLE + f", φ = {np.degrees(_phi):.0f}°", fontsize=8)
             _ax.plot(np.degrees(_a), _curve)
             _ax.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
             _ax.set_xlabel("angle (deg)")
@@ -398,27 +429,6 @@ def _(
             "d_eff cannot be computed. Available for the β-BBO parameterisations, "
             "KBBF, SLN and SLT.*"
         )
-    else:
-        _out = mo.md("")
-    _out
-    return
-
-
-@app.cell(hide_code=True)
-def _(HAS_PM, POLS, mo, sympy, x):
-    if HAS_PM:
-        _md = "\n\n".join(
-            f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$"
-            for _p in dict.fromkeys(POLS)
-        )
-        _out = mo.accordion({
-            "Sellmeier equation as evaluated": mo.md(
-                "What ndispers differentiates and evaluates, with the "
-                "coefficients already substituted — not a quotation from the "
-                "paper. **λ is in µm and T in °C in this expression**, unlike "
-                "the nm inputs above.\n\n" + _md
-            )
-        })
     else:
         _out = mo.md("")
     _out
