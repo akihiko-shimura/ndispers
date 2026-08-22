@@ -52,7 +52,7 @@ def _(np):
     }
     # variable -> (label, unit, default sweep)
     VARIABLES = {
-        "wl": ("wavelength", "µm", (0.25, 2.0)),
+        "wl": ("wavelength", "nm", (250.0, 2000.0)),
         "T": ("temperature", "°C", (-50.0, 300.0)),
         "angle": ("angle", "deg", (0.0, 90.0)),
     }
@@ -80,10 +80,10 @@ def _(MEDIA, mo):
     medium = mo.ui.dropdown(
         options=list(MEDIA), value="BetaBBO_Eimerl1987", label="Medium"
     )
-    pol = mo.ui.radio(options=["o", "e"], value="o", label="Polarization", inline=True)
-    T = mo.ui.number(-50, 300, value=25, step=1, label="Temperature (°C)")
-    angle = mo.ui.number(0, 90, value=0, step=0.1, label="Angle θ or φ (deg)")
-    mo.hstack([medium, pol], justify="start", gap=0.75)
+    pol = mo.ui.radio(options=["o", "e"], value="o", inline=True)
+    T = mo.ui.number(-50, 300, value=25, step=1)
+    angle = mo.ui.number(0, 90, value=0, step=0.1)
+    medium
     return T, angle, medium, pol
 
 
@@ -133,7 +133,7 @@ def _(IS_ISOTROPIC, mo, pol, sympy, x):
 
 @app.cell(hide_code=True)
 def _(mo):
-    wl0 = mo.ui.number(0.2, 4.0, value=1.064, step=0.001, label="Wavelength (µm)")
+    wl0 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1)
     return (wl0,)
 
 
@@ -151,12 +151,25 @@ def _(IS_ISOTROPIC, QUANTITIES, VARIABLES, mo):
 
 @app.cell(hide_code=True)
 def _(IS_ISOTROPIC, T, angle, mo, quantity, variable, wl0):
-    # the held values and the plot selectors, right above the figure
+    # held values in the order the methods take them: n(wl, angle, T, pol)
+    def _box(label, widget, width="5.5rem"):
+        return mo.vstack(
+            [mo.md(f"<sub>{label}</sub>"),
+             mo.Html(f'<div style="width:{width}">{widget}</div>')],
+            gap=0,
+        )
+
+    _boxes = [_box("λ (nm)", wl0)]
+    if not IS_ISOTROPIC:
+        _boxes += [_box("θ or φ (deg)", angle), _box("T (°C)", T),
+                   _box("pol", pol, "5rem")]
+    else:
+        _boxes += [_box("T (°C)", T)]
+
     mo.vstack([
-        mo.hstack([wl0, T] + ([] if IS_ISOTROPIC else [angle]),
-                  justify="start", gap=0.75),
+        mo.hstack(_boxes, justify="start", gap=0.5),
         mo.hstack([quantity, variable], justify="start", gap=0.75),
-    ], gap=0.25)
+    ], gap=0.4)
     return
 
 
@@ -176,6 +189,7 @@ def _(
     # hold the two variables that are not being swept at their control values
     _held = {"wl": wl0.value, "T": T.value, "angle": angle.value}
     _held[_v] = _sweep
+    _held["wl"] = np.asarray(_held["wl"]) * 1e-3          # nm on screen, µm inside
 
     _t0 = time.perf_counter()
     _f = getattr(x, _q)
@@ -187,8 +201,9 @@ def _(
 
     # a held variable that is not swept is fixed; say so in the subtitle
     _fixed = ", ".join(
-        f"{VARIABLES[k][0]} = {v:g} {VARIABLES[k][1]}"
-        for k, v in (("wl", wl0.value), ("T", T.value), ("angle", angle.value))
+        f"{VARIABLES[k][0]} = {v:g} {u}"
+        for k, v, u in (("wl", wl0.value, "nm"), ("angle", angle.value, "deg"),
+                        ("T", T.value, "°C"))
         if k != _v and not (IS_ISOTROPIC and k == "angle")
     )
 
@@ -245,7 +260,7 @@ def _(call, mo, time, wl0):
     _t0 = time.perf_counter()
     for _label, _meth, _unit in [
         ("n", "n", ""),
-        ("dn/dλ", "dn_wl", "1/µm"),
+        ("dn/dλ", "dn_wl", "1/nm"),
         ("group index n_g", "ng", ""),
         ("group velocity", "GV", "µm/fs"),
         ("GVD", "GVD", "fs²/mm"),
@@ -254,9 +269,11 @@ def _(call, mo, time, wl0):
         ("walk-off θ", "woa_theta", "deg"),
     ]:
         try:
-            _v = float(call(_meth, wl0.value))
+            _v = float(call(_meth, wl0.value * 1e-3))   # nm -> µm
             if _meth == "woa_theta":
                 _v = _v * 180 / 3.141592653589793
+            elif _meth == "dn_wl":
+                _v = _v * 1e-3                       # per µm -> per nm
             _rows.append(f"| {_label} | {_v:.6g} | {_unit} |")
         except Exception as _e:                       # medium may not define it
             _rows.append(f"| {_label} | — | {type(_e).__name__} |")
