@@ -41,6 +41,8 @@ pip install ndispers
 
 ## Quick start
 
+For a guided tour with plots — from inspecting a crystal's Sellmeier equation to phase-matching curves — see the [tutorial notebook](examples/basic_usage.ipynb), readable directly on GitHub. The essentials:
+
 Make an object of a β-BBO crystal:
 
 ```python
