@@ -5,9 +5,9 @@ from ndispers.helper import vars2
 
 class KBBF(Uniax_neg_32):
     """
-    KBBF (K Be_2 B O_3 F_2) crystal
+    KBBF (KBe₂BO₃F₂, potassium beryllium fluoroborate) crystal
 
-    - Point group : 32  (D_2)
+    - Point group : 32  (D3)
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

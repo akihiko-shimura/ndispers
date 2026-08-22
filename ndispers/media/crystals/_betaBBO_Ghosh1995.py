@@ -5,9 +5,9 @@ from ndispers.helper import vars2
 
 class BetaBBO(Uniax_neg_3m):
     """
-    β-BBO (β-Ba B_2 O_4) crystal
+    β-BBO (β-BaB₂O₄, barium borate) crystal
 
-    - Point group : 3m  (C_{3v})
+    - Point group : 3m  (C3v)
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

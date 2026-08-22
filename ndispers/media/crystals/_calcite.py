@@ -4,9 +4,9 @@ from ndispers.helper import vars2
 
 class Calcite(Medium):
     """
-    calcite (Ca C O_3) crystal
+    calcite (CaCO₃) crystal
 
-    - Point group : -3m  (D_{3d})
+    - Point group : 3̄m  (D3d)
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

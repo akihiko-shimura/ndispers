@@ -6,9 +6,9 @@ from ndispers.helper import vars2
 
 class SLN(Uniax_neg_3m):
     """
-    1% MgO-doped stoichiometric Lithium niobate (Li Nb O_3) crystal
+    1% MgO-doped stoichiometric lithium niobate (LiNbO₃) crystal
 
-    - Point group : 3m  (C_{3v})
+    - Point group : 3m  (C3v)
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

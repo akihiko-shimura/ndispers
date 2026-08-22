@@ -5,9 +5,9 @@ from ndispers.helper import vars2
 
 class BetaBBO(Uniax_neg_3m):
     """
-    β-BBO (β-Ba B_2 O_4) crystal
+    β-BBO (β-BaB₂O₄, barium borate) crystal
 
-    - Point group : 3m  (C_{3v})
+    - Point group : 3m  (C3v)
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
@@ -30,7 +30,7 @@ class BetaBBO(Uniax_neg_3m):
     Ref
     ---
     Sellmeier equation:
-    - Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for β-Ba B_2 O_4 (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
+    - Kato, K., N. Umemura, and T. Mikami. "Sellmeier and thermo-optic dispersion formulas for β-BaB₂O₄ (revisited)." Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX. Vol. 7582. International Society for Optics and Photonics, 2010.
 
     Nonlinear optical coefficients:
     - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.

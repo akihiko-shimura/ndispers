@@ -4,9 +4,9 @@ from ndispers.helper import vars2
 
 class LB4(Medium):
     """
-    LB4 or LTB (Li_2 B_4 O_7, lithium tetraborate) crystal
+    LB4 or LTB (Li₂B₄O₇, lithium tetraborate) crystal
 
-    - Point group : 4mm  (C_{4v})
+    - Point group : 4mm  (C4v)
     - Crystal system : Tetragonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

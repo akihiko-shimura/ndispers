@@ -4,9 +4,9 @@ from ndispers.helper import vars2
 
 class LBO(Medium):
     """
-    LBO (Li B_3 O_5) crystal
+    LBO (LiB₃O₅, lithium triborate) crystal
 
-    - Point group : 2mm  (C_{2v})
+    - Point group : mm2  (C2v)
     - Crystal system : orthorhombic 
     - Dielectric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis

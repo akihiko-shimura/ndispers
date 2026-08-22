@@ -5,9 +5,9 @@ from ndispers.helper import vars2
 
 class KDP(Medium):
     """
-    KDP (K H_2 P O_4, Potassium Dihydrogen Phosphate) crystal
+    KDP (KH₂PO₄, potassium dihydrogen phosphate) crystal
 
-    - Point group : -42m  (D_{2d})
+    - Point group : 4̄2m  (D2d)
     - Crystal system : Tetragonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

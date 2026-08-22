@@ -5,9 +5,9 @@ from ndispers.helper import vars2
 
 class RBBF(Medium):
     """
-    RBBF (RbBe2BO3F2, Rubidium Beryllium Borate Fluoride) crystal
+    RBBF (RbBe₂BO₃F₂, rubidium beryllium fluoroborate) crystal
     
-    - Point group : 32  (D_3)
+    - Point group : 32  (D3)
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis

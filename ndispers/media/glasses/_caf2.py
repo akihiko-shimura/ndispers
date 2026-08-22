@@ -4,9 +4,9 @@ from ndispers.helper import vars2
 
 class CaF2(Medium):
     """
-    Ca F_2 (Calcium fluolide) crystal
+    CaF₂ (calcium fluoride) crystal
 
-    - Point group : Fm3m
+    - Point group : m3̄m  (Oh); space group Fm3̄m
     - Crystal system : cubic
     - Transparency range : 0.18 to 8 µm (depends on material grade)
     - Transmission Range : 0.13 to 10 µm (depends on material grade)

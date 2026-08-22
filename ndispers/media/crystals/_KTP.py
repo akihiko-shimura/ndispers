@@ -4,9 +4,9 @@ from ndispers.helper import vars2
 
 class KTP(Medium):
     """
-    KTP (K Ti O P O_4, Potassium Titanyl Phosphate) crystal
+    KTP (KTiOPO₄, potassium titanyl phosphate) crystal
 
-    - Point group : 2mm  (C_{2v})
+    - Point group : mm2  (C2v)
     - Crystal system : Orthorhombic
     - Dielectric principal axes, x // a, y // b, z // c
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
