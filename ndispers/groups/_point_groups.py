@@ -8,7 +8,7 @@ group: NonlinearGroup.deff_sfg contracts the tensor with the field vectors,
 and tests/test_nonlinear.py checks the result against the published
 closed forms.
 """
-from ._base import UniaxialGroup
+from ._base import UniaxialGroup, BiaxialGroup
 
 
 class Uniax_3m(UniaxialGroup):
@@ -77,3 +77,33 @@ class Uniax_4mm(UniaxialGroup):
         "d31": [("zxx", +1), ("zyy", +1), ("xzx", +1), ("yzy", +1)],
         "d33": [("zzz", +1)],
     }
+
+
+class Biax_mm2(BiaxialGroup):
+    """
+    Point group mm2 (C2v): LBO, KTP. Polar (two-fold) axis c.
+
+    In the crystallographic frame (1,2,3) = (a,b,c):
+
+        d = [[  0,    0,   0,   0,  d15,  0 ],
+             [  0,    0,   0,  d24,  0,   0 ],
+             [ d31,  d32, d33,  0,   0,   0 ]],   d15 = d31, d24 = d32 (Kleinman)
+
+    The dielectric frame need not coincide with (a,b,c): LBO has
+    x,y,z = a,-c,b, KTP has x,y,z = a,b,c. The crystal states the mapping
+    in ``_mm2_axes = (a, b, c)`` as dielectric-axis letters, and the tensor
+    entries are built from it, so d31, d32, d33 keep the names used in the
+    crystal's literature. The sign of an axis reversal (LBO's -c) is an
+    overall sign of d_eff and is dropped.
+    """
+    __slots__ = []
+    _mm2_axes = None
+
+    @property
+    def _d_entries(self):
+        a, b, c = self._mm2_axes
+        return {
+            "d31": [(c + a + a, +1), (a + a + c, +1)],
+            "d32": [(c + b + b, +1), (b + b + c, +1)],
+            "d33": [(c + c + c, +1)],
+        }

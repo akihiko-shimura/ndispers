@@ -1,8 +1,9 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta, T, pi
+from ndispers._baseclass import wl, phi, theta, T, pi
+from ndispers.groups import Biax_mm2
 from ndispers.helper import vars2
 
-class KTP(Medium):
+class KTP(Biax_mm2):
     """
     KTP (KTiOPO₄, potassium titanyl phosphate) crystal
 
@@ -15,7 +16,7 @@ class KTP(Medium):
     Sellmeier equation
     ------------------
         n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i))  for i = x, y, z
-    
+
     Thermo-optic coefficient
     -------------------------
         dn/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
@@ -28,10 +29,10 @@ class KTP(Medium):
 
     Note
     ----
-    In the current version, biaxial crystals are limited to the principal dielectric planes, 
-    xy, yz or zx planes. In other words, a wavevector of light must be within any one of 
-    the three planes. Correspondence between principal plane, polarization orientations of 
-    o-wave and e-wave, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
+    In the current version, biaxial crystals are limited to the principal dielectric planes,
+    xy, yz or zx planes. In other words, a wavevector of light must be within any one of
+    the three planes. Correspondence between principal plane, polarization orientations of
+    o-wave and e-wave, polar (theta) and azimuthal (phi) angles of a wavevector with respect
     to z and x principal axes, respectively, are shown in the table below
     ('var' marks the angle passed as the method argument).
 
@@ -39,7 +40,7 @@ class KTP(Medium):
     |-------|--------|--------|-------|------|
     | xy    | z      | xy     | pi/2  | var  |
     | yz    | x      | yz     | var   | pi/2 |
-    | zx    | y      | zx     | var   | pi/2 |
+    | zx    | y      | zx     | var   | 0    |
 
     Ref
     ---
@@ -50,7 +51,20 @@ class KTP(Medium):
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",
                  "_dndT_x", "_dndT_y", "_dndT_z"]
-    
+
+    # mm2 tensor in the crystallographic frame (a, b, c) with c polar;
+    # dielectric x // a, y // b, z // c
+    _mm2_axes = ("x", "y", "z")
+    _d_ref = {"d31": (2.2, 1.064, 1.064),
+              "d32": (3.7, 1.064, 1.064),
+              "d33": (14.6, 1.064, 1.064)}
+    _d_note = ("Shoji et al. 1997, absolute, 1.064 um SHG, converted to the conventional "
+               "x // a, y // b frame (their Table 10 follows Roberts's a/b interchange: "
+               "their d31, d15 are d32, d24 here). Shoji et al. found Miller's delta of "
+               "KTP to change by 35% between 1.06 and 1.31 um, so treat Miller scaling "
+               "for KTP as rough; Alford & Smith 2001 judge it acceptable once earlier "
+               "data are reinterpreted.")
+
     def __init__(self):
         super().__init__()
 
@@ -76,13 +90,12 @@ class KTP(Medium):
         self._dndT_x = (0.1717/wl**3 - 0.5353/wl**2 + 0.8416/wl + 0.1627)*1e-5 #1/K
         self._dndT_y = (0.1997/wl**3 - 0.4063/wl**2 + 0.5154/wl + 0.5425)*1e-5 #1/K
         self._dndT_z = (0.9221/wl**3 - 2.9220/wl**2 + 3.6677/wl - 0.1897)*1e-5 #1/K
-    
 
-    
+
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
         return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) + self._D_x/(wl**2 - self._E_x)) + self._dndT_x * (T - 20)
-    
+
     def n_y_expr(self):
         """ sympy expresssion, dispersion formula of y-axis (principal dielectric axis) """
         return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) + self._D_y/(wl**2 - self._E_y)) + self._dndT_y * (T - 20)
@@ -99,21 +112,21 @@ class KTP_xy(KTP):
         self._plane = 'xy'
         self._theta_rad = 0.5*pi
         self._phi_rad = 'var'
-    
+
 
     def n_o_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for o-wave polarization for a given principal plane
         """
         return super().n_z_expr()
-    
+
     def n_e_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for e-wave polarization for a given principal plane """
         return super().n_x_expr() * super().n_y_expr() / sympy.sqrt( super().n_x_expr()**2 * sympy.cos(phi)**2 + super().n_y_expr()**2 * sympy.sin(phi)**2 )
 
     def n_expr(self, pol):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for a given polarization
         """
         if pol == 'o':
@@ -123,14 +136,6 @@ class KTP_xy(KTP):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    
-
-    
-    
-
-    
-    
-    
 
 class KTP_yz(KTP):
     __slots__ = []
@@ -140,23 +145,22 @@ class KTP_yz(KTP):
         self._plane = 'yz'
         self._phi_rad = 0.5*pi
         self._theta_rad = 'var'
-    
-    
+
 
     def n_o_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for o-wave polarization for yx principal plane
         """
         return super().n_x_expr()
-    
+
     def n_e_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for e-wave polarization for yz principal plane
         """
         return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.sin(theta)**2 + super().n_z_expr()**2 * sympy.cos(theta)**2 )
 
     def n_expr(self, pol):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for a given polarization
         """
         if pol == 'o':
@@ -166,14 +170,6 @@ class KTP_yz(KTP):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    
-
-    
-    
-
-    
-    
-    
 
 class KTP_zx(KTP):
     __slots__ = []
@@ -182,26 +178,23 @@ class KTP_zx(KTP):
         super().__init__()
         self._plane = 'zx'
         self._theta_rad = 'var'
-        self._phi_rad = 0.5*pi
-    
-    
+        self._phi_rad = 0.0
 
-    
 
     def n_o_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for o-wave polarization for zx principal plane
         """
         return super().n_y_expr()
-    
+
     def n_e_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for e-wave polarization for zx principal plane
         """
         return super().n_z_expr() * super().n_x_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(theta)**2 + super().n_x_expr()**2 * sympy.sin(theta)**2 )
 
     def n_expr(self, pol):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for a given polarization
         """
         if pol == 'o':
@@ -210,12 +203,3 @@ class KTP_zx(KTP):
             return self.n_e_expr()
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
-
-    
-
-    
-    
-
-    
-    
-    

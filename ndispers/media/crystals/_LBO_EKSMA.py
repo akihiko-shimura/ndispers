@@ -1,14 +1,15 @@
 import sympy
-from ndispers._baseclass import Medium, wl, phi, theta, T, pi
+from ndispers._baseclass import wl, phi, theta, T, pi
+from ndispers.groups import Biax_mm2
 from ndispers.helper import vars2
 from itertools import chain
 
-class LBO(Medium):
+class LBO(Biax_mm2):
     """
     LBO (LiB₃O₅, lithium triborate) crystal
 
     - Point group : mm2  (C2v)
-    - Crystal system : orthorhombic 
+    - Crystal system : orthorhombic
     - Dielectric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
 
@@ -19,7 +20,7 @@ class LBO(Medium):
     Thermo-optic coefficient
     ------------------------
         dn/dT = (F_i + G_i * wl)  for i = x,y,z
-    
+
     The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
 
     Validity range
@@ -27,10 +28,10 @@ class LBO(Medium):
 
     Note
     ----
-    In the current version, biaxial crystals are limited to the principal dielectric planes, 
-    xy, yz or zx planes. In other words, a wavevector of light must be within any one of 
-    the three planes. Correspondence between principal plane, polarization orientations of 
-    o-wave and e-wave, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
+    In the current version, biaxial crystals are limited to the principal dielectric planes,
+    xy, yz or zx planes. In other words, a wavevector of light must be within any one of
+    the three planes. Correspondence between principal plane, polarization orientations of
+    o-wave and e-wave, polar (theta) and azimuthal (phi) angles of a wavevector with respect
     to z and x principal axes, respectively, are shown in the table below
     ('var' marks the angle passed as the method argument).
 
@@ -38,7 +39,7 @@ class LBO(Medium):
     |-------|--------|--------|-------|------|
     | xy    | z      | xy     | pi/2  | var  |
     | yz    | x      | yz     | var   | pi/2 |
-    | zx    | y      | zx     | var   | pi/2 |
+    | zx    | y      | zx     | var   | 0    |
 
     Ref
     ---
@@ -48,9 +49,20 @@ class LBO(Medium):
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",
-                 "_F_x", "_F_y", "_F_z", 
+                 "_F_x", "_F_y", "_F_z",
                  "_G_x", "_G_y", "_G_z"]
-    
+
+    # mm2 tensor in the crystallographic frame (a, b, c) with c polar; the
+    # dielectric axes are x // a, y // -c, z // b
+    _mm2_axes = ("x", "z", "y")
+    _d_ref = {"d31": (-0.67, 1.064, 1.064),
+              "d32": (0.85, 1.064, 1.064),
+              "d33": (0.04, 1.064, 1.064)}
+    _d_note = ("Velsko et al. 1991, 1.064 um SHG, as compiled by Roberts 1992 (Table VI, "
+               "who notes that the conventional d31/d32 labels used here are reversed "
+               "relative to his IEEE frame); d31 and d32 of opposite sign. Alford & "
+               "Smith 2001 found too few data to test Miller scaling for LBO.")
+
     def __init__(self):
         super().__init__()
 
@@ -79,33 +91,33 @@ class LBO(Medium):
         self._G_x = -3.76e-6
         self._G_y = +6.01e-6
         self._G_z = +1.50e-6
-    
+
 
     def _n_T20_x_expr(self):
         """ Sympy expression, dispersion formula for x-axis (principal dielectric axis) at 20degC"""
-        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2 + self._E_x * wl**4)  
-    
+        return sympy.sqrt(self._A_x + self._B_x/(wl**2 - self._C_x) - self._D_x * wl**2 + self._E_x * wl**4)
+
     def _n_T20_y_expr(self):
         """ Sympy expression, dispersion formula for y-axis (principal dielectric axis) at 20degC"""
         return sympy.sqrt(self._A_y + self._B_y/(wl**2 - self._C_y) - self._D_y * wl**2 + self._E_y * wl**4)
-    
+
     def _n_T20_z_expr(self):
         """ Sympy expression, dispersion formula for x-axis (principal dielectric axis) at 20degC"""
         return sympy.sqrt(self._A_z + self._B_z/(wl**2 - self._C_z) - self._D_z * wl**2 + self._E_z * wl**4)
-    
+
     def dndT_x_expr(self):
         return self._F_x + self._G_x * wl
-    
+
     def dndT_y_expr(self):
         return self._F_y + self._G_y * wl
-    
+
     def dndT_z_expr(self):
         return self._F_z + self._G_z * wl
 
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
         return self._n_T20_x_expr() + self.dndT_x_expr() * (T - 20)
-    
+
     def n_y_expr(self):
         """ sympy expresssion, dispersion formula of y-axis (principal dielectric axis) """
         return self._n_T20_y_expr() + self.dndT_y_expr() * (T - 20)
@@ -122,22 +134,22 @@ class LBO_xy(LBO):
         self._plane = 'xy'
         self._theta_rad = 0.5*pi
         self._phi_rad = 'var'
-    
+
 
     def n_o_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for o-wave polarization for a given principal plane
         """
         return super().n_z_expr()
-    
+
     def n_e_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for e-wave polarization for a given principal plane
         """
         return super().n_x_expr() * super().n_y_expr() / sympy.sqrt( super().n_x_expr()**2 * sympy.cos(phi)**2 + super().n_y_expr()**2 * sympy.sin(phi)**2 )
 
     def n_expr(self, pol):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for a given polarization
         """
         if pol == 'o':
@@ -147,14 +159,6 @@ class LBO_xy(LBO):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    
-
-    
-    
-
-    
-    
-    
 
 class LBO_yz(LBO):
     __slots__ = []
@@ -164,22 +168,22 @@ class LBO_yz(LBO):
         self._plane = 'yz'
         self._phi_rad = 0.5*pi
         self._theta_rad = 'var'
-    
+
 
     def n_o_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for o-wave polarization for yx principal plane
         """
         return super().n_x_expr()
-    
+
     def n_e_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for e-wave polarization for yz principal plane
         """
         return super().n_y_expr() * super().n_z_expr() / sympy.sqrt( super().n_y_expr()**2 * sympy.sin(theta)**2 + super().n_z_expr()**2 * sympy.cos(theta)**2 )
 
     def n_expr(self, pol):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for a given polarization
         """
         if pol == 'o':
@@ -189,14 +193,6 @@ class LBO_yz(LBO):
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
 
-    
-
-    
-    
-
-    
-    
-    
 
 class LBO_zx(LBO):
     __slots__ = []
@@ -205,23 +201,23 @@ class LBO_zx(LBO):
         super().__init__()
         self._plane = 'zx'
         self._theta_rad = 'var'
-        self._phi_rad = 0.5*pi
-    
+        self._phi_rad = 0.0
+
 
     def n_o_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for o-wave polarization for zx principal plane
         """
         return super().n_y_expr()
-    
+
     def n_e_expr(self):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for e-wave polarization for zx principal plane
         """
         return super().n_z_expr() * super().n_x_expr() / sympy.sqrt( super().n_z_expr()**2 * sympy.cos(theta)**2 + super().n_x_expr()**2 * sympy.sin(theta)**2 )
 
     def n_expr(self, pol):
-        """ sympy expresssion, 
+        """ sympy expresssion,
         dispersion formula for a given polarization """
         if pol == 'o':
             return self.n_o_expr()
@@ -229,12 +225,3 @@ class LBO_zx(LBO):
             return self.n_e_expr()
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
-
-    
-
-    
-    
-
-    
-    
-    
