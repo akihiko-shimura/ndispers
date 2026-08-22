@@ -29,12 +29,12 @@ class BetaBBO(Uniax_neg_3m):
     temperature dispersion is analyzed over about -40 to 320 degC.
 
     Ref
-    ----
-    Sellmeier equation:
-    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
-    
+    ---
+    Sellmeier equation and thermo-optic coefficients:
+      Ghosh, G. (1995). Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices. Journal of Applied Physics, 78(11), 6752-6760. https://doi.org/10.1063/1.360499
+
     Nonlinear optical coefficients:
-    - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
+      Shoji, I., Kondo, T., & Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E_e",

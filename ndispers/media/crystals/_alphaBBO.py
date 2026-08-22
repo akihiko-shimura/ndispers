@@ -28,9 +28,11 @@ class AlphaBBO(Medium):
 
     Ref
     ---
-    Sellmeier equation: CASTECH vendor data for α-BBO.
+    Sellmeier equation:
+      CASTECH α-BBO (vendor data, accessed 2026-08-22). https://www.castech.com/
+
     Structure and transparency range:
-    Fedorov, P. P., A. E. Kokh, and N. G. Kononova. "Barium borate β-BaB₂O₄ as a material for nonlinear optics." Russian Chemical Reviews 71.8 (2002): 651-671.
+      Fedorov, P. P., Kokh, A. E., & Kononova, N. G. (2002). Barium borate β-BaB2O4 as a material for nonlinear optics. Russian Chemical Reviews, 71(8), 651-671. https://doi.org/10.1070/rc2002v071n08abeh000716
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e"]

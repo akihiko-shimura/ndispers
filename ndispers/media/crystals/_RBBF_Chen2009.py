@@ -38,9 +38,12 @@ class RBBF(Medium):
     Thermo-optic equation: 0.194µm ≤ λ ≤ 1.014µm
     
     Ref
-    ----
-    - Chen, C., Wu, Y., Li, Y., Wang, J., Wu, B., Jiang, M., Zhang, G., & Ye, N. (2009). Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2. Journal of the Optical Society of America B, 26(8), 1519-1525. https://opg.optica.org/josab/abstract.cfm?uri=josab-26-8-1519
-    - Zhai, N., Wang, L., Liu, L., Wang, X., Zhu, Y., & Chen, C. (2013). Measurement of thermal refractive index coefficients of nonlinear optical crystal RbBe2BO3F2. Optical Materials, 36(2), 333-336.
+    ---
+    Sellmeier equation:
+      Chen, C., Wu, Y., Li, Y., et al. (2009). Deep UV nonlinear optical crystal: RbBe2(BO3)F2. JOSA B, 26(8), 1519-1525. https://doi.org/10.1364/josab.26.001519
+
+    Thermo-optic coefficients:
+      Zhai, N., Wang, L., Liu, L., et al. (2013). Measurement of thermal refractive index coefficients of nonlinear optical crystal RbBe2BO3F2. Optical Materials, 36(2), 333-336. https://doi.org/10.1016/j.optmat.2013.09.017
     """
     __slots__ = ["_B_o", "_C_o", "_D_o", 
                  "_B_e", "_C_e", "_D_e",

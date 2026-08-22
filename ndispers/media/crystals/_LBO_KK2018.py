@@ -41,9 +41,11 @@ class LBO(Medium):
 
     Ref
     ---
-    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
-    Kato, K., S. G. Grechin, and N. Umemura. "New thermo-optic dispersion formula for LiB3O5." Laser Physics 28.9 (2018): 095403.
+    Sellmeier equation:
+      Kato, K. (1994). Temperature-tuned 90° phase-matching properties of LiB3O5. IEEE Journal of Quantum Electronics, 30(12), 2950-2952. https://doi.org/10.1109/3.362711
 
+    Thermo-optic coefficients:
+      Kato, K., Grechin, S. G., & Umemura, N. (2018). New thermo-optic dispersion formula for LiB3O5. Laser Physics, 28(9), 095403. https://doi.org/10.1088/1555-6611/aac9df
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",

@@ -24,11 +24,13 @@ class BetaBBO(Uniax_neg_3m):
     Ref
     ---
     Sellmeier equation:
-    - Tamošauskas, Gintaras, et al. "Transmittance and phase matching of BBO crystal in the 3-5 μm range and its application for the characterization of mid-infrared laser pulses." Optical Materials Express 8.6 (2018): 1410-1418.
-        dn/dT from Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+      Tamošauskas, G., Beresnevičius, G., Gadonas, D., & Dubietis, A. (2018). Transmittance and phase matching of BBO crystal in the 3−5 μm range and its application for the characterization of mid-infrared laser pulses. Optical Materials Express, 8(6), 1410-1418. https://doi.org/10.1364/ome.8.001410
+
+    Thermo-optic coefficients:
+      Nikogosyan, D. N. (1991). Beta barium borate (BBO): a review of its properties and applications. Applied Physics A, 52(6), 359-368. https://doi.org/10.1007/bf00323647
 
     Nonlinear optical coefficients:
-    - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
+      Shoji, I., Kondo, T., & Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620
     """
     __slots__ = ["_B1_o", "_C1_o", "_B2_o", "_C2_o", "_B3_o", "_C3_o",
                  "_B1_e", "_C1_e", "_B2_e", "_C2_e", "_B3_e", "_C3_e",

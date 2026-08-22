@@ -29,9 +29,8 @@ class Calcite(Medium):
     for signature uniformity and ignored, and dndT returns 0.
 
     Ref
-    ----
-    Handbook of Optics: Devices, Measurements, and Properties, Volume II, by Michael Bass (ed),
-    Chapter 33: PROPERTIES OF CRYSTALS AND GLASSES, William J. Tropf, Michael E. Thomas, and Terry J. Harris
+    ---
+    Tropf, W. J., Thomas, M. E., & Harris, T. J. (1995). Properties of crystals and glasses. In M. Bass (Ed.), Handbook of Optics, Vol. II, Chapter 33. McGraw-Hill.
     """
     __slots__ = ["_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",
                  "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e"]

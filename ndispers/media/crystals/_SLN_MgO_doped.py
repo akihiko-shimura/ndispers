@@ -39,10 +39,12 @@ class SLN(Uniax_neg_3m):
 
     Ref
     ---
-    Gayer, O., et al. "Temperature and wavelength dependent refractive index equations for MgO-doped congruent and stoichiometric LiNbO3." Applied Physics B 91.2 (2008): 343-348.
-    Erratum: Applied Physics B 101.2 (2010): 481. (b1 corrected to 4.677e-6)
-    https://www.opt-oxide.com/products/sln/
+    Sellmeier equation:
+      Gayer, O., Sacks, Z., Galun, E., & Arie, A. (2008). Temperature and wavelength dependent refractive index equations for MgO-doped congruent and stoichiometric LiNbO3. Applied Physics B, 91(2), 343-348. https://doi.org/10.1007/s00340-008-2998-2
+      Gayer, O., Sacks, Z., Galun, E., & Arie, A. (2010). Erratum. Applied Physics B, 101(2), 481. https://doi.org/10.1007/s00340-010-4203-7  (b1 for SLN corrected to 4.677e-6)
 
+    Material information:
+      Oxide Corporation SLN (vendor data, accessed 2026-08-22). https://www.opt-oxide.com/products/sln/
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",

@@ -220,6 +220,26 @@ def test_centrosymmetric_media_have_no_nonlinear_coefficients(name):
 
 
 @pytest.mark.parametrize("name", ALL_MEDIA)
+def test_references_are_resolvable(name):
+    """Every reference is one line carrying a year and, unless it is vendor data
+    or a work with no registered DOI, a doi.org URL. The 25 DOIs in the package
+    were each resolved against Crossref when this style was introduced; this
+    test only guards the shape, since resolving them needs the network."""
+    import re
+    doc = getattr(C, name).__doc__
+    body = doc[doc.index('Ref'):]
+    body = body[body.index('---') + 3:]
+    lines = [l.strip() for l in body.split('\n') if l.strip() and not l.strip().endswith(':')]
+    assert lines, f"{name}: Ref section is empty"
+    for line in lines:
+        assert re.search(r'\(\d{4}\)|accessed \d{4}-\d{2}-\d{2}', line), \
+            f"{name}: reference has no year: {line[:60]}"
+        assert 'https://doi.org/' in line or 'vendor data' in line \
+            or 'not registered with Crossref' in line or 'Handbook of Optics' in line, \
+            f"{name}: reference has no DOI: {line[:60]}"
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
 def test_docstring_template(name):
     """The class docstrings are the source of the documentation's media catalog,
     so template drift is documentation drift. Mandatory sections must be present;

@@ -42,8 +42,7 @@ class LBO(Medium):
 
     Ref
     ---
-    https://eksmaoptics.com/out/media/EKSMA_Optics_LBO_Crystals.pdf
-
+    EKSMA Optics LBO (vendor data, accessed 2026-08-22). https://eksmaoptics.com/out/media/EKSMA_Optics_LBO_Crystals.pdf
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

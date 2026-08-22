@@ -32,10 +32,10 @@ class KBBF(Uniax_neg_32):
     Ref
     ---
     Sellmeier equation:
-    Li, R., Wang, L., Wang, X., Wang, G., & Chen, C. (2016). Dispersion relations of refractive indices suitable for KBe 2 BO 3 F 2 crystal deep-ultraviolet applications. Applied Optics, 55(36), 10423-10426.
-    
+      Li, R., Wang, L., Wang, X., et al. (2016). Dispersion relations of refractive indices suitable for KBe2BO3F2 crystal deep-ultraviolet applications. Applied Optics, 55(36), 10423-10426. https://doi.org/10.1364/ao.55.010423
+
     Nonlinear optical coefficients:
-    Chen, C. T., Wang, G. L., Wang, X. Y., & Xu, Z. Y. (2009). Deep-UV nonlinear optical crystal KBe2BO3F2—discovery, growth, optical properties and applications. Applied Physics B, 97(1), 9-25.
+      Chen, C., Wang, G., Wang, X., & Xu, Z. (2009). Deep-UV nonlinear optical crystal KBe2BO3F2 — discovery, growth, optical properties and applications. Applied Physics B, 97(1), 9-25. https://doi.org/10.1007/s00340-009-3554-4
     """
     __slots__ = ["_A_o", "_B1_o", "_B2_o", "_C1_o", "_C2_o",  "_D_o",
                  "_A_e", "_B1_e", "_B2_e", "_C1_e", "_C2_e",  "_D_e",

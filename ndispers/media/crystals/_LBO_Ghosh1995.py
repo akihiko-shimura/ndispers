@@ -40,8 +40,7 @@ class LBO(Medium):
 
     Ref
     ---
-    Ghosh, Gorachand. "Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices." Journal of applied physics 78.11 (1995): 6752-6760.
-
+    Ghosh, G. (1995). Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices. Journal of Applied Physics, 78(11), 6752-6760. https://doi.org/10.1063/1.360499
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

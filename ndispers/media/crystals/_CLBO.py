@@ -29,8 +29,8 @@ class CLBO(Medium):
         dn/dT : 0.2128 to 1.3382 µm
 
     Ref
-    ----
-    Umemura, N., Yoshida, K., Kamimura, T., Mori, Y., Sasaki, T., & Kato, K. "New data on the phase-matching properties of CsLiB6O10." Advanced Solid State Lasers. Optical Society of America, 1999.
+    ---
+    Umemura, N., Yoshida, K., Kamimura, T., et al. (1999). New data on the phase-matching properties of CsLiB6O10. Advanced Solid State Lasers, PD15. https://doi.org/10.1364/assl.1999.pd15
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e",

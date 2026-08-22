@@ -25,13 +25,13 @@ class BetaBBO(Uniax_neg_3m):
     Ref
     ---
     Sellmeier equation:
-    - Eimerl, David, et al. "Optical, mechanical, and thermal properties of barium borate." Journal of applied physics 62.5 (1987): 1968-1983.
+      Eimerl, D., Davis, L., Velsko, S., et al. (1987). Optical, mechanical, and thermal properties of barium borate. Journal of Applied Physics, 62(5), 1968-1983. https://doi.org/10.1063/1.339536
 
     Thermo-optic coefficients:
-    - Nikogosyan, D. N. "Beta barium borate (BBO)." Applied Physics A 52.6 (1991): 359-368.
+      Nikogosyan, D. N. (1991). Beta barium borate (BBO): a review of its properties and applications. Applied Physics A, 52(6), 359-368. https://doi.org/10.1007/bf00323647
 
     Nonlinear optical coefficients:
-    - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
+      Shoji, I., Kondo, T., & Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e",

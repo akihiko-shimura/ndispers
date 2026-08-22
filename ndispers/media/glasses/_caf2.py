@@ -24,8 +24,12 @@ class CaF2(Medium):
     0.23 to 9.7 µm
 
     Ref
-    ----
-    Malitson, Irving H. "A redetermination of some optical properties of calcium fluoride." Applied Optics 2.11 (1963): 1103-1107.
+    ---
+    Sellmeier equation:
+      Malitson, I. H. (1963). A redetermination of some optical properties of calcium fluoride. Applied Optics, 2(11), 1103-1107. https://doi.org/10.1364/ao.2.001103
+
+    Thermo-optic coefficient:
+      Rocha, A. C. P., Silva, J. R., Lima, S. M., et al. (2016). Measurements of refractive indices and thermo-optical coefficients using a white-light Michelson interferometer. Applied Optics, 55(24), 6639-6643. https://doi.org/10.1364/ao.55.006639
     """
     __slots__ = ["_A1", "_B1", "_A2", "_B2", "_A3", "_B3", "_dndT"]
 

@@ -34,11 +34,12 @@ class KDP(Medium):
     the source.
 
     Ref
-    ----
-    Ghosh, Gorachand. "Dispersion of thermo-optic coefficients and temperature-dependent nonlinear optical devices of some nonlinear crystals." Emerging Optoelectronic Technologies, Proc. SPIE 1622 (1992): 48-52. (Sellmeier coefficients, Table I; thermo-optic coefficients, Table II)
+    ---
+    Sellmeier equation and thermo-optic coefficients:
+      Ghosh, G. (1992). Dispersion of thermo-optic coefficients and temperature-dependent nonlinear optical devices of some nonlinear crystals. Proc. SPIE, 1622, 49-53. https://doi.org/10.1117/12.637003
 
     Underlying room-temperature index measurements:
-    Zernike, Frits. "Refractive indices of ammonium dihydrogen phosphate and potassium dihydrogen phosphate between 2000 Å and 1.5 μ." JOSA 54.10 (1964): 1215-1220.
+      Zernike, F. (1964). Refractive indices of ammonium dihydrogen phosphate and potassium dihydrogen phosphate between 2000 Å and 1.5 μ. JOSA, 54(10), 1215-1220. https://doi.org/10.1364/josa.54.001215
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E",

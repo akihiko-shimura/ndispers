@@ -42,9 +42,8 @@ class KTP(Medium):
     | zx    | y      | zx     | var   | pi/2 |
 
     Ref
-    ----
-    Kato, Kiyoshi, and Eiko Takaoka. "Sellmeier and thermo-optic dispersion formulas for KTP." Applied optics 41.24 (2002): 5040-5044.
-    
+    ---
+    Kato, K., & Takaoka, E. (2002). Sellmeier and thermo-optic dispersion formulas for KTP. Applied Optics, 41(24), 5040-5044. https://doi.org/10.1364/ao.41.005040
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

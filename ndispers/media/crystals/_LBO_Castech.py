@@ -43,8 +43,7 @@ class LBO(Medium):
 
     Ref
     ---
-    https://www.castech.com/product/LBO-121.html
-
+    CASTECH LBO (vendor data, accessed 2026-08-22). https://www.castech.com/product/LBO-121.html
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

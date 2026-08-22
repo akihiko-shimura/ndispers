@@ -39,8 +39,7 @@ class LBO(Medium):
 
     Ref
     ---
-    Kato, K., "Temperature-tuned 90-deg phase-matching properties of LiB3O5," IEEE Journal of Quantum Electronics 30, 2950-2952 (1994).
-
+    Kato, K. (1994). Temperature-tuned 90° phase-matching properties of LiB3O5. IEEE Journal of Quantum Electronics, 30(12), 2950-2952. https://doi.org/10.1109/3.362711
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",
