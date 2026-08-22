@@ -19,6 +19,12 @@ class SLT(Uniax_neg_3m):
     n(wl) = sqrt(a1_i + b1_i * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - (a5_i + b5_i * f)**2) - a6_i * wl**2) for i=o,e
     f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
 
+    Validity range
+    --------------
+    Fitted to experimental data over 0.35 to 6 µm for the extraordinary
+    wave and 0.375 to 3.75 µm for the ordinary wave, from room
+    temperature up to 200 degC (Dolev 2009, abstract).
+
     Note
     ----
     d coefficients are of *congrunet* LT crystal, not of stoichiometric.
