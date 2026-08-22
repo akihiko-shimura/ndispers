@@ -70,3 +70,16 @@ docs/build/
 
 # MkDocs
 site/
+# Claude Code session archive (session-md-archiver plugin)
+claude-session-log/
+
+# LaTeX build output (docs/dev/*.tex)
+docs/dev/*.pdf
+docs/dev/*.aux
+docs/dev/*.log
+docs/dev/*.out
+docs/dev/*.bbl
+docs/dev/*.blg
+docs/dev/*.fls
+docs/dev/*.fdb_latexmk
+docs/dev/*Notes.bib

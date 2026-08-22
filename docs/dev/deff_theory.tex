@@ -1,0 +1,414 @@
+\documentclass[aps,pra,preprint,amsmath,amssymb,nofootinbib,superscriptaddress]{revtex4-2}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+
+\newcommand{\ueff}{d_{\mathrm{eff}}}
+\newcommand{\vecu}[1]{\hat{\bm{#1}}}
+\newcommand{\ndispers}{\textsc{ndispers}}
+
+\begin{document}
+
+\title{Effective second-order nonlinearity and its wavelength dependence in \ndispers:\\
+theoretical notes for the \texttt{groups} module}
+
+\author{A.~Shimura}
+\date{\today}
+
+\begin{abstract}
+These notes collect, from first principles, the theory behind the
+\texttt{deff\_sfg} and Miller-rule methods of \ndispers\ so that the
+implementation can be reviewed line by line against explicit equations.
+We fix conventions (SI, contracted $d_{il}$ in pm/V, wavelengths in
+$\mu$m), recall the point-group forms of the $d$ tensor under Kleinman
+symmetry for $3m$ and $32$, state Miller's rule in the principal dielectric
+frame, derive the field unit vectors of ordinary and extraordinary waves
+including walk-off, and obtain $\ueff$ for the three collinear interaction
+types of a negative uniaxial crystal. Section~\ref{sec:impl} maps each
+equation onto the code and identifies where the present implementation
+departs from the theory. The same recipe extends to $\bar{4}2m$, $4mm$,
+and $mm2$ with no new physics; only the tensor forms and the field
+vectors change.
+\end{abstract}
+
+\maketitle
+
+\section{Scope and conventions}
+
+\ndispers\ evaluates, for a given medium, the refractive index
+$n(\lambda,\theta,\phi,T)$ and quantities derived from it by symbolic
+differentiation. The \texttt{groups} module adds what depends on the
+\emph{point group} rather than on the Sellmeier equation alone: the
+effective second-order coefficient $\ueff$ for collinear sum-frequency
+generation (SFG), and an estimate of how the tensor components
+$d_{il}$ vary with wavelength.
+
+Throughout, SI units; $\lambda$ in $\mu$m; $d_{il}$ in pm/V; angles in
+radians in code and degrees in prose. Frequencies obey
+$\omega_3=\omega_1+\omega_2$, i.e.\ $1/\lambda_3 = 1/\lambda_1 + 1/\lambda_2$.
+Polarization indices $(p_1,p_2,p_3)$ are listed in the order
+$(\omega_1,\omega_2,\omega_3)$, so ``ooe'' means both inputs ordinary and
+the sum frequency extraordinary. Second-harmonic generation (SHG) is the
+degenerate case $\lambda_1=\lambda_2$.
+
+\section{Second-order polarization and the $d$ tensor}
+
+For monochromatic fields the second-order polarization at
+$\omega_3=\omega_1+\omega_2$ is written \cite{Boyd}
+\begin{equation}
+  P_i(\omega_3) = 2\varepsilon_0 \sum_{jk} d_{ijk}(\omega_3;\omega_1,\omega_2)\,
+  E_j(\omega_1)\,E_k(\omega_2),
+  \qquad d_{ijk} = \tfrac12 \chi^{(2)}_{ijk},
+  \label{eq:P2}
+\end{equation}
+where the factor $2$ is the degeneracy factor for two distinct input
+frequencies; for SHG it is $1$ and $E_j E_k$ is the same field twice.
+Intrinsic permutation symmetry $d_{ijk}=d_{ikj}$ allows the contracted
+(Voigt) notation $d_{il}$ with $l \in \{1,\dots,6\} \leftrightarrow
+\{xx,yy,zz,yz,zx,xy\}$. In contracted form Eq.~\eqref{eq:P2} reads
+\begin{equation}
+  \begin{pmatrix} P_x\\P_y\\P_z \end{pmatrix}
+  = 2\varepsilon_0
+  \begin{pmatrix}
+    d_{11}&d_{12}&d_{13}&d_{14}&d_{15}&d_{16}\\
+    d_{21}&d_{22}&d_{23}&d_{24}&d_{25}&d_{26}\\
+    d_{31}&d_{32}&d_{33}&d_{34}&d_{35}&d_{36}
+  \end{pmatrix}
+  \begin{pmatrix}
+    E_xE_x\\ E_yE_y\\ E_zE_z\\ 2E_yE_z\\ 2E_zE_x\\ 2E_xE_y
+  \end{pmatrix},
+  \label{eq:contracted}
+\end{equation}
+with $E_jE_k$ understood as $E_j(\omega_1)E_k(\omega_2)$ symmetrized in
+$j,k$. The factor $2$ on the off-diagonal products is part of the
+definition of the contracted notation and must be kept when projecting
+onto field directions in Sec.~\ref{sec:deff}.
+
+\paragraph*{Kleinman symmetry.}
+Far from any resonance, $d_{ijk}$ is invariant under all permutations of
+$(i,j,k)$ \cite{Kleinman1962}. This identifies, e.g., $d_{15}=d_{xzx}$
+with $d_{31}=d_{zxx}$ and $d_{16}=d_{xxy}$ with $d_{21}=d_{yxx}$. Every
+medium in \ndispers\ is used in its transparency range, so Kleinman
+symmetry is assumed throughout.
+
+\subsection{Point group $3m$ (\texorpdfstring{$\beta$}{beta}-BBO, LiNbO$_3$, LiTaO$_3$)}
+
+With the mirror plane $\perp x$ (the convention of the IEEE/IRE
+standard and of Ref.~\cite{Dmitriev}),
+\begin{equation}
+  d^{(3m)} =
+  \begin{pmatrix}
+    0 & 0 & 0 & 0 & d_{15} & -d_{22}\\
+    -d_{22} & d_{22} & 0 & d_{15} & 0 & 0\\
+    d_{31} & d_{31} & d_{33} & 0 & 0 & 0
+  \end{pmatrix},
+  \qquad d_{15}=d_{31}\ \text{(Kleinman)}.
+  \label{eq:d3m}
+\end{equation}
+Independent components: $d_{22}$, $d_{31}$, $d_{33}$.
+
+\subsection{Point group $32$ (KBBF, RBBF, \texorpdfstring{$\alpha$}{alpha}-quartz)}
+
+\begin{equation}
+  d^{(32)} =
+  \begin{pmatrix}
+    d_{11} & -d_{11} & 0 & d_{14} & 0 & 0\\
+    0 & 0 & 0 & 0 & -d_{14} & -d_{11}\\
+    0 & 0 & 0 & 0 & 0 & 0
+  \end{pmatrix}.
+  \label{eq:d32}
+\end{equation}
+Kleinman symmetry requires $d_{14}=d_{xyz}=d_{yzx}=d_{25}$, but the
+group form gives $d_{25}=-d_{14}$; hence $d_{14}=0$ under Kleinman
+symmetry and $d_{11}$ is the only independent component.
+
+\section{Linear susceptibility in the principal frame}
+\label{sec:chi}
+
+In the principal dielectric frame the linear susceptibility is diagonal,
+$\chi_{ii}(\omega)=n_i^2(\omega)-1$ with $n_i\in\{n_x,n_y,n_z\}$. For a
+uniaxial crystal ($z\parallel$ optic axis)
+\begin{equation}
+  \chi_{xx}=\chi_{yy}=\chi_o \equiv n_o^2-1,\qquad
+  \chi_{zz}=\chi_e \equiv n_e^2-1,
+  \label{eq:chi}
+\end{equation}
+where $n_e$ is the \emph{principal} extraordinary index. It must be
+distinguished from the index seen by an extraordinary wave propagating at
+polar angle $\theta$,
+\begin{equation}
+  \frac{1}{n_e^2(\theta)} = \frac{\cos^2\theta}{n_o^2}+\frac{\sin^2\theta}{n_e^2},
+  \qquad n_e(\theta{=}0)=n_o,\quad n_e(\theta{=}\pi/2)=n_e.
+  \label{eq:ne_theta}
+\end{equation}
+In \ndispers, $n_e$ in Eq.~\eqref{eq:chi} is \texttt{n(wl, pi/2, T, pol='e')}
+and $n_o$ is \texttt{n(wl, $\theta_{\mathrm{any}}$, T, pol='o')}.
+The tensor component $\chi_{zz}$ is a property of the material; it does
+not depend on which direction a particular beam happens to travel.
+
+\section{Miller's rule}
+\label{sec:miller}
+
+Miller \cite{Miller1964} observed that
+\begin{equation}
+  d_{ijk}(\omega_3;\omega_1,\omega_2)
+  = \varepsilon_0\,\Delta_{ijk}\;\chi_{ii}(\omega_3)\,\chi_{jj}(\omega_1)\,\chi_{kk}(\omega_2)
+  \label{eq:miller}
+\end{equation}
+defines a quantity $\Delta_{ijk}$ (Miller's delta) that is nearly constant
+across materials and, within one material, nearly independent of frequency.
+The second statement is the one used here: it is an empirical rule---an
+anharmonic-oscillator argument gives it and also its limits---that
+predicts how a coefficient measured at one wavelength set scales to
+another. Its experimental standing is mixed and should be stated
+honestly. Shoji \emph{et al.} \cite{Shoji1997}, measuring absolute
+$d_{il}$ of LiNbO$_3$, LiTaO$_3$, KTP, KDP and several semiconductors
+from $0.85$ to $1.55\,\mu$m, found $\Delta$ ``barely constant'' even in the
+transparency range---$\Delta_{15}$ of KTP at $1.06\,\mu$m is 35\% larger
+than at $1.31\,\mu$m---and warned that scaling on an assumed constant
+$\Delta$ ``can lead to considerable error.'' Alford and Smith
+\cite{Alford2001}, combining new parametric-gain and SHG data with the
+literature for KDP, KTP, KTA, KNbO$_3$, LiIO$_3$, LiNbO$_3$, $\beta$-BBO and
+LBO, concluded that for KDP, LiIO$_3$, LiNbO$_3$ and BBO the agreement is
+good, that KTP is consistent once earlier measurements are reinterpreted,
+and that overall Miller scaling is ``an easily applied and reasonably
+accurate way to scale individual nonlinear coefficients with
+wavelength''; for LBO they found too few data to decide. \ndispers\
+adopts the rule as the best available single-parameter estimate and
+reports the reference point it was anchored to, so that a user can judge
+how far an extrapolation has gone.
+
+Two features of Eq.~\eqref{eq:miller} drive the implementation:
+
+\begin{enumerate}
+\item \textbf{The $\chi$'s are indexed by the tensor indices $(i,j,k)$
+in the principal frame}, each one $\chi_{xx}$, $\chi_{yy}$ or
+$\chi_{zz}$ of Eq.~\eqref{eq:chi}. No propagation direction enters.
+For the components used here,
+\begin{equation}
+\begin{aligned}
+  d_{22}=d_{yyy}:&\quad \chi_o(\omega_3)\,\chi_o(\omega_1)\,\chi_o(\omega_2),\\
+  d_{31}=d_{zxx}:&\quad \chi_e(\omega_3)\,\chi_o(\omega_1)\,\chi_o(\omega_2),\\
+  d_{11}=d_{xxx}:&\quad \chi_o(\omega_3)\,\chi_o(\omega_1)\,\chi_o(\omega_2),\\
+  d_{14}=d_{xyz}:&\quad \chi_o(\omega_3)\,\chi_o(\omega_1)\,\chi_e(\omega_2)\ \ [=0 \text{ for } 32,\ \text{Kleinman}].
+\end{aligned}
+\label{eq:chi_assign}
+\end{equation}
+Here $\chi_e$ means Eq.~\eqref{eq:chi} with the principal $n_e$, not
+$n_e(\theta_{\rm pm})$. Using the phase-matching-angle index instead would
+make $d_{zxx}$ a function of $\theta$, i.e.\ of the experiment rather than
+of the crystal, and would double-count the angular dependence that
+$\ueff$ already carries through its geometric factor (Sec.~\ref{sec:deff}).
+The discrepancy is not a constant factor: the ratio of $n_e^2(\theta_{\rm pm})-1$
+to $n_e^2-1$ changes with $\lambda$ because $\theta_{\rm pm}$ does. For
+$\beta$-BBO (Eimerl~1987 Sellmeier), $d_{31}$ for SHG at $0.6$, $0.8$,
+$1.064$, $2.0\,\mu$m comes out $0.945$, $0.983$, $1.000$, $0.994$ times the
+principal-frame value when $\theta_{\rm pm}$ is used---exact at the
+reference point, wrong away from it.
+
+\item \textbf{Only one reference measurement per component is needed.}
+Given $d_{il}^{\rm ref}$ measured for the pair $(\lambda_1^{\rm ref},\lambda_2^{\rm ref})$,
+\begin{equation}
+  \Delta_{il} = \frac{d_{il}^{\rm ref}}
+  {\chi_i(\omega_3^{\rm ref})\,\chi_j(\omega_1^{\rm ref})\,\chi_k(\omega_2^{\rm ref})},
+  \qquad
+  d_{il}(\lambda_1,\lambda_2) = \Delta_{il}\,
+  \chi_i(\omega_3)\,\chi_j(\omega_1)\,\chi_k(\omega_2).
+  \label{eq:delta}
+\end{equation}
+\ndispers\ absorbs $\varepsilon_0$ into $\Delta$, so $\Delta$ carries the
+units of $d$ (pm/V) and the $\chi$'s are dimensionless. By construction
+$d_{il}(\lambda_1^{\rm ref},\lambda_2^{\rm ref}) = d_{il}^{\rm ref}$ exactly; this
+round-trip is the natural regression test.
+\end{enumerate}
+
+The $\chi$'s in Eq.~\eqref{eq:delta} are evaluated at the temperature
+passed in; Miller's rule then also implies a (weak) temperature dependence
+of $d$ through $dn/dT$. Reference values in the literature are at room
+temperature and no temperature coefficient of $\Delta$ is assumed.
+
+\section{Field directions of ordinary and extraordinary waves}
+\label{sec:fields}
+
+Let the wave vector be
+$\vecu{k}=(\sin\theta\cos\phi,\ \sin\theta\sin\phi,\ \cos\theta)$ in the
+principal frame. The ordinary wave has $\bm E\perp\vecu{k}$ and
+$\bm E\perp\hat z$:
+\begin{equation}
+  \vecu{e}_o = (-\sin\phi,\ \cos\phi,\ 0).
+  \label{eq:eo}
+\end{equation}
+For the extraordinary wave $\bm D$ lies in the $(\vecu k,\hat z)$ plane
+perpendicular to $\vecu k$, but $\bm E$ is perpendicular to the Poynting
+vector $\bm S$, which is tilted from $\vecu k$ by the walk-off angle
+$\rho$ within the same plane. Writing $\Theta=\theta+\rho$ for the polar
+angle of $\bm S$,
+\begin{equation}
+  \vecu{e}_e = (\cos\Theta\cos\phi,\ \cos\Theta\sin\phi,\ -\sin\Theta).
+  \label{eq:ee}
+\end{equation}
+(The overall signs of $\vecu e_o$ and $\vecu e_e$ are conventions; they
+change only the sign of $\ueff$, not $|\ueff|$.)
+
+\paragraph*{Walk-off sign.}
+\ndispers\ defines \texttt{woa\_theta} as
+$\rho = \arctan\!\big[-(\partial n_e(\theta)/\partial\theta)/n_e(\theta)\big]$.
+For a negative uniaxial crystal $n_e<n_o$, so $n_e(\theta)$ decreases with
+$\theta$ and $\rho>0$: $\bm S$ is tilted \emph{away} from the optic axis,
+$\Theta=\theta+\rho>\theta$, which is the standard result
+\cite{Boyd,Dmitriev}. Numerically, $\beta$-BBO at $1.064\,\mu$m,
+$\theta=45^\circ$ gives $\rho=+4.02^\circ$. A positive crystal would give
+$\rho<0$ from the same formula, so $\Theta=\theta+\rho$ holds for both
+signs; no case split is needed in Eq.~\eqref{eq:ee}.
+
+\section{Effective nonlinear coefficient}
+\label{sec:deff}
+
+For collinear interaction with unit polarization vectors
+$\vecu e_1,\vecu e_2,\vecu e_3$ of the three waves,
+\begin{equation}
+  \ueff = \sum_{ijk} e_{3,i}\, d_{ijk}\, e_{1,j}\, e_{2,k}
+  = \vecu e_3\cdot\big[\,d\,\cdot\bm u(\vecu e_1,\vecu e_2)\big],
+  \label{eq:deff_def}
+\end{equation}
+where $\bm u$ is the contracted product vector of Eq.~\eqref{eq:contracted}
+built from the two input polarizations,
+\begin{equation}
+  \bm u = \big(e_{1x}e_{2x},\ e_{1y}e_{2y},\ e_{1z}e_{2z},\
+  e_{1y}e_{2z}+e_{1z}e_{2y},\ e_{1z}e_{2x}+e_{1x}e_{2z},\ e_{1x}e_{2y}+e_{1y}e_{2x}\big).
+  \label{eq:u}
+\end{equation}
+The coupled-wave equations then contain $\ueff$ in place of the tensor,
+and the conversion efficiency scales as $\ueff^2$. In a negative uniaxial
+crystal the sum-frequency wave must be extraordinary for birefringent
+phase matching, leaving three collinear types: ooe (type~I), oee and eoe
+(type~II). Below, $\Theta_m=\theta+\rho_m$ with $\rho_m$ the walk-off of
+wave $m$ evaluated at its own wavelength (zero for ordinary waves).
+
+\subsection{Point group $3m$}
+
+\emph{ooe.} With $\vecu e_1=\vecu e_2=\vecu e_o$,
+$\bm u=(\sin^2\phi,\ \cos^2\phi,\ 0,\ 0,\ 0,\ -\sin2\phi)$.
+From Eq.~\eqref{eq:d3m},
+$P_x\propto d_{22}\sin2\phi$, $P_y\propto d_{22}\cos2\phi$,
+$P_z\propto d_{31}$. Contracting with $\vecu e_3=\vecu e_e(\Theta_3)$:
+\begin{equation}
+  \ueff^{\rm ooe} = d_{22}\cos\Theta_3\,\sin3\phi - d_{31}\sin\Theta_3 .
+  \label{eq:deff_3m_ooe}
+\end{equation}
+\emph{oee.} $\vecu e_1=\vecu e_o$, $\vecu e_2=\vecu e_e(\Theta_2)$ gives
+$u_1=-u_2=-\tfrac12\sin2\phi\cos\Theta_2$, $u_3=0$,
+$u_4=-\cos\phi\sin\Theta_2$, $u_5=\sin\phi\sin\Theta_2$,
+$u_6=\cos2\phi\cos\Theta_2$. The $d_{15}$ terms in $P_x$ and $P_y$
+cancel upon contraction with $\vecu e_3$, and $P_z=d_{31}(u_1+u_2)=0$:
+\begin{equation}
+  \ueff^{\rm oee} = -\,d_{22}\cos\Theta_2\cos\Theta_3\,\cos3\phi .
+  \label{eq:deff_3m_oee}
+\end{equation}
+\emph{eoe.} Same as oee with $\Theta_2\to\Theta_1$.
+
+Up to the overall sign convention these are the standard expressions
+\cite{Dmitriev,Roberts1992}; $d_{33}$ never appears because its
+geometric factor $e_{3z}e_{1z}e_{2z}$ vanishes whenever one wave is
+ordinary. Note that $d_{31}$ contributes only to type~I; for
+$\beta$-BBO with $|d_{22}|\gg|d_{31}|$ the $\phi$ dependence is dominant
+and $|\ueff|$ peaks at $\sin3\phi=\pm1$, i.e.\ $\phi=30^\circ,90^\circ,\dots$
+for type~I and at $\cos3\phi=\pm1$ for type~II.
+
+\subsection{Point group $32$}
+
+With $d_{14}=0$ (Kleinman), the same steps give
+\begin{align}
+  \ueff^{\rm ooe} &= -\,d_{11}\cos\Theta_3\,\cos3\phi, \label{eq:deff_32_ooe}\\
+  \ueff^{\rm oee} &= -\,d_{11}\cos\Theta_2\cos\Theta_3\,\sin3\phi,
+  \qquad \text{eoe: } \Theta_2\to\Theta_1 . \label{eq:deff_32_oee}
+\end{align}
+If $d_{14}$ were retained, an extra $-d_{14}\sin\Theta_2\cos\Theta_3$
+(resp.\ $\Theta_1$) would appear in the type-II expressions and nothing in
+type~I; that is what the current code carries, with $d_{14}$ set to zero
+by the KBBF data.
+
+\subsection{Why the geometric factor and Miller's rule must not share $\theta$}
+
+Equation~\eqref{eq:deff_def} is a contraction of a material tensor with
+field directions. All angular dependence of $\ueff$ comes from
+$\vecu e_m(\theta,\phi)$; the tensor $d_{il}$ is the same for every
+$\theta$. Miller's rule, Eq.~\eqref{eq:miller}, is a statement about that
+tensor and therefore uses the principal $\chi$'s of Eq.~\eqref{eq:chi}.
+Inserting $n_e(\theta_{\rm pm})$ into Eq.~\eqref{eq:miller} would make
+$d_{zxx}$ depend on $\theta$, contradicting its meaning, and would
+introduce an angular factor on top of the one already present in
+Eqs.~\eqref{eq:deff_3m_ooe}--\eqref{eq:deff_32_oee}.
+
+\section{Mapping onto the implementation}
+\label{sec:impl}
+
+\begin{center}
+\begin{tabular}{@{}lp{0.36\linewidth}p{0.40\linewidth}@{}}
+\toprule
+Eq. & Method & Status in \texttt{groups/}, v0.9.1\\
+\midrule
+\eqref{eq:delta} & \texttt{Uniax\_neg\_3m.delta22}, \texttt{d22\_sfg} & all-ordinary $\chi$; correct\\
+\eqref{eq:delta} & \texttt{Uniax\_neg\_3m.delta31}, \texttt{d31\_sfg} & $\chi_{zz}$ taken from $n_e(\theta_{\rm pm})$: \textbf{departs from Eq.~\eqref{eq:chi_assign}}; raises \texttt{IndexError} when no ooe solution exists\\
+\eqref{eq:delta} & \texttt{Uniax\_neg\_32.delta11}, \texttt{d11\_sfg} & correct\\
+\eqref{eq:delta} & \texttt{Uniax\_neg\_32.delta14}, \texttt{d14\_sfg} & \texttt{pol='e'} evaluated at $\theta=0$, i.e.\ $\chi_o$; and $d_{14}\equiv0$ under Kleinman symmetry\\
+\eqref{eq:deff_3m_ooe}--\eqref{eq:deff_3m_oee} & \texttt{Uniax\_neg\_3m.deff\_sfg} & geometric factors correct (overall sign convention differs by $-1$)\\
+\eqref{eq:deff_32_ooe}--\eqref{eq:deff_32_oee} & \texttt{Uniax\_neg\_32.deff\_sfg} & geometric factors correct; carries a $d_{14}$ term that is zero\\
+\eqref{eq:ee} & \texttt{Medium.woa\_theta} & sign consistent with $\Theta=\theta+\rho$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The fix therefore touches only how $\chi$ is evaluated inside the
+Miller-rule methods: every $\chi_{zz}$ becomes
+\texttt{n(wl, pi/2, T, pol='e')**2 - 1}, every $\chi_{xx},\chi_{yy}$
+becomes \texttt{n(wl, 0, T, pol='o')**2 - 1}, and the
+\texttt{pmAngles\_sfg} call disappears. The geometric factors in
+\texttt{deff\_sfg} are unchanged. Reference values at their own
+$(\lambda_1^{\rm ref},\lambda_2^{\rm ref})$ are unchanged by construction;
+values elsewhere move by the amounts quoted after
+Eq.~\eqref{eq:chi_assign}.
+
+\section{Limits of validity}
+
+(i)~Kleinman symmetry: transparency range only. (ii)~Miller's rule:
+empirical; supported for BBO, KDP and LiNbO$_3$ by Ref.~\cite{Alford2001},
+contradicted at the 10--35\% level for KTP and some semiconductors by
+Ref.~\cite{Shoji1997}; untested for LBO. Expect errors of that order far
+from the reference wavelengths, and larger near the UV edge where
+$\chi$ varies fastest. (iii)~Absolute scale: Shoji \emph{et al.}
+\cite{Shoji1997} showed that many accepted values were overestimated by
+neglect of multiple reflection in plane-parallel samples; literature
+$d_{il}$ can differ by tens of percent between calibrations. \ndispers\
+stores one reference value per component and its source, and does not
+adjudicate. (iv)~Collinear,
+plane-wave, low-depletion: $\ueff$ as used in the coupled-wave equations;
+focusing, non-collinear and QPM geometries require separate treatment.
+(v)~Temperature: enters only through $n(T)$ in the $\chi$'s.
+
+\begin{thebibliography}{9}
+
+\bibitem{Boyd} R.~W. Boyd, \emph{Nonlinear Optics}, 4th ed. (Academic Press, 2020), Chap.~1.
+
+\bibitem{Kleinman1962} D.~A. Kleinman, ``Nonlinear dielectric polarization in optical media,''
+Phys. Rev. \textbf{126}, 1977 (1962). \url{https://doi.org/10.1103/PhysRev.126.1977}
+
+\bibitem{Miller1964} R.~C. Miller, ``Optical second harmonic generation in piezoelectric crystals,''
+Appl. Phys. Lett. \textbf{5}, 17 (1964). \url{https://doi.org/10.1063/1.1754022}
+
+\bibitem{Roberts1992} D.~A. Roberts, ``Simplified characterization of uniaxial and biaxial nonlinear optical crystals: a plea for standardization of nomenclature and conventions,''
+IEEE J. Quantum Electron. \textbf{28}, 2057 (1992). \url{https://doi.org/10.1109/3.159516}
+
+\bibitem{Shoji1997} I.~Shoji, T.~Kondo, A.~Kitamoto, M.~Shirane, and R.~Ito, ``Absolute scale of second-order nonlinear-optical coefficients,''
+J. Opt. Soc. Am. B \textbf{14}, 2268 (1997). \url{https://doi.org/10.1364/JOSAB.14.002268}
+
+\bibitem{Alford2001} W.~J. Alford and A.~V. Smith, ``Wavelength variation of the second-order nonlinear coefficients of KNbO$_3$, KTiOPO$_4$, KTiOAsO$_4$, LiNbO$_3$, LiIO$_3$, $\beta$-BaB$_2$O$_4$, KH$_2$PO$_4$, and LiB$_3$O$_5$ crystals: a test of Miller wavelength scaling,''
+J. Opt. Soc. Am. B \textbf{18}, 524 (2001). \url{https://doi.org/10.1364/JOSAB.18.000524}
+
+\bibitem{Dmitriev} V.~G. Dmitriev, G.~G. Gurzadyan, and D.~N. Nikogosyan, \emph{Handbook of Nonlinear Optical Crystals}, 3rd ed., Springer Series in Optical Sciences Vol.~64 (Springer, Berlin, 1999). \url{https://doi.org/10.1007/978-3-540-46793-9}
+
+\end{thebibliography}
+
+\end{document}
