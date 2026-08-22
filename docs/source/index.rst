@@ -70,6 +70,7 @@ You can request or contribute on GitHub to add new crystals and methods.
 .. toctree::
    :maxdepth: 2
 
+   conventions
    api
 
 Indices and tables
