@@ -202,17 +202,26 @@ def _(mo):
     threshold = mo.ui.slider(
         0.1, 0.9, value=0.5, step=0.05, label="Acceptance threshold", show_value=True
     )
-    threshold
-    return (threshold,)
+    # scale from ndispers' native unit (µm for wavelength, rad for angle)
+    WL_UNITS = {"pm": 1e6, "nm": 1e3, "µm": 1.0}
+    ANG_UNITS = {"mdeg": 180e3 / 3.141592653589793, "mrad": 1e3,
+                 "µrad": 1e6, "deg": 180 / 3.141592653589793}
+    wl_unit = mo.ui.dropdown(options=list(WL_UNITS), value="pm", label="Wavelength unit")
+    ang_unit = mo.ui.dropdown(options=list(ANG_UNITS), value="mdeg", label="Angle unit")
+    mo.hstack([threshold, wl_unit, ang_unit], justify="start", gap=2)
+    return ANG_UNITS, WL_UNITS, ang_unit, threshold, wl_unit
 
 
 @app.cell(hide_code=True)
 def _(
-    ANGLE_PM, HAS_PM, L, POLS, T_C, WL1, WL2, acceptance, mo, np, shg, threshold, x,
+    ANGLE_PM, ANG_UNITS, HAS_PM, L, POLS, T_C, WL1, WL2, WL_UNITS,
+    acceptance, ang_unit, mo, np, shg, threshold, wl_unit, x,
 ):
     if HAS_PM:
         _th = threshold.value
         _L = L.value
+        _au, _as = ang_unit.value, ANG_UNITS[ang_unit.value]
+        _wu, _ws = wl_unit.value, WL_UNITS[wl_unit.value]
 
         _d_ang = acceptance(
             lambda a: float(x.pmFactor_sfg(WL1, WL2, a, T_C, *POLS, _L)),
@@ -229,14 +238,21 @@ def _(
             lambda w: float(x.pmFactor_sfg(w, w, ANGLE_PM, T_C, *POLS, _L)),
             WL1, 1e-6, _th) if shg.value else np.nan
 
-        def _f(v, scale, unit):
-            return f"**{v * scale:.4g}** {unit}" if np.isfinite(v) else "—"
+        def _row(label, value, scale, unit):
+            """value is in ndispers' native unit; L-product is per centimetre."""
+            if not np.isfinite(value):
+                return f"| {label} | — | — |"
+            return (f"| {label} | **{value * scale:.4g}** {unit} | "
+                    f"**{value * scale * _L * 0.1:.4g}** {unit}·cm |")
 
-        _both_row = (
-            f"| λ₁ and λ₂ tuned together | {_f(_d_wboth, 1e3, 'nm')} | "
-            f"{_f(_d_wboth * _L * 0.1, 1e3, 'nm·cm')} |\n"
-            if shg.value else ""
-        )
+        _rows = [
+            _row("angle", _d_ang, _as, _au),
+            _row("temperature", _d_T, 1, "°C"),
+            _row("λ₁ only, λ₂ fixed", _d_wl1, _ws, _wu),
+        ]
+        if shg.value:
+            _rows.append(_row("λ₁ and λ₂ tuned together", _d_wboth, _ws, _wu))
+
         _out = mo.md(
             f"""
     ## Acceptance bandwidths
@@ -246,10 +262,7 @@ def _(
 
     | | full width at L = {_L:g} mm | × L |
     |---|---|---|
-    | angle | {_f(_d_ang, 1e3, 'mrad')} &nbsp;/&nbsp; {_f(np.degrees(_d_ang), 1, '°')} | {_f(_d_ang * _L * 0.1, 1e3, 'mrad·cm')} |
-    | temperature | {_f(_d_T, 1, '°C')} | {_f(_d_T * _L * 0.1, 1, '°C·cm')} |
-    | λ₁ only, λ₂ fixed | {_f(_d_wl1, 1e3, 'nm')} | {_f(_d_wl1 * _L * 0.1, 1e3, 'nm·cm')} |
-    {_both_row}
+    """ + "\n".join("    " + r for r in _rows) + """
 
     The wavelength row to compare against tabulated values is **λ₁ only** —
     that is what SNLO reports. Tuning λ₁ and λ₂ together makes Δk move twice

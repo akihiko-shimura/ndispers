@@ -49,7 +49,10 @@ one when a single broadband beam supplies both photons. At 1.064 µm the two are
 4.23 and 2.12 nm·cm.
 
 Lengths default to 10 mm, so the tabulated ×L products read directly in
-per-centimetre units. Angles are given in both mrad and degrees.
+per-centimetre units. The units of the acceptance table are selectable —
+wavelength in pm, nm or µm and angle in mdeg, mrad, µrad or deg — because the
+values span decades across crystals and interactions; the defaults are pm and
+mdeg.
 
 The azimuthal cut φ is a control rather than a fixed value. A refractive index
 in a uniaxial crystal does not depend on φ — which is why ndispers reports
