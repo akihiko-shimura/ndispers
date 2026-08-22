@@ -89,7 +89,7 @@ Glasses are isotropic and take only wavelength and temperature:
 1.4495857898590634
 ```
 
-To look into the material information, its Sellmeier equation and the literature the coefficients come from, use `help(bbo)`. `bbo.constants` returns the coefficient values themselves.
+To look into the material information, its Sellmeier equation and the literature the coefficients come from, use `help(bbo)` — or simply `bbo?` in IPython/Jupyter. `bbo.constants` returns the coefficient values themselves.
 
 ## Phase matching
 

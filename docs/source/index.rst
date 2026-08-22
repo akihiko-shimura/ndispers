@@ -40,7 +40,8 @@ Phase-matching angles for sum-frequency generation are solved directly::
    >>> bbo.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']
    {'theta': [22.884169498625802], 'phi': None}
 
-Use :func:`help` on any medium object to see its Sellmeier equation,
+Use :func:`help` on any medium object (or ``bbo?`` in IPython/Jupyter)
+to see its Sellmeier equation,
 validity range and the literature the coefficients come from; the
 ``constants`` property returns the coefficient values themselves.
 
