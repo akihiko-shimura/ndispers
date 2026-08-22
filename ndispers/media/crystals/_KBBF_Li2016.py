@@ -17,6 +17,12 @@ class KBBF(Uniax_neg_32):
     ------------------
     n(wl) = sqrt(A_i + B1_i * wl**2 / (wl**2 - C1_i**2) + B2_i * wl**2 / (wl**2 - C2_i**2) - D_i * wl**2)  + dndT_i * (T - 22) for i = o, e
 
+    Validity range
+    --------------
+    Fitted to refractive indices measured from 0.2537 to 1.530 µm;
+    validated against observed phase-matching angles for harmonic
+    generation down to about 0.15 µm in the deep UV.
+
     Note
     ----
     No thermo-optic coefficients (dn/dT) have been reported in the literature

@@ -22,6 +22,12 @@ class BetaBBO(Uniax_neg_3m):
     dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i  for i = o, e
     R_i = wl**2/(wl**2 - wl0_i**2), where wl0_i = 0.0652 for i = o or wl0 = 0.0730  for i = e
 
+    Validity range
+    --------------
+    Fitted to refractive indices measured at 0.365 to 1.1 µm, supplemented
+    by phase-matching-angle data in the UV and near infrared; the
+    temperature dispersion is analyzed over about -40 to 320 degC.
+
     Ref
     ----
     Sellmeier equation:

@@ -16,6 +16,10 @@ class AlphaBBO(Medium):
     ------------------
     n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
     
+    Validity range
+    --------------
+    Not stated in the source (vendor Sellmeier equation).
+
     Note
     ----
     The Sellmeier equation has no temperature term: T_degC is accepted
