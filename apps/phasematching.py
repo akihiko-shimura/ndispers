@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.9.1", "numpy", "scipy", "matplotlib"]
+# dependencies = ["ndispers==0.9.1", "numpy", "scipy", "sympy", "matplotlib"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 
@@ -24,6 +24,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.optimize import brentq
+    import sympy
     import ndispers as nd
     import ndispers.media.crystals as _C
 
@@ -36,7 +37,7 @@ def _():
         _x = _cls()
         if "var" in (_x.theta_rad, _x.phi_rad):
             XTALS[_name] = _cls
-    return XTALS, brentq, nd, np, plt
+    return XTALS, brentq, nd, np, plt, sympy
 
 
 @app.cell(hide_code=True)
@@ -58,10 +59,10 @@ def _(XTALS, mo, nd):
 def _(XTALS, mo):
     xtal = mo.ui.dropdown(options=list(XTALS), value="BetaBBO_Eimerl1987", label="Crystal")
     shg = mo.ui.checkbox(value=True, label="Second harmonic (λ₁ = λ₂)")
-    wl1 = mo.ui.number(0.3, 4.0, value=1.064, step=0.001, label="λ₁ (µm)")
-    wl2 = mo.ui.number(0.3, 4.0, value=1.064, step=0.001, label="λ₂ (µm)")
+    wl1 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1, label="λ₁ (nm)")
+    wl2 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1, label="λ₂ (nm)")
     T = mo.ui.number(-50, 300, value=25, step=1, label="Temperature (°C)")
-    L = mo.ui.number(0.1, 50.0, value=1.0, step=0.1, label="Crystal length (mm)")
+    L = mo.ui.number(0.1, 100.0, value=10.0, step=0.1, label="Crystal length (mm)")
     return L, T, shg, wl1, wl2, xtal
 
 
@@ -82,11 +83,11 @@ def _(L, T, mo, shg, wl1, wl2, xtal):
 @app.cell(hide_code=True)
 def _(XTALS, T, shg, wl1, wl2, xtal):
     x = XTALS[xtal.value]()
-    WL1 = wl1.value
-    WL2 = WL1 if shg.value else wl2.value
+    # ndispers works in µm; the interface is in nm
+    WL1 = wl1.value * 1e-3
+    WL2 = WL1 if shg.value else wl2.value * 1e-3
     WL3 = 1.0 / (1.0 / WL1 + 1.0 / WL2)
     T_C = T.value
-    # which angle this crystal varies; the other one is fixed internally
     ANGLE_KEY = "theta" if x.theta_rad == "var" else "phi"
     return ANGLE_KEY, T_C, WL1, WL2, WL3, x
 
@@ -105,7 +106,8 @@ def _(ANGLE_KEY, T_C, WL1, WL2, WL3, mo, x):
 
     _rows = "\n".join(
         f"| `{k}` | Type {TYPE_OF[k]} | "
-        + (f"**{SOLUTIONS[k]:.3f}°**" if k in SOLUTIONS else "— none")
+        + (f"**{SOLUTIONS[k]:.3f}°** | {SOLUTIONS[k] * 3.141592653589793 / 180:.5f} rad"
+           if k in SOLUTIONS else "— none | —")
         + " |"
         for k in TYPE_OF
     )
@@ -113,11 +115,11 @@ def _(ANGLE_KEY, T_C, WL1, WL2, WL3, mo, x):
         f"""
     ## Phase-matching angles
 
-    λ₁ = {WL1:.4f} µm, λ₂ = {WL2:.4f} µm → **λ₃ = {WL3:.4f} µm**
+    λ₁ = {WL1 * 1e3:.2f} nm, λ₂ = {WL2 * 1e3:.2f} nm → **λ₃ = {WL3 * 1e3:.2f} nm**
     &nbsp;·&nbsp; the varying angle of this crystal is **{ANGLE_KEY}**
 
-    | polarizations (1,2,3) | type | angle |
-    |---|---|---|
+    | polarizations (1,2,3) | type | angle | |
+    |---|---|---|---|
     {_rows}
     """
     )
@@ -146,7 +148,7 @@ def _(SOLUTIONS, np, pmtype):
 @app.cell(hide_code=True)
 def _(ANGLE_PM, HAS_PM, L, POLS, T_C, WL1, WL2, mo, np, plt, x):
     if HAS_PM:
-        _w = 3.0 * np.pi / 180 * 0.05
+        _w = np.radians(0.15)
         _a = np.linspace(ANGLE_PM - _w, ANGLE_PM + _w, 400)
         _dk = x.dk_sfg(WL1, WL2, _a, T_C, *POLS)
         _sinc = x.pmFactor_sfg(WL1, WL2, _a, T_C, *POLS, L.value)
@@ -177,8 +179,6 @@ def _(brentq, np):
 
         factor is sinc^2, so it falls monotonically from 1 either side of x0
         until its first zero: bracket that and solve, rather than stepping.
-        span0 is a starting half-width, grown until the value drops below the
-        threshold so the root is bracketed.
         """
         def f(u):
             return factor(u) - threshold
@@ -186,13 +186,13 @@ def _(brentq, np):
         widths = []
         for _sign in (+1, -1):
             span = span0
-            for _ in range(60):                      # grow until sign change
+            for _ in range(80):
                 if f(x0 + _sign * span) < 0:
                     break
                 span *= 1.6
             else:
                 return np.nan
-            widths.append(abs(brentq(f, x0, x0 + _sign * span, xtol=span0 * 1e-6) - x0))
+            widths.append(abs(brentq(f, x0, x0 + _sign * span, xtol=span0 * 1e-8) - x0))
         return sum(widths)
     return (acceptance,)
 
@@ -212,33 +212,49 @@ def _(
 ):
     if HAS_PM:
         _th = threshold.value
+        _L = L.value
 
         _d_ang = acceptance(
-            lambda a: float(x.pmFactor_sfg(WL1, WL2, a, T_C, *POLS, L.value)),
-            ANGLE_PM, 1e-5, _th)
+            lambda a: float(x.pmFactor_sfg(WL1, WL2, a, T_C, *POLS, _L)),
+            ANGLE_PM, 1e-6, _th)
         _d_T = acceptance(
-            lambda t: float(x.pmFactor_sfg(WL1, WL2, ANGLE_PM, t, *POLS, L.value)),
-            T_C, 0.05, _th)
-        if shg.value:
-            _fn = lambda w: float(x.pmFactor_sfg(w, w, ANGLE_PM, T_C, *POLS, L.value))
-        else:
-            _fn = lambda w: float(x.pmFactor_sfg(w, WL2, ANGLE_PM, T_C, *POLS, L.value))
-        _d_wl = acceptance(_fn, WL1, 1e-5, _th)
+            lambda t: float(x.pmFactor_sfg(WL1, WL2, ANGLE_PM, t, *POLS, _L)),
+            T_C, 0.01, _th)
+        # λ₂ held at its stated value, only λ₁ tuned — the SNLO convention
+        _d_wl1 = acceptance(
+            lambda w: float(x.pmFactor_sfg(w, WL2, ANGLE_PM, T_C, *POLS, _L)),
+            WL1, 1e-6, _th)
+        # both tuned together; meaningful for SHG of a broadband source
+        _d_wboth = acceptance(
+            lambda w: float(x.pmFactor_sfg(w, w, ANGLE_PM, T_C, *POLS, _L)),
+            WL1, 1e-6, _th) if shg.value else np.nan
 
-        _fmt = lambda v, s, u: f"**{v * s:.4g}** {u}" if np.isfinite(v) else "—"
+        def _f(v, scale, unit):
+            return f"**{v * scale:.4g}** {unit}" if np.isfinite(v) else "—"
+
+        _both_row = (
+            f"| λ₁ and λ₂ tuned together | {_f(_d_wboth, 1e3, 'nm')} | "
+            f"{_f(_d_wboth * _L * 0.1, 1e3, 'nm·cm')} |\n"
+            if shg.value else ""
+        )
         _out = mo.md(
             f"""
     ## Acceptance bandwidths
 
-    Full width at {_th:.2f} of sinc²(ΔkL/2), for L = {L.value:g} mm.
-    Products with the crystal length, which are length-independent, are the
-    figures usually quoted.
+    Full width at {_th:.2f} of sinc²(ΔkL/2) for L = {_L:g} mm, and the
+    length product, which is what is usually tabulated.
 
-    | | full width | × L |
+    | | full width at L = {_L:g} mm | × L |
     |---|---|---|
-    | angle {"(external ≈ n× this)" if False else ""} | {_fmt(_d_ang, 1e6, "µrad")} | {_fmt(_d_ang * L.value, 1e6, "µrad·mm")} |
-    | wavelength λ₁ {"(both, λ₁=λ₂)" if shg.value else ""} | {_fmt(_d_wl, 1e6, "pm")} | {_fmt(_d_wl * L.value, 1e6, "pm·mm")} |
-    | temperature | {_fmt(_d_T, 1, "°C")} | {_fmt(_d_T * L.value, 1, "°C·mm")} |
+    | angle | {_f(_d_ang, 1e3, 'mrad')} &nbsp;/&nbsp; {_f(np.degrees(_d_ang), 1, '°')} | {_f(_d_ang * _L * 0.1, 1e3, 'mrad·cm')} |
+    | temperature | {_f(_d_T, 1, '°C')} | {_f(_d_T * _L * 0.1, 1, '°C·cm')} |
+    | λ₁ only, λ₂ fixed | {_f(_d_wl1, 1e3, 'nm')} | {_f(_d_wl1 * _L * 0.1, 1e3, 'nm·cm')} |
+    {_both_row}
+
+    The wavelength row to compare against tabulated values is **λ₁ only** —
+    that is what SNLO reports. Tuning λ₁ and λ₂ together makes Δk move twice
+    as fast, so that width is exactly half; it is the relevant one when a
+    single broadband beam supplies both photons.
     """
         )
     else:
@@ -254,12 +270,16 @@ def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, WL3, mo, np, x):
         for _lbl, _wl, _p in (("λ₁", WL1, POLS[0]), ("λ₂", WL2, POLS[1]), ("λ₃", WL3, POLS[2])):
             _rho = float(x.woa_theta(_wl, ANGLE_PM, T_C, pol=_p))
             _n = float(x.n(_wl, ANGLE_PM, T_C, pol=_p))
-            _rows.append(f"| {_lbl} = {_wl:.4f} µm | {_p} | {_n:.5f} | {np.degrees(_rho):.4f}° |")
+            _rows.append(
+                f"| {_lbl} = {_wl * 1e3:.2f} nm | {_p} | {_n:.5f} | "
+                f"{np.degrees(_rho):.4f}° | {_rho * 1e3:.4g} mrad |"
+            )
         _out = mo.md(
             "## Refractive indices and walk-off\n\n"
             "at the phase-matching angle. The ordinary ray of a uniaxial crystal "
-            "has no walk-off.\n\n"
-            "| wave | pol | n | walk-off |\n|---|---|---|---|\n" + "\n".join(_rows)
+            "has no walk-off, and the three indices coinciding is the "
+            "phase-matching condition itself.\n\n"
+            "| wave | pol | n | walk-off | |\n|---|---|---|---|---|\n" + "\n".join(_rows)
         )
     else:
         _out = mo.md("")
@@ -268,42 +288,83 @@ def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, WL3, mo, np, x):
 
 
 @app.cell(hide_code=True)
-def _(mo, x):
-    # For a 3m crystal d_eff carries a sin(3φ) or cos(3φ) factor, so the
+def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, np, x):
+    # |d_eff| carries a sin(3φ) or cos(3φ) factor for a 3m crystal, so the
     # azimuthal cut sets it — even though the refractive index does not depend
     # on φ at all, which is why ndispers reports phi_rad as 'arb'.
+    PHI_FREE = hasattr(x, "deff_sfg") and x.phi_rad == "arb"
+    if HAS_PM and PHI_FREE:
+        _p = np.linspace(0, 180, 1801)
+        _d = np.array([
+            abs(float(x.deff_sfg(WL1, WL2, ANGLE_PM, np.radians(v), T_C, *POLS)))
+            for v in _p
+        ])
+        _peak = _d.max()
+        _best = _p[_d > _peak * 0.9999]
+        PHI_OPT = [_best[0]]
+        for _v in _best[1:]:
+            if _v - PHI_OPT[-1] > 1.0:
+                PHI_OPT.append(_v)
+        DEFF_MAX = _peak
+    else:
+        PHI_OPT, DEFF_MAX = [], np.nan
+    return DEFF_MAX, PHI_OPT, PHI_FREE
+
+
+@app.cell(hide_code=True)
+def _(PHI_FREE, PHI_OPT, mo):
     phi_cut = mo.ui.slider(
-        0, 90, value=30, step=1, label="Azimuthal cut φ (deg)", show_value=True
+        0, 180, value=int(round(PHI_OPT[-1])) if PHI_OPT else 0, step=1,
+        label="Azimuthal cut φ (deg)", show_value=True,
     )
-    phi_cut if hasattr(x, "deff_sfg") and x.phi_rad == "arb" else mo.md("")
+    phi_cut if PHI_FREE else mo.md("")
     return (phi_cut,)
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, mo, np, phi_cut, plt, x):
-    _has_deff = hasattr(x, "deff_sfg")
-    if HAS_PM and _has_deff:
-        _phi = np.radians(phi_cut.value) if x.phi_rad == "arb" else float(x.phi_rad)
-        _a = np.linspace(0.02, np.pi / 2 - 0.02, 300)
-        _deff = np.array([
-            abs(float(x.deff_sfg(WL1, WL2, _t, _phi, T_C, *POLS))) for _t in _a
-        ])
-        _at_pm = abs(float(x.deff_sfg(WL1, WL2, ANGLE_PM, _phi, T_C, *POLS)))
+def _(
+    ANGLE_PM, DEFF_MAX, HAS_PM, PHI_FREE, PHI_OPT, POLS, T_C, WL1, WL2,
+    mo, np, phi_cut, plt, x,
+):
+    _EXPR = {
+        ("o", "o", "e"): r"d_\mathrm{eff} = d_{31}\sin(\theta+\rho_3) - d_{22}\cos(\theta+\rho_3)\sin 3\phi",
+        ("o", "e", "e"): r"d_\mathrm{eff} = d_{22}\cos(\theta+\rho_2)\cos(\theta+\rho_3)\cos 3\phi",
+        ("e", "o", "e"): r"d_\mathrm{eff} = d_{22}\cos(\theta+\rho_1)\cos(\theta+\rho_3)\cos 3\phi",
+    }
+    if HAS_PM and hasattr(x, "deff_sfg"):
+        _phi = np.radians(phi_cut.value) if PHI_FREE else float(x.phi_rad)
+        try:
+            _at = abs(float(x.deff_sfg(WL1, WL2, ANGLE_PM, _phi, T_C, *POLS)))
+            _a = np.linspace(0.02, np.pi / 2 - 0.02, 200)
+            _curve = np.array([
+                abs(float(x.deff_sfg(WL1, WL2, _t, _phi, T_C, *POLS))) for _t in _a
+            ])
+            _fig, _ax = plt.subplots(figsize=(7, 3.0))
+            _ax.plot(np.degrees(_a), _curve)
+            _ax.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
+            _ax.set_xlabel("angle (deg)")
+            _ax.set_ylabel(r"|$d_\mathrm{eff}$| (pm/V)")
+            _ax.grid(alpha=0.3)
+            plt.tight_layout()
 
-        _fig, _ax = plt.subplots(figsize=(7, 3.2))
-        _ax.plot(np.degrees(_a), _deff)
-        _ax.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
-        _ax.set_xlabel("angle (deg)")
-        _ax.set_ylabel(r"|$d_\mathrm{eff}$| (pm/V)")
-        _ax.grid(alpha=0.3)
-        plt.tight_layout()
-        _out = mo.vstack([
-            mo.md(f"## Effective nonlinearity\n\n"
-                  f"|d_eff| at the phase-matching angle: **{_at_pm:.4g} pm/V**, "
-                  f"for the φ = {np.degrees(_phi):.0f}° cut. Scaled from the "
-                  "1.064 µm value by Miller's rule."),
-            _fig,
-        ])
+            _opt = (
+                " &nbsp;·&nbsp; |d_eff| peaks at **φ = "
+                + ", ".join(f"{v:.0f}°" for v in PHI_OPT)
+                + f"** with {DEFF_MAX:.4g} pm/V"
+                if PHI_OPT else ""
+            )
+            _out = mo.vstack([
+                mo.md(
+                    "## Effective nonlinearity\n\n"
+                    f"$${_EXPR.get(POLS, r'd_\mathrm{eff}')}$$\n\n"
+                    f"At the phase-matching angle and φ = {np.degrees(_phi):.0f}°: "
+                    f"**{_at:.4g} pm/V**.{_opt}. Scaled from the 1.064 µm value by "
+                    "Miller's rule; ρ are the walk-off angles."
+                ),
+                _fig,
+            ])
+        except ValueError as _e:
+            _out = mo.md(f"## Effective nonlinearity\n\n*Not defined for `{POLS}`: {_e}*")
     elif HAS_PM:
         _out = mo.md(
             "## Effective nonlinearity\n\n"
@@ -318,11 +379,31 @@ def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, mo, np, phi_cut, plt, x):
 
 
 @app.cell(hide_code=True)
-def _(mo, x):
-    mo.accordion(
-        {"Sellmeier equation, validity range and references":
-            mo.md("```\n" + (x.__doc__ or "").strip() + "\n```")}
-    )
+def _(HAS_PM, POLS, mo, sympy, x):
+    if HAS_PM:
+        _md = "\n\n".join(
+            f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$"
+            for _p in dict.fromkeys(POLS)
+        )
+        _out = mo.md(
+            "## Sellmeier equation as evaluated\n\n"
+            "What ndispers differentiates and evaluates, with the coefficients "
+            "already substituted — not a quotation from the paper. **λ is in µm "
+            "and T in °C in this expression**, unlike the nm inputs above.\n\n"
+            + _md
+        )
+    else:
+        _out = mo.md("")
+    _out
+    return
+
+
+@app.cell(hide_code=True)
+def _(HAS_PM, mo, x):
+    mo.accordion({
+        "Validity range and references":
+            mo.md("```\n" + (x.__doc__ or "").strip() + "\n```")
+    }) if HAS_PM else mo.md("")
     return
 
 

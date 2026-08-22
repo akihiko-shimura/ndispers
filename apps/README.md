@@ -37,8 +37,19 @@ that rebuilds the symbolic derivatives.
 sinc²(ΔkL/2) at a chosen threshold, solved with Brent's method rather than by
 stepping to the first zero. Cross-checked against the step-and-`fullWidth`
 implementation in `opt-workspace/notebooks/pmbandwidth_calc.py`, it agrees to
-better than 0.1%. For β-BBO Type-I SHG of 1.064 µm the results are
-0.51 mrad·cm, 36 °C·cm and 2.1 nm·cm.
+better than 0.1%.
+
+The spectral acceptance is reported two ways, because they differ by exactly a
+factor of two and only one matches published tables. Holding λ₂ at its stated
+value and tuning λ₁ alone is what SNLO reports: β-BBO Type-I SHG of 800 nm
+gives 1.00 nm·cm against the ~0.9 nm·cm in the literature. Tuning λ₁ and λ₂
+together makes Δk move twice as fast — Δk depends on them only through 1/λ₁ and
+1/λ₂ with equal weight — so that width is half, 0.50 nm·cm. It is the relevant
+one when a single broadband beam supplies both photons. At 1.064 µm the two are
+4.23 and 2.12 nm·cm.
+
+Lengths default to 10 mm, so the tabulated ×L products read directly in
+per-centimetre units. Angles are given in both mrad and degrees.
 
 The azimuthal cut φ is a control rather than a fixed value. A refractive index
 in a uniaxial crystal does not depend on φ — which is why ndispers reports
