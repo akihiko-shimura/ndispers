@@ -1,10 +1,10 @@
 import sympy
 
 from ndispers._baseclass import T, phi, theta, wl
-from ndispers.groups import Uniax_neg_3m
+from ndispers.groups import Uniax_3m
 from ndispers.helper import vars2
 
-class BetaBBO(Uniax_neg_3m):
+class BetaBBO(Uniax_3m):
     """
     β-BBO (β-BaB₂O₄, barium borate) crystal
 
@@ -17,7 +17,7 @@ class BetaBBO(Uniax_neg_3m):
     Sellmeier equation
     ------------------
         n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) + dn/dT * (T - 20)  for i = o, e
-    
+
     Validity range
     ---------------
     0.22 to 1.06 µm
@@ -35,9 +35,18 @@ class BetaBBO(Uniax_neg_3m):
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e",
-                 "_dndT_o", "_dndT_e", 
-                 "_d31_1064shg", "_d22_1064shg"]
-                 
+                 "_dndT_o", "_dndT_e"]
+
+    # Second-order nonlinear coefficients, pm/V, at the (wl1, wl2) of their
+    # measurement; scaled to other wavelengths by Miller's rule (see groups).
+    _d_ref = {"d22": (2.2, 1.064, 1.064),
+              "d31": (0.04, 1.064, 1.064),
+              "d33": (0.04, 1.064, 1.064)}
+    _d_note = ("Shoji et al. 1999: d22 absolute by the wedge technique, d31 and d33 "
+               "relative to d22, all at 1.064 um SHG; d22 and d31 of the same sign "
+               "(Alford & Smith 2001 take d_yyy/d_zxx = +55). Miller scaling of d22 "
+               "is supported by Alford & Smith 2001 over 532-1319 nm SHG.")
+
     def __init__(self):
         super().__init__()
         self._plane = 'arb'
@@ -58,24 +67,19 @@ class BetaBBO(Uniax_neg_3m):
         # dn/dT
         self._dndT_o = -16.6e-6 #/degC
         self._dndT_e = -9.3e-6 #/degC
-        # Second-order nonlinear optical coefficients
-        self._d31_1064shg = 0.04 #pm/V
-        self._d22_1064shg = 2.2 #pm/V
-    
 
-    
-    
+
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt(self._A_o + self._B_o / (wl**2 - self._C_o) - self._D_o * wl**2) + self._dndT_o * (T - 20)
-    
+
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for theta=90 deg e-wave """
         return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e * wl**2) + self._dndT_e * (T - 20)
 
     def n_expr(self, pol):
         """
-        Sympy expression, 
+        Sympy expression,
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'n_o_expr'.
 
         n(theta) = n_e / sqrt( sin(theta)**2 + (n_e/n_o)**2 * cos(theta)**2 )
@@ -86,25 +90,3 @@ class BetaBBO(Uniax_neg_3m):
             return self.n_e_expr() / sympy.sqrt( sympy.sin(theta)**2 + (self.n_e_expr()/self.n_o_expr())**2 * sympy.cos(theta)**2 )
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #------------------------------------------------------------------------------------------
-    # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule
-    #------------------------------------------------------------------------------------------
-    def d22_sfg(self, wl1o, wl2o, T_degC):
-        return super().d22_sfg(wl1o, wl2o, T_degC, delta22=self.delta22(self._d22_1064shg, 1.064, 1.064, T_degC))
-
-    def d31_sfg(self, wl1o, wl2o, T_degC):
-        return super().d31_sfg(wl1o, wl2o, T_degC, delta31=self.delta31(self._d31_1064shg, 1.064, 1.064, T_degC))
-    

@@ -1,10 +1,10 @@
 import sympy
 
 from ndispers._baseclass import T, phi, theta, wl
-from ndispers.groups import Uniax_neg_3m
+from ndispers.groups import Uniax_3m
 from ndispers.helper import vars2
 
-class SLN(Uniax_neg_3m):
+class SLN(Uniax_3m):
     """
     1% MgO-doped stoichiometric lithium niobate (LiNbO₃) crystal
 
@@ -45,13 +45,26 @@ class SLN(Uniax_neg_3m):
 
     Material information:
       Oxide Corporation SLN (vendor data, accessed 2026-08-22). https://www.opt-oxide.com/products/sln/
+    Nonlinear optical coefficients:
+      Shoji, I., Kondo, T., Kitamoto, A., Shirane, M., & Ito, R. (1997). Absolute scale of second-order nonlinear-optical coefficients. JOSA B, 14(9), 2268-2294. https://doi.org/10.1364/josab.14.002268
+      Roberts, D. A. (1992). Simplified characterization of uniaxial and biaxial nonlinear optical crystals: a plea for standardization of nomenclature and conventions. IEEE Journal of Quantum Electronics, 28(10), 2057-2074. https://doi.org/10.1109/3.159516
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
                  "_b1_o", "_b2_o", "_b3_o", "_b4_o",
-                 "_b1_e", "_b2_e", "_b3_e", "_b4_e",
-                 "_d31_1064shg", "_d22_1064shg"]
-                 
+                 "_b1_e", "_b2_e", "_b3_e", "_b4_e"]
+
+    # Only d33 is usable: this class has no o-ray Sellmeier equation, so the
+    # o-ray susceptibilities that Miller scaling of d22 and d31 (and any
+    # interaction with an o-wave) would need are not available. For reference,
+    # 5%MgO:LiNbO3 at 1.064 um SHG: d31 = 4.4 pm/V (Shoji et al. 1997),
+    # congruent LiNbO3: d22 = 2.1 pm/V, opposite in sign to d31 and d33
+    # (Roberts 1992). eee (quasi-phase-matching) works.
+    _d_ref = {"d33": (25.0, 1.064, 1.064)}
+    _d_note = ("Shoji et al. 1997 (5%MgO:LiNbO3, 1.064 um SHG). Only d33 is held, so "
+               "only eee (QPM) can be evaluated: no o-ray Sellmeier equation exists "
+               "for this class. Alford & Smith 2001 find Miller scaling good for LiNbO3.")
+
     _default_pol = 'e'   # no o-ray Sellmeier set exists for SLN
 
     def __init__(self):
@@ -75,12 +88,7 @@ class SLN(Uniax_neg_3m):
         self._b3_e = -2.653e-8
         self._b4_e = 1.096e-4
 
-        # Second-order nonlinear optical coefficients
-        self._d31_1064shg = 4.4 #pm/V
-        self._d22_1064shg = 25 #pm/V
 
-    
-    
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for e-wave """
         return sympy.sqrt( self._a1_e + self._b1_e * self.f_expr() + \
@@ -92,7 +100,7 @@ class SLN(Uniax_neg_3m):
 
     def n_expr(self, pol):
         """
-        Sympy expression, 
+        Sympy expression,
         dispersion formula,
         only for e-wave
 
@@ -101,24 +109,3 @@ class SLN(Uniax_neg_3m):
             return self.n_e_expr()
         else:
             raise ValueError("pol = '%s' must be 'e'. Sellmeier equation for pol='o' is not implemented for this module." % pol)
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #------------------------------------------------------------------------------------------
-    # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule
-    #------------------------------------------------------------------------------------------
-    def d22_sfg(self, wl1o, wl2o, T_degC):
-        return super().d22_sfg(wl1o, wl2o, T_degC, delta22=self.delta22(self._d22_1064shg, 1.064, 1.064, T_degC))
-
-    def d31_sfg(self, wl1o, wl2o, T_degC):
-        return super().d31_sfg(wl1o, wl2o, T_degC, delta31=self.delta31(self._d31_1064shg, 1.064, 1.064, T_degC))

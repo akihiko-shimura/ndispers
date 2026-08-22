@@ -1,10 +1,10 @@
 import sympy
 
 from ndispers._baseclass import T, phi, theta, wl
-from ndispers.groups import Uniax_neg_3m
+from ndispers.groups import Uniax_3m
 from ndispers.helper import vars2
 
-class SLT(Uniax_neg_3m):
+class SLT(Uniax_3m):
     """
     0.5% MgO-doped stoichiometric lithium tantalate (LiTaO₃) crystal
 
@@ -39,9 +39,15 @@ class SLT(Uniax_neg_3m):
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
-                 "_b1_o", "_b2_o", "_b3_o", "_b4_o", "_b5_o", 
-                 "_b1_e", "_b2_e", "_b3_e", "_b4_e", "_b5_e",
-                 "_d31_1064shg", "_d22_1064shg", "_d33_1064shg"]
+                 "_b1_o", "_b2_o", "_b3_o", "_b4_o", "_b5_o",
+                 "_b1_e", "_b2_e", "_b3_e", "_b4_e", "_b5_e"]
+
+    _d_ref = {"d33": (13.8, 1.064, 1.064),
+              "d31": (0.85, 1.064, 1.064),
+              "d22": (0.12 * 13.8, 1.064, 1.064)}
+    _d_note = ("d33 and d31: Shoji et al. 1997 (LiTaO3, 1.064 um SHG); d22 from the "
+               "ratio d22/d33 = 0.12 of Dolev et al. 2009. Miller scaling untested "
+               "for LiTaO3.")
 
     def __init__(self):
         super().__init__()
@@ -75,20 +81,14 @@ class SLT(Uniax_neg_3m):
         self._b3_e = 2.7326e-8
         self._b4_e = 1.4837e-5
         self._b5_e = 1.3647e-7
-        # Second-order nonlinear optical coefficients
-        self._d33_1064shg = 13.8 #pm/V
-        self._d31_1064shg = 0.85 #pm/V
-        self._d22_1064shg = 0.12 * 13.8 #pm/V
-    
 
-    
-    
+
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt( self._a1_o + self._b1_o * self.f_expr() + \
             (self._a2_o + self._b2_o * self.f_expr()) / (wl**2 - (self._a3_o + self._b3_o * self.f_expr())**2) + \
                 (self._a4_o + self._b4_o * self.f_expr()) / (wl**2 - (self._a5_o + self._b5_o * self.f_expr())**2) - self._a6_o * wl**2 )
-                
+
     def n_e_expr(self):
         """ Sympy expression, dispersion formula for o-wave """
         return sympy.sqrt( self._a1_e + self._b1_e * self.f_expr() + \
@@ -100,7 +100,7 @@ class SLT(Uniax_neg_3m):
 
     def n_expr(self, pol):
         """
-        Sympy expression, 
+        Sympy expression,
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'n_o_expr'.
 
         n(theta) = n_e / sqrt( sin(theta)**2 + (n_e/n_o)**2 * cos(theta)**2 )
@@ -111,24 +111,3 @@ class SLT(Uniax_neg_3m):
             return self.n_e_expr() / sympy.sqrt( sympy.sin(theta)**2 + (self.n_e_expr()/self.n_o_expr())**2 * sympy.cos(theta)**2 )
         else:
             raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #------------------------------------------------------------------------------------------
-    # Wavelength dependence of second-order nonlinear coefficients estimated from Miller's rule
-    #------------------------------------------------------------------------------------------
-    def d22_sfg(self, wl1o, wl2o, T_degC):
-        return super().d22_sfg(wl1o, wl2o, T_degC, delta22=self.delta22(self._d22_1064shg, 1.064, 1.064, T_degC))
-
-    def d31_sfg(self, wl1o, wl2o, T_degC):
-        return super().d31_sfg(wl1o, wl2o, T_degC, delta31=self.delta31(self._d31_1064shg, 1.064, 1.064, T_degC))

@@ -1,6 +1,10 @@
 """
-ndispers.groups contains the crystal groups inherited from base class `Medium`.
+ndispers.groups - point-group classes that add the second-order
+nonlinearity (Miller-rule scaled tensor components and d_eff) to Medium.
 """
+from ._base import NonlinearGroup, UniaxialGroup, BiaxialGroup
+from ._point_groups import Uniax_3m, Uniax_32
 
-from ._uniax_neg_3m import Uniax_neg_3m
-from ._uniax_neg_32 import Uniax_neg_32
+# names used before v0.10
+Uniax_neg_3m = Uniax_3m
+Uniax_neg_32 = Uniax_32
