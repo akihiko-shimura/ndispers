@@ -20,7 +20,7 @@
     },
     {
       "id": "MJUe",
-      "code_hash": "531f93bf932c5a624c361d9267d60dc5",
+      "code_hash": "9ad3a93d0d40085c4014fcf11efdcfd2",
       "outputs": [
         {
           "type": "data",
@@ -38,7 +38,7 @@
         {
           "type": "data",
           "data": {
-            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"ndispers-explorer\">ndispers explorer</h1>\n<span class=\"paragraph\">Refractive index and its derived quantities for 33 media, computed\nin your browser \u2014 no server, no install. Powered by\n<a href=\"https://github.com/akihiko-shimura/ndispers\" rel=\"noopener noreferrer\" target=\"_blank\">ndispers 0.9.1</a>.</span>\n<span class=\"paragraph\"><sub>import took 3.04 s</sub></span></span>"
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"ndispers-explorer\">ndispers explorer</h1>\n<span class=\"paragraph\">Refractive index and its derived quantities for 33 media, computed\nin your browser \u2014 no server, no install. Powered by\n<a href=\"https://github.com/akihiko-shimura/ndispers\" rel=\"noopener noreferrer\" target=\"_blank\">ndispers 0.9.1</a>.</span>\n<span class=\"paragraph\"><sub>import took 0.92 s</sub></span></span>"
           }
         }
       ],
@@ -51,7 +51,7 @@
         {
           "type": "data",
           "data": {
-            "text/html": "<div style='display: flex;flex: 1;flex-direction: row;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 2rem'><div style='display: flex;flex: 1;flex-direction: column;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 0.5rem'><marimo-ui-element object-id='bkHC-0' random-id='8e96e327-387f-de11-21fb-96a1f7f92997'><marimo-dropdown data-initial-value='[&quot;BetaBBO_Eimerl1987&quot;]' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eMedium&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-options='[&quot;AlphaBBO&quot;,&quot;BetaBBO_Eimerl1987&quot;,&quot;BetaBBO_Ghosh1995&quot;,&quot;BetaBBO_KK2010&quot;,&quot;BetaBBO_Tamosauskas2018&quot;,&quot;CLBO&quot;,&quot;Calcite&quot;,&quot;KBBF&quot;,&quot;KDP&quot;,&quot;KTP_xy&quot;,&quot;KTP_yz&quot;,&quot;KTP_zx&quot;,&quot;LB4&quot;,&quot;LBO_Castech_xy&quot;,&quot;LBO_Castech_yz&quot;,&quot;LBO_Castech_zx&quot;,&quot;LBO_Ghosh1995_xy&quot;,&quot;LBO_Ghosh1995_yz&quot;,&quot;LBO_Ghosh1995_zx&quot;,&quot;LBO_KK1994_xy&quot;,&quot;LBO_KK1994_yz&quot;,&quot;LBO_KK1994_zx&quot;,&quot;LBO_KK2018_xy&quot;,&quot;LBO_KK2018_yz&quot;,&quot;LBO_KK2018_zx&quot;,&quot;LBO_Newlight_xy&quot;,&quot;LBO_Newlight_yz&quot;,&quot;LBO_Newlight_zx&quot;,&quot;RBBF&quot;,&quot;SLN&quot;,&quot;SLT&quot;,&quot;CaF2&quot;,&quot;FusedSilica&quot;]' data-allow-select-none='false' data-searchable='false' data-full-width='false' data-disabled='false'></marimo-dropdown></marimo-ui-element><marimo-ui-element object-id='bkHC-1' random-id='3e8b5a24-1882-8705-9d1b-ec4f559fbb90'><marimo-radio data-initial-value='&quot;o&quot;' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003ePolarization&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-options='[&quot;o&quot;,&quot;e&quot;]' data-inline='true' data-disabled='false'></marimo-radio></marimo-ui-element></div><div style='display: flex;flex: 1;flex-direction: column;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 0.5rem'><marimo-ui-element object-id='bkHC-2' random-id='d1954b50-f3d0-318e-773d-49cc73d82b20'><marimo-slider data-initial-value='25' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eTemperature (\u00b0C)&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-start='-50' data-stop='300' data-step='5' data-steps='[]' data-debounce='false' data-disabled='false' data-orientation='&quot;horizontal&quot;' data-show-value='true' data-include-input='false' data-full-width='false'></marimo-slider></marimo-ui-element><marimo-ui-element object-id='bkHC-3' random-id='0d4d2c48-46ad-2d66-17d8-01b4d4d0adaf'><marimo-slider data-initial-value='0' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eAngle \u03b8 or \u03c6 (deg)&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-start='0' data-stop='90' data-step='1' data-steps='[]' data-debounce='false' data-disabled='false' data-orientation='&quot;horizontal&quot;' data-show-value='true' data-include-input='false' data-full-width='false'></marimo-slider></marimo-ui-element></div></div>"
+            "text/html": "<div style='display: flex;flex: 1;flex-direction: row;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 2rem'><div style='display: flex;flex: 1;flex-direction: column;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 0.5rem'><marimo-ui-element object-id='bkHC-0' random-id='a4989d74-e48e-2ebd-ba21-58befc92d0d4'><marimo-dropdown data-initial-value='[&quot;BetaBBO_Eimerl1987&quot;]' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eMedium&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-options='[&quot;AlphaBBO&quot;,&quot;BetaBBO_Eimerl1987&quot;,&quot;BetaBBO_Ghosh1995&quot;,&quot;BetaBBO_KK2010&quot;,&quot;BetaBBO_Tamosauskas2018&quot;,&quot;CLBO&quot;,&quot;Calcite&quot;,&quot;KBBF&quot;,&quot;KDP&quot;,&quot;KTP_xy&quot;,&quot;KTP_yz&quot;,&quot;KTP_zx&quot;,&quot;LB4&quot;,&quot;LBO_Castech_xy&quot;,&quot;LBO_Castech_yz&quot;,&quot;LBO_Castech_zx&quot;,&quot;LBO_Ghosh1995_xy&quot;,&quot;LBO_Ghosh1995_yz&quot;,&quot;LBO_Ghosh1995_zx&quot;,&quot;LBO_KK1994_xy&quot;,&quot;LBO_KK1994_yz&quot;,&quot;LBO_KK1994_zx&quot;,&quot;LBO_KK2018_xy&quot;,&quot;LBO_KK2018_yz&quot;,&quot;LBO_KK2018_zx&quot;,&quot;LBO_Newlight_xy&quot;,&quot;LBO_Newlight_yz&quot;,&quot;LBO_Newlight_zx&quot;,&quot;RBBF&quot;,&quot;SLN&quot;,&quot;SLT&quot;,&quot;CaF2&quot;,&quot;FusedSilica&quot;]' data-allow-select-none='false' data-searchable='false' data-full-width='false' data-disabled='false'></marimo-dropdown></marimo-ui-element><marimo-ui-element object-id='bkHC-1' random-id='2c932ff9-21c3-254d-e65e-5909f00c7ff1'><marimo-radio data-initial-value='&quot;o&quot;' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003ePolarization&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-options='[&quot;o&quot;,&quot;e&quot;]' data-inline='true' data-disabled='false'></marimo-radio></marimo-ui-element></div><div style='display: flex;flex: 1;flex-direction: column;justify-content: flex-start;align-items: normal;flex-wrap: nowrap;gap: 0.5rem'><marimo-ui-element object-id='bkHC-2' random-id='afbf4c0b-70f1-fbc4-8f3c-4782563d03c0'><marimo-slider data-initial-value='25' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eTemperature (\u00b0C)&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-start='-50' data-stop='300' data-step='5' data-steps='[]' data-debounce='false' data-disabled='false' data-orientation='&quot;horizontal&quot;' data-show-value='true' data-include-input='false' data-full-width='false'></marimo-slider></marimo-ui-element><marimo-ui-element object-id='bkHC-3' random-id='3cb2f4e1-1f46-dc3b-8206-9735a3206a36'><marimo-slider data-initial-value='0' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eAngle \u03b8 or \u03c6 (deg)&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-start='0' data-stop='90' data-step='1' data-steps='[]' data-debounce='false' data-disabled='false' data-orientation='&quot;horizontal&quot;' data-show-value='true' data-include-input='false' data-full-width='false'></marimo-slider></marimo-ui-element></div></div>"
           }
         }
       ],
@@ -72,6 +72,19 @@
     },
     {
       "id": "PKri",
+      "code_hash": "9c20c19a70cd635c03dd081ef9e4c43c",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><div style=\"white-space:pre-wrap; overflow-wrap:anywhere; font-family:ui-monospace,monospace; font-size:0.82em; line-height:1.5\">\u03b2-BBO (\u03b2-BaB\u2082O\u2084, barium borate) crystal\n\n- Point group : 3m  (C3v)\n\n- Crystal system : Trigonal\n\n- Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)\n\n- Negative uniaxial, with optic axis parallel to z-axis\n\n- Transparency range : 0.19 \u00b5m to 2.6 \u00b5m\n\nSellmeier equation\n------------------\n    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) + dn/dT * (T - 20)  for i = o, e\n\nValidity range\n---------------\n0.22 to 1.06 \u00b5m\n\nRef\n---\nSellmeier equation:\n  Eimerl, D., Davis, L., Velsko, S., et al. (1987). Optical, mechanical, and thermal properties of barium borate. Journal of Applied Physics, 62(5), 1968-1983. https://doi.org/10.1063/1.339536\n\nThermo-optic coefficients:\n  Nikogosyan, D. N. (1991). Beta barium borate (BBO): a review of its properties and applications. Applied Physics A, 52(6), 359-368. https://doi.org/10.1007/bf00323647\n\nNonlinear optical coefficients:\n  Shoji, I., Kondo, T., &amp; Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of \u03b2-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620</div></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
       "code_hash": "12ea1419441b6896473c39a6725438b6",
       "outputs": [
         {
@@ -84,26 +97,13 @@
       "console": []
     },
     {
-      "id": "Xref",
+      "id": "SFPL",
       "code_hash": "8a9088853a4d81ba5d4548200a15a168",
       "outputs": [
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-ui-element object-id='Xref-0' random-id='d3aeac71-8614-138e-ef45-c9cdcb0000c3'><marimo-number data-initial-value='1.064' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eWavelength (\u00b5m)&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-start='0.2' data-stop='4.0' data-step='0.001' data-debounce='false' data-full-width='false' data-disabled='false'></marimo-number></marimo-ui-element>"
-          }
-        }
-      ],
-      "console": []
-    },
-    {
-      "id": "SFPL",
-      "code_hash": "84d9e87481fe434401d9538901ad8768",
-      "outputs": [
-        {
-          "type": "data",
-          "data": {
-            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><table>\n<thead>\n<tr>\n<th>quantity</th>\n<th>value</th>\n<th>unit</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>n</td>\n<td>1.65505</td>\n<td></td>\n</tr>\n<tr>\n<td>dn/d\u03bb</td>\n<td>-0.0194922</td>\n<td>1/\u00b5m</td>\n</tr>\n<tr>\n<td>group index n_g</td>\n<td>1.67579</td>\n<td></td>\n</tr>\n<tr>\n<td>group velocity</td>\n<td>0.178896</td>\n<td>\u00b5m/fs</td>\n</tr>\n<tr>\n<td>GVD</td>\n<td>38.0663</td>\n<td>fs\u00b2/mm</td>\n</tr>\n<tr>\n<td>TOD</td>\n<td>70.4678</td>\n<td>fs\u00b3/mm</td>\n</tr>\n<tr>\n<td>dn/dT</td>\n<td>-1.66e-05</td>\n<td>1/K</td>\n</tr>\n<tr>\n<td>walk-off \u03b8</td>\n<td>0</td>\n<td>deg</td>\n</tr>\n</tbody>\n</table>\n<span class=\"paragraph\"><sub>all eight quantities: 47 ms (first call per medium builds the symbolic derivatives)</sub></span></span>"
+            "text/html": "<marimo-ui-element object-id='SFPL-0' random-id='cd47f5d7-bd00-263c-b964-94e04c7c1b8e'><marimo-number data-initial-value='1.064' data-label='&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eWavelength (\u00b5m)&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;' data-start='0.2' data-stop='4.0' data-step='0.001' data-debounce='false' data-full-width='false' data-disabled='false'></marimo-number></marimo-ui-element>"
           }
         }
       ],
@@ -111,12 +111,25 @@
     },
     {
       "id": "BYtC",
-      "code_hash": "fc8ccff6d69c5678db049c408b983517",
+      "code_hash": "84d9e87481fe434401d9538901ad8768",
       "outputs": [
         {
           "type": "data",
           "data": {
-            "text/html": "<marimo-accordion data-labels='[&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eSellmeier equation, validity range and references&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;]' data-multiple='false'><div><span class=\"markdown prose dark:prose-invert contents\"><div class=\"language-scdoc codehilite\"><pre><span></span><code>\u03b2-BBO (\u03b2-BaB\u2082O\u2084, barium borate) crystal\n\n    <span class=\"k\">-</span> Point group : 3m  (C3v)\n\n    <span class=\"k\">-</span> Crystal system : Trigonal\n\n    <span class=\"k\">-</span> Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)\n\n    <span class=\"k\">-</span> Negative uniaxial, with optic axis parallel to z-axis\n\n    <span class=\"k\">-</span> Transparency range : 0.19 \u00b5m to 2.6 \u00b5m\n\n    Sellmeier equation\n    ------------------\n        n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i <span class=\"gs\">* wl*</span>*2) + dn/dT * (T - 20)  for i = o, e\n\n    Validity range\n    ---------------\n    0.22 to 1.06 \u00b5m\n\n    Ref\n    ---\n    Sellmeier equation:\n      Eimerl, D., Davis, L., Velsko, S., et al. (1987). Optical, mechanical, and thermal properties of barium borate. Journal of Applied Physics, 62(5), 1968-1983. https://doi.org/10.1063/1.339536\n\n    Thermo-optic coefficients:\n      Nikogosyan, D. N. (1991). Beta barium borate (BBO): a review of its properties and applications. Applied Physics A, 52(6), 359-368. https://doi.org/10.1007/bf00323647\n\n    Nonlinear optical coefficients:\n      Shoji, I., Kondo, T., &amp; Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of \u03b2-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620\n</code></pre></div></span></div></marimo-accordion>"
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><table>\n<thead>\n<tr>\n<th>quantity</th>\n<th>value</th>\n<th>unit</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>n</td>\n<td>1.65505</td>\n<td></td>\n</tr>\n<tr>\n<td>dn/d\u03bb</td>\n<td>-0.0194922</td>\n<td>1/\u00b5m</td>\n</tr>\n<tr>\n<td>group index n_g</td>\n<td>1.67579</td>\n<td></td>\n</tr>\n<tr>\n<td>group velocity</td>\n<td>0.178896</td>\n<td>\u00b5m/fs</td>\n</tr>\n<tr>\n<td>GVD</td>\n<td>38.0663</td>\n<td>fs\u00b2/mm</td>\n</tr>\n<tr>\n<td>TOD</td>\n<td>70.4678</td>\n<td>fs\u00b3/mm</td>\n</tr>\n<tr>\n<td>dn/dT</td>\n<td>-1.66e-05</td>\n<td>1/K</td>\n</tr>\n<tr>\n<td>walk-off \u03b8</td>\n<td>0</td>\n<td>deg</td>\n</tr>\n</tbody>\n</table>\n<span class=\"paragraph\"><sub>all eight quantities: 42 ms (first call per medium builds the symbolic derivatives)</sub></span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "f8cbe3b2a36b7c156e988b39a0b499c7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-accordion data-labels='[&quot;&#92;u003cspan class=&#92;&quot;markdown prose dark:prose-invert contents&#92;&quot;&#92;u003e&#92;u003cspan class=&#92;&quot;paragraph&#92;&quot;&#92;u003eSellmeier equation as evaluated&#92;u003c/span&#92;u003e&#92;u003c/span&#92;u003e&quot;]' data-multiple='false'><div><span class=\"markdown prose dark:prose-invert contents\"><span class=\"paragraph\">What ndispers differentiates and evaluates, with the coefficients already substituted \u2014 not a quotation from the paper. <strong>\u03bb is in \u00b5m and T in \u00b0C in this expression.</strong></span>\n<marimo-tex class=\"arithmatex\">||[n_{o} = - 1.66 \\cdot 10^{-5} T + \\sqrt{- 0.0155 \\lambda^{2} + 2.7405 + \\frac{0.0184}{\\lambda^{2} - 0.0179}} + 0.000332||]</marimo-tex></span></div></marimo-accordion>"
           }
         }
       ],

@@ -24,6 +24,7 @@ def _():
     _t0 = time.perf_counter()
     import numpy as np
     import matplotlib.pyplot as plt
+    import sympy
     import ndispers as nd
     import ndispers.media.crystals as _C
     import ndispers.media.glasses as _G
@@ -35,7 +36,7 @@ def _():
             if isinstance(_obj, type):
                 MEDIA[_name] = _obj
     IMPORT_S = time.perf_counter() - _t0
-    return IMPORT_S, MEDIA, nd, np, plt, time
+    return IMPORT_S, MEDIA, nd, np, plt, sympy, time
 
 
 @app.cell(hide_code=True)
@@ -81,6 +82,19 @@ def _(MEDIA, T, angle, medium, np, pol):
         return f(wl, np.radians(angle.value), T.value, pol=pol.value)
 
     return IS_ISOTROPIC, call, x
+
+
+@app.cell(hide_code=True)
+def _(mo, x):
+    # the docstring is preformatted, but its reference lines are long; render it
+    # in a wrapping block rather than a code fence so it does not scroll sideways
+    mo.md(
+        '<div style="white-space:pre-wrap; overflow-wrap:anywhere; '
+        'font-family:ui-monospace,monospace; font-size:0.82em; line-height:1.5">'
+        + (x.__doc__ or "").strip().replace("&", "&amp;").replace("<", "&lt;")
+        + "</div>"
+    )
+    return
 
 
 @app.cell(hide_code=True)
@@ -151,14 +165,18 @@ def _(call, mo, time, wl0):
 
 
 @app.cell(hide_code=True)
-def _(mo, x):
-    mo.accordion(
-        {
-            "Sellmeier equation, validity range and references": mo.md(
-                "```\n" + (x.__doc__ or "").strip() + "\n```"
-            )
-        }
+def _(IS_ISOTROPIC, mo, pol, sympy, x):
+    _pols = ["o"] if IS_ISOTROPIC else [pol.value]
+    _md = "\n\n".join(
+        f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$" for _p in _pols
     )
+    mo.accordion({
+        "Sellmeier equation as evaluated": mo.md(
+            "What ndispers differentiates and evaluates, with the coefficients "
+            "already substituted — not a quotation from the paper. **λ is in µm "
+            "and T in °C in this expression.**\n\n" + _md
+        )
+    })
     return
 
 

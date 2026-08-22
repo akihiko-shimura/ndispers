@@ -93,6 +93,19 @@ def _(XTALS, T, shg, wl1, wl2, xtal):
 
 
 @app.cell(hide_code=True)
+def _(mo, x):
+    # the docstring is preformatted, but its reference lines are long; render it
+    # in a wrapping block rather than a code fence so it does not scroll sideways
+    mo.md(
+        '<div style="white-space:pre-wrap; overflow-wrap:anywhere; '
+        'font-family:ui-monospace,monospace; font-size:0.82em; line-height:1.5">'
+        + (x.__doc__ or "").strip().replace("&", "&amp;").replace("<", "&lt;")
+        + "</div>"
+    )
+    return
+
+
+@app.cell(hide_code=True)
 def _(ANGLE_KEY, T_C, WL1, WL2, WL3, mo, x):
     # Type I: both inputs share a polarization. Type II: they differ.
     TYPE_OF = {
@@ -398,25 +411,17 @@ def _(HAS_PM, POLS, mo, sympy, x):
             f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$"
             for _p in dict.fromkeys(POLS)
         )
-        _out = mo.md(
-            "## Sellmeier equation as evaluated\n\n"
-            "What ndispers differentiates and evaluates, with the coefficients "
-            "already substituted — not a quotation from the paper. **λ is in µm "
-            "and T in °C in this expression**, unlike the nm inputs above.\n\n"
-            + _md
-        )
+        _out = mo.accordion({
+            "Sellmeier equation as evaluated": mo.md(
+                "What ndispers differentiates and evaluates, with the "
+                "coefficients already substituted — not a quotation from the "
+                "paper. **λ is in µm and T in °C in this expression**, unlike "
+                "the nm inputs above.\n\n" + _md
+            )
+        })
     else:
         _out = mo.md("")
     _out
-    return
-
-
-@app.cell(hide_code=True)
-def _(HAS_PM, mo, x):
-    mo.accordion({
-        "Validity range and references":
-            mo.md("```\n" + (x.__doc__ or "").strip() + "\n```")
-    }) if HAS_PM else mo.md("")
     return
 
 
