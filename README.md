@@ -141,7 +141,7 @@ Medium objects are picklable, including after use, so they can be passed directl
 ## Documentation
 
 - [Tutorial notebook](examples/basic_usage.ipynb) — the basic workflow, from inspecting a crystal's Sellmeier equation to phase-matching curves, viewable directly on GitHub.
-- [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — quick start and the catalog of all media with their formulas and references.
+- [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — conventions (units, angles, sign conventions) and the [media catalog](https://ndispers.readthedocs.io/en/latest/api/crystals/) of every crystal and glass with its formula, validity range and references.
 
 ## Development
 

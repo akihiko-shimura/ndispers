@@ -57,7 +57,7 @@ directly to `multiprocessing` or `joblib` workers.
 
 - **[Conventions](conventions.md)** — units, argument order, angle meaning per
   medium, reference temperatures, and the phase-matching sign conventions.
-- **[Media catalog](api.md)** — every crystal and glass with its Sellmeier
+- **[Media catalog](api/crystals.md)** — every crystal and glass with its Sellmeier
   equation, validity range and references.
 - **[Tutorial notebook](https://github.com/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)**
   — worked examples with plots.

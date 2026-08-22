@@ -11,6 +11,7 @@ theme:
   name: material
   features:
     - navigation.sections
+    - navigation.expand
     - navigation.top
     - content.code.copy
     - search.suggest
@@ -31,7 +32,10 @@ theme:
 nav:
   - Home: index.md
   - Conventions: conventions.md
-  - Media catalog: api.md
+  - Media catalog:
+      - Crystals: api/crystals.md
+      - Glasses: api/glasses.md
+      - Base class: api/base.md
 
 plugins:
   - search
@@ -54,6 +58,9 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+      # class headings only; the repeated Sellmeier/Validity/Ref sections
+      # inside each docstring would otherwise swamp the table of contents
+      toc_depth: 3
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.arithmatex:
