@@ -67,3 +67,6 @@ target/
 
 #docs
 docs/build/
+
+# MkDocs
+site/

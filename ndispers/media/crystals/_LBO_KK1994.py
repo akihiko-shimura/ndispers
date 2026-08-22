@@ -28,15 +28,14 @@ class LBO(Medium):
     xy, yz or zx planes. In other words, a wavevector of light must be within any one of 
     the three planes. Correspondence between principal plane, polarization orientations of 
     o-wave and e-wave, polar (theta) and azimuthal (phi) angles of a wavevector with respect 
-    to z and x principal axes, respectively, are shown in the table below::
+    to z and x principal axes, respectively, are shown in the table below
+    ('var' marks the angle passed as the method argument).
 
-        plane  |  o-wave  |  e-wave  |  theta  |   phi
-        ================================================
-        xy     |    z     |    xy    |   pi/2  |   var
-        yz     |    x     |    yz    |   var   |   pi/2
-        zx     |    y     |    zx    |   var   |   pi/2
-        ------------------------------------------------
-        var : variable
+    | plane | o-wave | e-wave | theta | phi  |
+    |-------|--------|--------|-------|------|
+    | xy    | z      | xy     | pi/2  | var  |
+    | yz    | x      | yz     | var   | pi/2 |
+    | zx    | y      | zx     | var   | pi/2 |
 
     Ref
     ---

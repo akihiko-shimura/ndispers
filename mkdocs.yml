@@ -1,0 +1,64 @@
+site_name: ndispers
+site_description: Refractive index dispersion of crystals and glasses for nonlinear/ultrafast optics
+site_url: https://ndispers.readthedocs.io/
+repo_url: https://github.com/akihiko-shimura/ndispers
+repo_name: akihiko-shimura/ndispers
+copyright: Copyright &copy; 2021 Akihiko Shimura
+
+docs_dir: docs
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - Conventions: conventions.md
+  - Media catalog: api.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            # the principal-plane classes get their docstring assigned at import
+            # time, which static analysis cannot see
+            force_inspection: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: false
+            heading_level: 3
+            members: false
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

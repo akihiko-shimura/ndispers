@@ -3,7 +3,7 @@
 The facts on this page hold across the whole package. Everything here is
 stated as implemented in the code; per-crystal specifics (coefficients,
 validity ranges, references) live in each class docstring and in the
-[media catalog](api.rst).
+[media catalog](api.md).
 
 ## Units
 
