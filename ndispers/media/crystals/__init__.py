@@ -32,3 +32,14 @@ from ._LBO_Newlight import LBO_zx as LBO_Newlight_zx
 from ._RBBF_Chen2009 import RBBF
 from ._SLN_MgO_doped import SLN
 from ._SLT_MgO_doped import SLT
+
+# The classes above are exported under source-named aliases (several modules
+# define a class literally named BetaBBO or LBO_xy). Stamp the public name
+# onto each class so that repr, pickle-by-reference and autodoc all see the
+# name users actually import.
+for _name, _cls in list(globals().items()):
+    if isinstance(_cls, type) and _cls.__name__ != _name:
+        _cls.__name__ = _name
+        _cls.__qualname__ = _name
+        _cls.__module__ = __name__
+del _name, _cls

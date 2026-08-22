@@ -22,9 +22,9 @@ class SLT(Uniax_neg_3m):
     Ref
     ---
     - Sellmeier equation, ratio of d22 vs d33:
-    Dolev, I., et al. "Linear and nonlinear optical properties of MgO: LiTaO 3." Applied Physics B 96 (2009): 423-432.
+      Dolev, I., et al. "Linear and nonlinear optical properties of MgO: LiTaO 3." Applied Physics B 96 (2009): 423-432.
     - Second order nonlinear-optical coefficients, d33, d31:
-    Shoji, I., et al. "Absolute scale of second-order nonlinear-optical coefficients," J. Opt. Soc. Am. B 14 (1997): 2268-2294
+      Shoji, I., et al. "Absolute scale of second-order nonlinear-optical coefficients," J. Opt. Soc. Am. B 14 (1997): 2268-2294
     
     Note
     ----

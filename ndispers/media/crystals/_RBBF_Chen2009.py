@@ -21,7 +21,7 @@ class RBBF(Medium):
     n_e^2 = 1 + 0.97530λ²/(λ² - 0.00665) - 0.00145λ²  (λ is in µm)
     
     Thermo-optic dispersion equation
-    ------------------------------
+    --------------------------------
     dn/dT = (A/λ³ + B/λ² + C/λ + D) × 10⁻⁶  (λ is in µm)
     
     For ordinary ray (n_o):
@@ -36,7 +36,7 @@ class RBBF(Medium):
     Thermo-optic equation: 0.194µm ≤ λ ≤ 1.014µm
     
     Implementation notes
-    ------------------
+    --------------------
     RBBF is a uniaxial crystal where the refractive index doesn't depend on the azimuthal angle phi.
     In all method calls to the parent class, a value of 0 is passed for the phi_rad parameter.
 

@@ -1,60 +1,78 @@
-.. ndispers documentation master file, created by
-   sphinx-quickstart on Wed Jan  5 01:35:21 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-*ndispers*, Dispersion calculation package for nonlinear/ultrafast optics
+*ndispers*, dispersion calculation package for nonlinear/ultrafast optics
 =========================================================================
 
-*ndispers* is a Python package for calculating refractive index dispersion 
-of various crystals and glasses used in nonlinear/ultrafast optics. 
-It is based on Sellmeier equartions :math:`n(\lambda)` and thermo-optic coefficients (*dn/dT*) 
-reported in literature.
+*ndispers* is a Python package for calculating refractive index dispersion
+of various crystals and glasses used in nonlinear/ultrafast optics.
+It is based on Sellmeier equations :math:`n(\lambda)` and thermo-optic
+coefficients (*dn/dT*) reported in literature.
 
-As an example, calculation of refractive indices of :math:`\beta`-BBO crystal 
-as a function of wavelength of light, 
-when the polar (:math:`\theta``) angle is :math:`\pi/2` radians,
-the crystal temperature is 40 degree C. 
-and the light polarization is extraordinary,
-is written as following lines of code::
+Installation
+------------
 
-   >>> import ndispers
+*ndispers* works on Python 3.9 or higher::
+
+   pip install ndispers
+
+Quick start
+-----------
+
+Make an object of a :math:`\beta`-BBO crystal and compute a refractive index::
+
+   >>> import ndispers as nd
+   >>> bbo = nd.media.crystals.BetaBBO_Eimerl1987()
+   >>> bbo.n(0.532, 0, 25, pol='o')
+   1.674884049110459
+
+The four arguments are wavelength (µm), theta angle (rad), temperature
+(°C) and polarization (``pol='o'`` or ``'e'``, default ``'o'``).
+Scalar input returns a float; numpy-array input returns an array of the
+same shape::
+
    >>> import numpy as np
-   >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-   >>> wl_ar = np.arange(0.2, 1.2, 0.2) # wavelength in micrometer
-   >>> bbo.n(wl_ar, 0.5*np.pi, 40, pol='e')
-   array([1.70199324, 1.56855192, 1.55177472, 1.54599759, 1.54305826])
+   >>> bbo.n(np.arange(0.2, 1.5, 0.2), 0, 25, pol='o')
+   array([1.89001202, 1.69328828, 1.66985875, 1.6612891 , 1.65633946,
+          1.65252664, 1.64903624])
 
+The other dispersion methods — ``GD``, ``GV``, ``ng``, ``GVD``, ``TOD``,
+``woa_theta``, ``woa_phi``, ``dndT``, ``dndT2`` — take the same arguments.
+Phase-matching angles for sum-frequency generation are solved directly::
 
+   >>> bbo.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']
+   {'theta': [22.884169498625802], 'phi': None}
 
-General Overview
+Use :func:`help` on any medium object to see its Sellmeier equation,
+validity range and the literature the coefficients come from; the
+``constants`` property returns the coefficient values themselves.
+
+Medium objects are picklable, including after use, so they can be passed
+directly to ``multiprocessing`` or ``joblib`` workers.
+
+General overview
 ----------------
 
-There are some softwares available for nonlinear optics. 
-Probably the most famous and extensive one is *SNLO*, by Arlee V. Smith (https://as-photonics.com/products/snlo/ for Windows OS only). 
-Other web applications exist to calculate refractive indices simply as a function of wavelength (https://refractiveindex.info/) 
-or phase-matching conditions (http://toolbox.lightcon.com/ for uniaxial crystals only, https://apps.apple.com/jp/app/iphasematch/id492370060 for iOS only).
-These apps are easy and quick to use, but most of them are not open source and black box; 
-users could not look into how it was calculated and often what paper it is based on, 
-and are not allowed to extend the software by themselves for their particular purpose.
+There are some softwares available for nonlinear optics.
+Probably the most famous and extensive one is *SNLO*, by Arlee V. Smith
+(https://as-photonics.com/products/snlo/ for Windows OS only).
+Other web applications exist to calculate refractive indices simply as a
+function of wavelength (https://refractiveindex.info/) or phase-matching
+conditions (http://toolbox.lightcon.com/ for uniaxial crystals only).
+These apps are easy and quick to use, but most of them are not open
+source; users cannot look into how a value was calculated or what paper
+it is based on, and cannot extend the software for their own purposes.
 
-This open-source Python project, *ndispers*, was created for those reasearchers, engineers and students 
-who want to study and employ *in depth* nonlinear/anisotropic crystals and dispersive media, 
-and is intended to be built in their numerical simulation programs and Jupyter notebooks.
-At the moment of this writing, the variety of crystals and glasses available is limited, 
-but you can request or contribute on GitHub to add more, new crystals and methods.
+This open-source Python project was created for those researchers,
+engineers and students who want to study and employ *in depth*
+nonlinear/anisotropic crystals and dispersive media, and is intended to
+be built into their numerical simulation programs and Jupyter notebooks.
+You can request or contribute on GitHub to add new crystals and methods.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   User guide <intro/index.rst>
-
-
+   api
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

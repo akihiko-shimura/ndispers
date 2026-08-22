@@ -171,29 +171,35 @@ class Medium:
         """
         Refractive index for one eigen polarization of light.
 
-        input
-        ------
-        wl_um     :  float or array_like, wavelength in µm
-        angle_rad :  float or array_like, 0 to pi radians.
-                     Which angle this is depends on the medium: it is theta for a
-                     uniaxial crystal and for a principal plane that fixes phi, and
-                     phi for a plane that fixes theta. Read theta_rad and phi_rad to
-                     see which one varies; the fixed one is supplied automatically.
-        T_degC    :  float or array_like, temperature of the medium in degree C.
-                     Media whose Sellmeier equation carries no temperature term
-                     still take this argument and ignore it, so that every medium
-                     has the same signature. Their dndT is zero.
-        pol       :  {'o', 'e'}, optional, polarization of light
+        Parameters
+        ----------
+        wl_um : float or array_like
+            Wavelength in µm.
+        angle_rad : float or array_like
+            Angle of the wavevector, 0 to pi radians. Which angle this is
+            depends on the medium: it is theta for a uniaxial crystal and for
+            a principal plane that fixes phi, and phi for a plane that fixes
+            theta. Read ``theta_rad`` and ``phi_rad`` to see which one varies;
+            the fixed one is supplied automatically.
+        T_degC : float or array_like
+            Temperature of the medium in degree C. Media whose Sellmeier
+            equation carries no temperature term still take this argument and
+            ignore it, so that every medium has the same signature. Their
+            ``dndT`` is zero.
+        pol : {'o', 'e'}, optional
+            Polarization of light.
 
-        return
+        Returns
         -------
-        Refractive index, float or array_like
+        float or numpy.ndarray
+            Refractive index. Scalar input returns a float.
 
-        Note
-        ----
-        The other dispersion methods - dn_wl, GD, GV, ng, GVD, TOD, woa_theta,
-        woa_phi, dndT and dndT2 - take the same arguments and differ only in what
-        they return. Glasses take (wl_um, T_degC) and no polarization.
+        Notes
+        -----
+        The other dispersion methods - ``dn_wl``, ``GD``, ``GV``, ``ng``,
+        ``GVD``, ``TOD``, ``woa_theta``, ``woa_phi``, ``dndT`` and ``dndT2`` -
+        take the same arguments and differ only in what they return. Glasses
+        take ``(wl_um, T_degC)`` and no polarization.
         """
         return self._func(self.n_expr, *args, pol=pol)
     
