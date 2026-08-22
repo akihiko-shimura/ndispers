@@ -16,8 +16,8 @@ class SLN(Uniax_neg_3m):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(a1_i + b1 * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - a5_i**2) - a6_i * wl**2) for i=o,e
-    f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
+        n(wl) = sqrt(a1_i + b1 * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - a5_i**2) - a6_i * wl**2) for i=o,e
+        f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
 
     Validity range
     --------------

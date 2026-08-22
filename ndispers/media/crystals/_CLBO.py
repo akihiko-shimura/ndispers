@@ -14,19 +14,19 @@ class CLBO(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
+        n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2)  for i = o, e
 
     Thermo-optic coefficient
     -------------------------
-    dn_o/dT = (At_o + Bt_o/wl)*1e-6
-    dn_e/dT = (At_e + Bt_e/wl + Ct_e/wl**2 + Dt_e/wl**3)*1e-6
+        dn_o/dT = (At_o + Bt_o/wl)*1e-6
+        dn_e/dT = (At_e + Bt_e/wl + Ct_e/wl**2 + Dt_e/wl**3)*1e-6
     
     The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
 
     Validity range
     ---------------
     0.1914 to 2.09 µm
-    dn/dT : 0.2128 to 1.3382 µm
+        dn/dT : 0.2128 to 1.3382 µm
 
     Ref
     ----

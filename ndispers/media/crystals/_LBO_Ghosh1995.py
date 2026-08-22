@@ -13,12 +13,12 @@ class LBO(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt( A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2) ) + dn/dT * (T -20)  for i = x,y,z
+        n(wl) = sqrt( A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2) ) + dn/dT * (T -20)  for i = x,y,z
 
     Thermo-optic coefficient
     ------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / (2*n_i)  for i = x,y,z
-    R_i = wl**2/(wl**2 - wl0_i**2), wl0_i = 0.0530, 0.0327, 0.0435 for i=x,y,z
+        dn/dT = (G_i * R_i + H_i * R_i**2) / (2*n_i)  for i = x,y,z
+        R_i = wl**2/(wl**2 - wl0_i**2), wl0_i = 0.0530, 0.0327, 0.0435 for i=x,y,z
     
     Validity range
     --------------

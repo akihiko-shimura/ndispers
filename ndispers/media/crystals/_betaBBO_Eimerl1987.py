@@ -16,7 +16,7 @@ class BetaBBO(Uniax_neg_3m):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) + dn/dT * (T - 20)  for i = o, e
+        n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) + dn/dT * (T - 20)  for i = o, e
     
     Validity range
     ---------------

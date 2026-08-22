@@ -14,17 +14,17 @@ class LB4(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) for i = o,e
+        n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2) for i = o,e
 
     Thermo-optic coefficient
     -------------------------
-    dn/dT = At_i + Bt_i * wl + Ct_i * wl**2 + Dt_i * wl**3 + Et_i * (T - 25)  for i = o, e
+        dn/dT = At_i + Bt_i * wl + Ct_i * wl**2 + Dt_i * wl**3 + Et_i * (T - 25)  for i = o, e
     
     Validity range
     ---------------
     0.18 to 2.3 µm
     at 101325 Pa
-    dn/dT : 0.436 to 0.644 µm, -40 to 60 degC
+        dn/dT : 0.436 to 0.644 µm, -40 to 60 degC
 
     Ref
     ---

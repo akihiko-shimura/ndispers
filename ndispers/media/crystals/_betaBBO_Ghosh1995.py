@@ -15,12 +15,12 @@ class BetaBBO(Uniax_neg_3m):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
+        n(wl) = sqrt(A_i + B_i/(1 - C_i/wl**2) + D_i/(1 - E_i/wl**2)) + dn/dT * (T -20)
 
     Thermo-optic coefficient
     ------------------------
-    dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i  for i = o, e
-    R_i = wl**2/(wl**2 - wl0_i**2), where wl0_i = 0.0652 for i = o or wl0 = 0.0730  for i = e
+        dn/dT = (G_i * R_i + H_i * R_i**2) / 2*n_i  for i = o, e
+        R_i = wl**2/(wl**2 - wl0_i**2), where wl0_i = 0.0652 for i = o or wl0 = 0.0730  for i = e
 
     Validity range
     --------------

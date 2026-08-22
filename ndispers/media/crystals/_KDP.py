@@ -15,12 +15,12 @@ class KDP(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2/(wl_um**2 - 400))  for i = o, e
+        n(wl_um) = sqrt(A_i + B_i/(wl_um**2 - C_i) - D_i * wl_um**2/(wl_um**2 - 400))  for i = o, e
 
     Thermo-optic coefficient
     -------------------------
-    dn_o/dT = 0 # to be incorporated
-    dn_e/dT = 0 # to be incorporated
+        dn_o/dT = 0 # to be incorporated
+        dn_e/dT = 0 # to be incorporated
     
     The temperature correction dn/dT * (T - 24.8) vanishes at 24.8 degC.
 

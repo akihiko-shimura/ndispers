@@ -9,11 +9,11 @@ class FusedSilica(Medium):
     
     Sellmeier equation
     ---------------------------------------
-    n(wl_um) = sqrt(1 + B1 * wl_um**2/(wl_um**2 - C1) + B2 * wl_um**2/(wl_um**2 - C2) + B3 * wl_um**2/(wl_um**2 - C3))
+        n(wl_um) = sqrt(1 + B1 * wl_um**2/(wl_um**2 - C1) + B2 * wl_um**2/(wl_um**2 - C2) + B3 * wl_um**2/(wl_um**2 - C3))
 
     Thermo-optic coefficient
     ------------------------
-    dn/dT = 11.3e-6 /K
+        dn/dT = 11.3e-6 /K
     
     Validity range
     ---------------

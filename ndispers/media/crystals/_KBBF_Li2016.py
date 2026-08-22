@@ -15,7 +15,7 @@ class KBBF(Uniax_neg_32):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B1_i * wl**2 / (wl**2 - C1_i**2) + B2_i * wl**2 / (wl**2 - C2_i**2) - D_i * wl**2)  + dndT_i * (T - 22) for i = o, e
+        n(wl) = sqrt(A_i + B1_i * wl**2 / (wl**2 - C1_i**2) + B2_i * wl**2 / (wl**2 - C2_i**2) - D_i * wl**2)  + dndT_i * (T - 22) for i = o, e
 
     Validity range
     --------------

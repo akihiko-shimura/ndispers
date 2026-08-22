@@ -14,12 +14,12 @@ class LBO(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2 + E_i * wl**4)  for i = x,y,z
+        n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) - D_i * wl**2 + E_i * wl**4)  for i = x,y,z
 
     Thermo-optic coefficient
     ------------------------
-    dn/dT = F_i  for i=x,y
-    dn/dT = F_i + G_i*wl  for i=z
+        dn/dT = F_i  for i=x,y
+        dn/dT = F_i + G_i*wl  for i=z
     
     The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
 

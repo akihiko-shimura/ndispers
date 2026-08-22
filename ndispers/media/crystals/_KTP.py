@@ -14,17 +14,17 @@ class KTP(Medium):
 
     Sellmeier equation
     ------------------
-    n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i))  for i = x, y, z
+        n(wl) = sqrt(A_i + B_i/(wl**2 - C_i) + D_i/(wl**2 - E_i))  for i = x, y, z
     
     Thermo-optic coefficient
     -------------------------
-    dn/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
+        dn/dT = (At_i/wl**3 + Bt_i/wl**2 + Ct_i/wl + Dt_i)*1e-5 for i = x,y,x
 
     The temperature correction dn/dT * (T - 20) vanishes at 20 degC.
 
     Validity range
     ---------------
-    dn/dT : 0.43 to 1.58 µm
+        dn/dT : 0.43 to 1.58 µm
 
     Note
     ----

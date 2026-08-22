@@ -13,11 +13,11 @@ class CaF2(Medium):
     
     Sellmeier equation
     ---------------------------------------
-    n(wl) = sqrt(1 + A1 * wl**2 / (wl**2 - B1**2) + A2 * wl**2 / (wl**2 - B2**2) + A3 * wl**2 / (wl**2 - B3**2))
+        n(wl) = sqrt(1 + A1 * wl**2 / (wl**2 - B1**2) + A2 * wl**2 / (wl**2 - B2**2) + A3 * wl**2 / (wl**2 - B3**2))
 
     Thermo-optic coefficient
     ------------------------
-    dn/dT = -10.6e-6 /K around T=24 degC
+        dn/dT = -10.6e-6 /K around T=24 degC
     
     Validity range
     ---------------
