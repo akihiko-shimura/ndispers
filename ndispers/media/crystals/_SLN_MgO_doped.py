@@ -37,12 +37,6 @@ class SLN(Uniax_neg_3m):
     +5e-4 /K at 1.064 µm, an order of magnitude above the accepted ~3e-5 /K for
     LiNbO3. The same holds for the other Gayer sets. Use dndT/dndT2 from this
     class for phase-matching work, not as absolute thermo-optic values.
-
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",

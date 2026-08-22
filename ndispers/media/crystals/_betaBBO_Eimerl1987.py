@@ -32,12 +32,6 @@ class BetaBBO(Uniax_neg_3m):
 
     Nonlinear optical coefficients:
     - Shoji, Ichiro, et al. "Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths." JOSA B 16.4 (1999): 620-624.
-
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e",

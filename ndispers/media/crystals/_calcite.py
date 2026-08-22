@@ -27,12 +27,6 @@ class Calcite(Medium):
     ----
     Handbook of Optics: Devices, Measurements, and Properties, Volume II, by Michael Bass (ed),
     Chapter 33: PROPERTIES OF CRYSTALS AND GLASSES, William J. Tropf, Michael E. Thomas, and Terry J. Harris
-    
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",
                  "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e"]

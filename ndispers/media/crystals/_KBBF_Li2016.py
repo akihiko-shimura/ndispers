@@ -30,12 +30,6 @@ class KBBF(Uniax_neg_32):
     
     Nonlinear optical coefficients:
     Chen, C. T., Wang, G. L., Wang, X. Y., & Xu, Z. Y. (2009). Deep-UV nonlinear optical crystal KBe2BO3F2—discovery, growth, optical properties and applications. Applied Physics B, 97(1), 9-25.
-    
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_A_o", "_B1_o", "_B2_o", "_C1_o", "_C2_o",  "_D_o",
                  "_A_e", "_B1_e", "_B2_e", "_C1_e", "_C2_e",  "_D_e",

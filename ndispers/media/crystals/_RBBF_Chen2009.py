@@ -44,12 +44,6 @@ class RBBF(Medium):
     ----
     - Chen, C., Wu, Y., Li, Y., Wang, J., Wu, B., Jiang, M., Zhang, G., & Ye, N. (2009). Growth, properties, and application to nonlinear optics of a nonlinear optical crystal: RbBe2BO3F2. Journal of the Optical Society of America B, 26(8), 1519-1525. https://opg.optica.org/josab/abstract.cfm?uri=josab-26-8-1519
     - Zhai, N., Wang, L., Liu, L., Wang, X., Zhu, Y., & Chen, C. (2013). Measurement of thermal refractive index coefficients of nonlinear optical crystal RbBe2BO3F2. Optical Materials, 36(2), 333-336.
-
-    Example
-    -------
-    >>> rbbf = ndispers.media.crystals.RBBF()
-    >>> rbbf.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_B_o", "_C_o", "_D_o", 
                  "_B_e", "_C_e", "_D_e",

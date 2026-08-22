@@ -29,12 +29,6 @@ class CLBO(Medium):
     Ref
     ----
     Umemura, N., Yoshida, K., Kamimura, T., Mori, Y., Sasaki, T., & Kato, K. "New data on the phase-matching properties of CsLiB6O10." Advanced Solid State Lasers. Optical Society of America, 1999.
-    
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e",

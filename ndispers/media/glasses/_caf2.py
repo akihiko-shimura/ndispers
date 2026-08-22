@@ -26,13 +26,6 @@ class CaF2(Medium):
     Ref
     ----
     Malitson, Irving H. "A redetermination of some optical properties of calcium fluoride." Applied Optics 2.11 (1963): 1103-1107.
-
-    Example
-    -------
-    >>> caf2 = nd.media.glasses.CaF2()
-    >>> caf2.n(0.532, 25) # refractive index at 0.532µm and at 25 degC
-    array(1.43535685)
-    
     """
     __slots__ = ["_A1", "_B1", "_A2", "_B2", "_A3", "_B3", "_dndT"]
 

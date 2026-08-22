@@ -32,9 +32,7 @@ napoleon_custom_sections = [
     'Thermo-optic coefficient',
     'Validity range',
     'Ref',
-    'Usage',
     'Note',
-    'Example',
     'input',
     'return',
 ]

@@ -44,12 +44,6 @@ class KTP(Medium):
     ------------------------------------------------
     pi = 3.14159...
     var : variable
-
-    Usage
-    ------
-    >>> ktp_xy = ndispers.media.crystals.KTP_xy()
-    >>> ktp_xy.n(0.6, 0.3*pi, 40, pol='e') # for xy plane, 2nd argument is phi_rad. theta_rad is fixed at 0.5*pi.
-    
     """
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",

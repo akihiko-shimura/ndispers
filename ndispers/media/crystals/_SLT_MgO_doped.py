@@ -29,12 +29,6 @@ class SLT(Uniax_neg_3m):
     Note
     ----
     d coefficients are of *congrunet* LT crystal, not of stoichiometric.
-
-    Example
-    -------
-    >>> bbo = ndispers.media.crystals.BetaBBO_Eimerl1987()
-    >>> bbo.n(0.6, 0.5*pi, 25, pol='e') # args: (wl_um, theta_rad, T_degC, pol)
-    
     """
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
