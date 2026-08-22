@@ -12,14 +12,14 @@ jobs:
       matrix:
         python-version: ["3.9", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
       - run: uv sync --python ${{ matrix.python-version }}
       - run: uv run pytest ndispers/tests -q
 
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
       - run: uv run --with-requirements docs/requirements.txt mkdocs build --strict
