@@ -1,5 +1,7 @@
 # Browser apps
 
+**Live: <https://akihiko-shimura.github.io/ndispers/>**
+
 Two [marimo](https://marimo.io) notebooks that run entirely in the browser —
 no server, no install. ndispers is a pure-Python wheel and numpy, scipy and
 sympy all ship with Pyodide, so the whole calculation happens client-side.

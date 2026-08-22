@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/ndispers)](https://pypi.org/project/ndispers/)
 [![test](https://github.com/akihiko-shimura/ndispers/actions/workflows/test.yml/badge.svg)](https://github.com/akihiko-shimura/ndispers/actions/workflows/test.yml)
+[![apps](https://github.com/akihiko-shimura/ndispers/actions/workflows/pages.yml/badge.svg)](https://akihiko-shimura.github.io/ndispers/)
 
 *ndispers* is a Python package for calculating refractive index dispersion of various crystals and glasses used in the field of nonlinear/ultrafast optics. It is based on Sellmeier equations and thermo-optic coefficients (dn/dT) reported in literature.
 
@@ -140,7 +141,7 @@ Medium objects are picklable, including after use, so they can be passed directl
 
 ## Documentation
 
-- **[Browser apps](apps/)** — a refractive-index explorer and a phase-matching calculator that run client-side, with no install.
+- **[Browser apps](https://akihiko-shimura.github.io/ndispers/)** — a refractive-index explorer and a phase-matching calculator, running client-side with nothing to install.
 - [Tutorial notebook](examples/basic_usage.ipynb) — the basic workflow, from inspecting a crystal's Sellmeier equation to phase-matching curves, viewable directly on GitHub.
 - [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — conventions (units, angles, sign conventions) and the [media catalog](https://ndispers.readthedocs.io/en/latest/api/crystals/) of every crystal and glass with its formula, validity range and references.
 
