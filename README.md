@@ -152,6 +152,13 @@ uv sync
 uv run pytest
 ```
 
+To run the tutorial notebook, add the `notebook` group (matplotlib, IPython, JupyterLab, marimo):
+
+```
+uv sync --group notebook
+uv run jupyter lab examples/basic_usage.ipynb
+```
+
 Releases are published to PyPI by pushing a version tag; see [docs/RELEASING.md](docs/RELEASING.md).
 
 ## License
