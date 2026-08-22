@@ -83,7 +83,7 @@ The other dispersion methods (`GD`, `GV`, `ng`, `GVD`, `TOD`, `woa_theta`, `woa_
 71.86403019943364
 ```
 
-Glasses are isotropic and take only wavelength and temperature:
+Optically isotropic media — the glasses and the cubic crystal CaF₂ — take only wavelength and temperature, since there is no angle or polarization to specify:
 
 ```python
 >>> silica = nd.media.glasses.FusedSilica()
@@ -128,7 +128,7 @@ Several crystals are provided in more than one parameterisation, named after the
 | Calcite | `Calcite` |
 | 1% MgO-doped stoichiometric LiNbO₃ (e-ray) | `SLN` |
 | 1% MgO-doped stoichiometric LiTaO₃ | `SLT` |
-| Fused silica, CaF₂ | `nd.media.glasses.FusedSilica`, `nd.media.glasses.CaF2` |
+| Fused silica, CaF₂ (optically isotropic) | `nd.media.glasses.FusedSilica`, `nd.media.glasses.CaF2` |
 
 For biaxial crystals (LBO, KTP), one class per principal dielectric plane is provided; the angle argument is the one that varies in that plane (phi in xy, theta in yz and zx). The `theta_rad` and `phi_rad` attributes of an instance tell which one it is.
 

@@ -34,8 +34,16 @@ Every dispersion method of a crystal takes the same four arguments:
 x.n(wl_um, angle_rad, T_degC, pol='o')
 ```
 
-Glasses are isotropic and take only `(wl_um, T_degC)`, with no
-polarization.
+Media in `ndispers.media.glasses` take only `(wl_um, T_degC)`, with no angle
+and no polarization.
+
+The two packages are split by **optical isotropy**, which is what decides the
+call signature — not by whether a medium is crystalline, and not by
+centrosymmetry. An isotropic medium has one refractive index with no direction
+or polarization dependence, so there is no angle to pass. `CaF₂` is a crystal
+(cubic, m3̄m) and sits with the glasses for that reason. α-BBO and calcite are
+centrosymmetric as well, but they are uniaxial and therefore birefringent, so
+they are crystals here.
 
 - Scalar input returns a Python float. numpy arrays are accepted for any
   argument and broadcast together (plain Python lists are not accepted).

@@ -1,6 +1,15 @@
 """
-ndispers.media.glass/__init__.py
-glasses and isotropic crystals
+ndispers.media.glasses
+
+Optically isotropic media: glasses, and crystals of the cubic system.
+
+The split between this package and ndispers.media.crystals is by optical
+isotropy, not by whether a medium is crystalline. An isotropic medium has a
+single refractive index with no direction or polarization dependence, so its
+methods take (wl_um, T_degC) and no angle or pol argument. CaF2 is a crystal
+(cubic, m3-bar-m) and lives here for that reason; alpha-BBO and calcite are
+centrosymmetric too but are uniaxial, so they are birefringent and belong with
+the crystals.
 """
 
 from ._fusedsilica import FusedSilica
