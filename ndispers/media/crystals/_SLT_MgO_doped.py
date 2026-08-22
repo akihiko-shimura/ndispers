@@ -10,9 +10,9 @@ class SLT(Uniax_neg_3m):
 
     - Point group : 3m  (C_{3v})
     - Crystal system : Trigonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.28 µm to 5.6 µm
+    - Transparency range : 0.28 µm to 5.6 µm
 
     Sellmeier equation
     ------------------
@@ -92,7 +92,7 @@ class SLT(Uniax_neg_3m):
         return (T - 24.5) * (T + 24.5 + 2 * 273.16)
 
     def n_expr(self, pol):
-        """"
+        """
         Sympy expression, 
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'n_o_expr'.
 

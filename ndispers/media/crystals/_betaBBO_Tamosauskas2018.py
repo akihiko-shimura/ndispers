@@ -9,9 +9,9 @@ class BetaBBO(Uniax_neg_3m):
 
     - Point group : 3m  (C_{3v})
     - Crystal system : Trigonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.19 µm to 2.6 µm
+    - Transparency range : 0.19 µm to 2.6 µm
     
     Sellmeier equation
     ------------------
@@ -75,7 +75,7 @@ class BetaBBO(Uniax_neg_3m):
         return sympy.sqrt(1.0 + self._B1_e * wl**2/ (wl**2 - self._C1_e) + self._B2_e * wl**2/ (wl**2 - self._C2_e) + self._B3_e * wl**2/ (wl**2 - self._C3_e)) + self._dndT_e * (T - 20)
 
     def n_expr(self, pol):
-        """"
+        """
         Sympy expression, 
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'.
 

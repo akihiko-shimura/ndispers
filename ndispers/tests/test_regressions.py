@@ -149,6 +149,20 @@ def test_dndT2_runs_and_is_nonzero_for_e_ray():
 
 ALL_MEDIA = [nm for nm in sorted(dir(C))
              if not nm.startswith('_') and isinstance(getattr(C, nm), type)]
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
+def test_docstring_template(name):
+    """The class docstrings are the source of the documentation's media catalog,
+    so template drift is documentation drift. Mandatory sections must be present;
+    the recurring copy-paste typos and the deleted Example/Usage sections must
+    not come back."""
+    doc = getattr(C, name).__doc__
+    assert doc, f"{name} has no docstring"
+    for section in ("Sellmeier equation", "Ref"):
+        assert section in doc, f"{name}: missing '{section}' section"
+    for banned in ("Dielectic", "Tranparency", "Example\n", "Usage\n"):
+        assert banned not in doc, f"{name}: contains {banned.strip()!r}"
 DISPERSION_METHODS = ['n', 'dn_wl', 'd2n_wl', 'd3n_wl', 'GD', 'GV', 'ng', 'GVD',
                       'TOD', 'woa_theta', 'woa_phi', 'dndT', 'dndT2']
 

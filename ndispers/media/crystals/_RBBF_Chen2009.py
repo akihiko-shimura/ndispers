@@ -9,9 +9,9 @@ class RBBF(Medium):
     
     - Point group : 32  (D_3)
     - Crystal system : Trigonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.16 to 3.55 µm
+    - Transparency range : 0.16 to 3.55 µm
     - Hardness: 2.9 on the Mohs scale
     - Highly stable in air and even in hot water at 100°C or in acids such as HNO3 and HCl
 

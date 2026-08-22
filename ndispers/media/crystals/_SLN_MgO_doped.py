@@ -10,9 +10,9 @@ class SLN(Uniax_neg_3m):
 
     - Point group : 3m  (C_{3v})
     - Crystal system : Trigonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.32 µm to 5.2 µm
+    - Transparency range : 0.32 µm to 5.2 µm
 
     Sellmeier equation
     ------------------
@@ -83,7 +83,7 @@ class SLN(Uniax_neg_3m):
         return (T - 24.5) * (T + 24.5 + 2 * 273.16)
 
     def n_expr(self, pol):
-        """"
+        """
         Sympy expression, 
         dispersion formula,
         only for e-wave

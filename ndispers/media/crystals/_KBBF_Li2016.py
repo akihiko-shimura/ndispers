@@ -9,9 +9,9 @@ class KBBF(Uniax_neg_32):
 
     - Point group : 32  (D_2)
     - Crystal system : Trigonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.155 µm to 3.66 µm
+    - Transparency range : 0.155 µm to 3.66 µm
 
     Sellmeier equation
     ------------------
@@ -77,7 +77,7 @@ class KBBF(Uniax_neg_32):
         return sympy.sqrt(self._A_e + self._B1_e * wl**2 / (wl**2 - self._C1_e**2) + self._B2_e * wl**2 / (wl**2 - self._C2_e**2) - self._D_e * wl**2) + self._dndT_e * (T - 22)
 
     def n_expr(self, pol):
-        """"
+        """
         Sympy expression, 
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'n_o_expr'.
 

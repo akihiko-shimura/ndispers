@@ -8,7 +8,7 @@ class CaF2(Medium):
 
     - Point group : Fm3m
     - Crystal system : cubic
-    - Tranparency range : 0.18 to 8 µm (depends on material grade)
+    - Transparency range : 0.18 to 8 µm (depends on material grade)
     - Transmission Range : 0.13 to 10 µm (depends on material grade)
     
     Sellmeier equation

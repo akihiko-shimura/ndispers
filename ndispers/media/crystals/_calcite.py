@@ -8,9 +8,9 @@ class Calcite(Medium):
 
     - Point group : -3m  (D_{3d})
     - Crystal system : Trigonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 
+    - Transparency range : 
 
     Sellmeier equation
     ------------------
@@ -67,7 +67,7 @@ class Calcite(Medium):
         return sympy.sqrt(1 + self._A1_e * wl**2 / (wl**2 - self._B1_e**2) + self._A2_e * wl**2 / (wl**2 - self._B2_e**2) + self._A3_e * wl**2 / (wl**2 - self._B3_e**2))
 
     def n_expr(self, pol):
-        """"
+        """
         Sympy expression, 
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'.
 

@@ -9,9 +9,9 @@ class KDP(Medium):
 
     - Point group : -42m  (D_{2d})
     - Crystal system : Tetragonal
-    - Dielectic principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Tranparency range : 0.174 to 1.57 µm
+    - Transparency range : 0.174 to 1.57 µm
 
     Sellmeier equation
     ------------------
@@ -68,7 +68,7 @@ class KDP(Medium):
         return sympy.sqrt(self._A_e + self._B_e / (wl**2 - self._C_e) - self._D_e / (wl**2 - 400)) + self.dndT_e_expr() * (T - 24.8)
 
     def n_expr(self, pol):
-        """"
+        """
         Sympy expression, 
         dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'.
 
