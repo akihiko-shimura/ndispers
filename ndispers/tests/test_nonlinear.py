@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 
 import ndispers.media.crystals as C
-from ndispers.groups import NonlinearGroup, Uniax_3m, Uniax_32
+from ndispers.groups import NonlinearGroup, Uniax_3m, Uniax_32, Uniax_42m, Uniax_4mm
 
 NAMES = sorted(n for n in dir(C) if isinstance(getattr(C, n), type)
                and issubclass(getattr(C, n), NonlinearGroup))
@@ -39,6 +39,13 @@ def test_reference_round_trip(name):
         # the generated alias
         assert getattr(x, f"{il}_sfg")(wl1, wl2, T) == pytest.approx(d0, rel=1e-12)
     assert x._d_note, f"{name}: _d_note should say where the values come from"
+
+
+def test_unknown_component_raises():
+    with pytest.raises(KeyError):
+        C.KDP().d_sfg("d22", 1.064, 1.064, T)
+    with pytest.raises(AttributeError):
+        C.KDP().d22_sfg
 
 
 # ---------------------------------------------------------------------------
@@ -71,6 +78,14 @@ def test_deff_smoke(name, pols):
             return
         assert arr.shape == ths.shape
         assert arr[1] == pytest.approx(x.deff_sfg(1.064, 1.064, 0.6, ph, T, *pols))
+
+
+def test_missing_component_is_loud():
+    # LB4 holds d31 only; eee would need d33
+    with pytest.raises(ValueError, match="d33"):
+        C.LB4().deff_sfg(1.064, 1.064, 0.5, 0.3, T, 'e', 'e', 'e')
+    # ...while ooe, which does not use d33, is fine
+    assert np.isfinite(C.LB4().deff_sfg(1.064, 1.064, 0.5, 0.3, T, 'o', 'o', 'e'))
 
 
 # ---------------------------------------------------------------------------
@@ -122,9 +137,33 @@ def test_closed_form_32(th, ph):
         assert abs(x.deff_sfg(WL1, WL2, th, ph, T, *pols)) == pytest.approx(abs(r), rel=1e-12), pols
 
 
+@pytest.mark.parametrize("th,ph", [(0.4, 0.3), (1.1, 1.9)])
+def test_closed_form_42m(th, ph):
+    x = C.KDP()
+    d36 = d(x, "d36")
+    T1, T2, T3 = Th(x, WL1, th, 'e'), Th(x, WL2, th, 'e'), Th(x, WL3, th, 'e')
+    ref = {
+        "ooe": d36 * np.sin(T3) * np.sin(2 * ph),
+        "oee": d36 * np.sin(T2 + T3) * np.cos(2 * ph),
+        "eoe": d36 * np.sin(T1 + T3) * np.cos(2 * ph),
+    }
+    for pols, r in ref.items():
+        assert abs(x.deff_sfg(WL1, WL2, th, ph, T, *pols)) == pytest.approx(abs(r), rel=1e-12), pols
+
+
+@pytest.mark.parametrize("th,ph", [(0.4, 0.3), (1.1, 1.9)])
+def test_closed_form_4mm(th, ph):
+    x = C.LB4()
+    d31 = d(x, "d31")
+    T3 = Th(x, WL3, th, 'e')
+    assert abs(x.deff_sfg(WL1, WL2, th, ph, T, 'o', 'o', 'e')) == pytest.approx(abs(d31 * np.sin(T3)), rel=1e-12)
+    # type II vanishes identically under Kleinman symmetry
+    assert x.deff_sfg(WL1, WL2, th, ph, T, 'o', 'e', 'e') == pytest.approx(0., abs=1e-15)
+
+
 # ---------------------------------------------------------------------------
 # 4. Bookkeeping: the group a crystal inherits matches its docstring
-GROUP_OF = {"3m": Uniax_3m, "32": Uniax_32}
+GROUP_OF = {"3m": Uniax_3m, "32": Uniax_32, "4̄2m": Uniax_42m, "4mm": Uniax_4mm}
 
 
 @pytest.mark.parametrize("name", NAMES)

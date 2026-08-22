@@ -1,9 +1,10 @@
 import sympy
 
-from ndispers._baseclass import Medium, T, phi, theta, wl
+from ndispers._baseclass import T, phi, theta, wl
+from ndispers.groups import Uniax_42m
 from ndispers.helper import vars2
 
-class KDP(Medium):
+class KDP(Uniax_42m):
     """
     KDP (KH₂PO₄, potassium dihydrogen phosphate) crystal
 
@@ -40,11 +41,17 @@ class KDP(Medium):
 
     Underlying room-temperature index measurements:
       Zernike, F. (1964). Refractive indices of ammonium dihydrogen phosphate and potassium dihydrogen phosphate between 2000 Å and 1.5 μ. JOSA, 54(10), 1215-1220. https://doi.org/10.1364/josa.54.001215
+    Nonlinear optical coefficient:
+      Eckardt, R. C., Masuda, H., Fan, Y. X., & Byer, R. L. (1990). Absolute and relative nonlinear optical coefficients of KDP, KD*P, BaB2O4, LiIO3, MgO:LiNbO3, and KTP measured by phase-matched second-harmonic generation. IEEE Journal of Quantum Electronics, 26(5), 922-933. https://doi.org/10.1109/3.55534
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E",
                  "_G_o", "_H_o", "_L_o", "_wlg_o", "_wll_o",
                  "_G_e", "_H_e", "_L_e", "_wlg_e", "_wll_e"]
+
+    _d_ref = {"d36": (0.39, 1.064, 1.064)}
+    _d_note = ("Eckardt et al. 1990, absolute, 1.064 um SHG; the reference value of the "
+               "Roberts 1992 scale. Alford & Smith 2001 find Miller scaling good for KDP.")
 
     def __init__(self):
         super().__init__()

@@ -46,3 +46,34 @@ class Uniax_32(UniaxialGroup):
     _d_entries = {
         "d11": [("xxx", +1), ("xyy", -1), ("yxy", -1)],
     }
+
+
+class Uniax_42m(UniaxialGroup):
+    """
+    Point group -42m (D2d): KDP, CLBO.
+
+        d = [[ 0, 0, 0, d14,  0,   0  ],
+             [ 0, 0, 0,  0,  d14,  0  ],
+             [ 0, 0, 0,  0,   0,  d36 ]],   d14 = d36 (Kleinman)
+    """
+    __slots__ = []
+    _d_entries = {
+        "d36": [("zxy", +1), ("xyz", +1), ("yzx", +1)],
+    }
+
+
+class Uniax_4mm(UniaxialGroup):
+    """
+    Point group 4mm (C4v): Li2B4O7.
+
+        d = [[  0,    0,   0,   0,  d15,  0 ],
+             [  0,    0,   0,  d15,  0,   0 ],
+             [ d31,  d31, d33,  0,   0,   0 ]],   d15 = d31 (Kleinman)
+
+    d33 enters only eee. Type-II d_eff vanishes identically.
+    """
+    __slots__ = []
+    _d_entries = {
+        "d31": [("zxx", +1), ("zyy", +1), ("xzx", +1), ("yzy", +1)],
+        "d33": [("zzz", +1)],
+    }
