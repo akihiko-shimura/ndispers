@@ -113,6 +113,8 @@ Phase-matching angles for sum-frequency generation are solved directly. For Type
  'oeo': {'theta': [], 'phi': None}}
 ```
 
+For difference-frequency generation and optical parametric amplification/oscillation the same interaction is entered from the pump side: `pmAngles_dfg(wl_p, wl_s, T)` gives the angles (and the idler), `tuning_dfg(wl_p, angle, T, pol_s, pol_i, pol_p)` the signal/idler pairs that phase-match at a fixed angle — one point of an OPO tuning curve — and `dk_dfg`, `pmFactor_dfg`, `qpm_period_dfg`, `deff_dfg` mirror their SFG counterparts with waves read as (signal, idler, pump). For x-cut KTP pumped at 1064 nm, `KTP_zx().tuning_dfg(1.064, np.pi/2, 25, 'o', 'e', 'o')` returns the familiar noncritical pair 1571 / 3298 nm.
+
 `dk_sfg` and `pmFactor_sfg` give the phase mismatch and the sinc² phase-matching factor for arbitrary angles, and `qpm_period_sfg` the quasi-phase-matching period — for 1064 nm SHG in 5% MgO:LiNbO₃ along x with all waves extraordinary (d33), `MgOLN_Zelmon1997().qpm_period_sfg(1.064, 1.064, np.pi/2, 20, 'e', 'e', 'e')` gives the familiar ~7.0 µm.
 
 The effective nonlinear coefficient at that angle, for the φ = 90° cut:
