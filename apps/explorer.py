@@ -315,7 +315,7 @@ def _(call, mo, time, wl0):
         "| quantity | value | unit |\n|---|---|---|\n"
         + "\n".join(_rows)
         + f"\n\n<sub>all eight quantities: {1e3 * _derived_s:.0f} ms"
-        " (first call per medium builds the symbolic derivatives)</sub>"
+        " (the first call on a medium loads its pre-generated functions)</sub>"
     )
     return
 
