@@ -471,3 +471,97 @@ def test_brentq_replaces_scipy():
     # the number the README and validation page quote must not move
     assert abs(C.BetaBBO_Eimerl1987().pmAngles_sfg(1.064, 1.064, 25, deg=True)
                ['ooe']['theta'][0] - 22.884169498625802) < 1e-9
+
+
+# --- pre-generated functions (ndispers/_compiled, tools/compile_media.py) ----
+
+def _all_media():
+    import ndispers.media.glasses as G
+    for mod in (C, G):
+        for name in sorted(dir(mod)):
+            obj = getattr(mod, name)
+            if isinstance(obj, type) and not name.startswith("_"):
+                yield obj
+
+
+def test_compiled_modules_are_current():
+    """Every medium ships a generated module whose hash matches the sources
+    it was generated from. A coefficient edited without re-running
+    tools/compile_media.py would otherwise be silently ignored at run time."""
+    import importlib.util, os
+    spec = importlib.util.spec_from_file_location(
+        "compile_media", os.path.join(os.path.dirname(__file__), "..", "..", "tools", "compile_media.py"))
+    gen = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gen)
+    from ndispers._baseclass import _compiled_module
+    stale = []
+    for cls in _all_media():
+        mod = _compiled_module(cls)
+        if mod is None or mod.SOURCE_HASH != gen.source_hash(cls):
+            stale.append(cls.__name__)
+    assert not stale, f"run `uv run python tools/compile_media.py`; stale: {stale}"
+
+
+@pytest.mark.parametrize("cls", [C.BetaBBO_Eimerl1987, C.LBO_KK2018_xy, C.SLN,
+                                 C.BiBO_Miyata2009_yz, C.KTP_zx])
+def test_compiled_functions_agree_with_sympy(cls):
+    """The shipped functions reproduce sympy's lambdify (cse merely reorders
+    the arithmetic) for every expression and polarization of a medium."""
+    import warnings
+    from sympy.utilities import lambdify
+    from ndispers._baseclass import _compiled_module
+    x = cls()
+    mod = _compiled_module(cls)
+    syms = [s._sympy_() for s in x.symbols]
+    wl = np.array([0.4, 0.8, 1.064, 1.55, 2.5])[:, None, None]
+    th = np.array([0.0, 0.4, 1.0, 1.5])[None, :, None]
+    T = np.array([20., 120.])[None, None, :]
+    args = (wl, th, 0.3, T) if len(syms) == 4 else (wl, T)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for (ename, pol), f in mod.FUNCS.items():
+            expr = getattr(x, ename)(pol) if ename.endswith("_expr") \
+                else getattr(x, ename + "_expr")()
+            a = np.asarray(f(*args), float)
+            b = np.asarray(lambdify(syms, expr, "numpy")(*args), float)
+            m = np.isfinite(b)
+            assert np.array_equal(np.isfinite(a), m), (ename, pol)
+            assert np.allclose(a[m], b[m], rtol=1e-10, atol=1e-10 * np.max(np.abs(b[m]), initial=0)), (ename, pol)
+
+
+def test_package_runs_without_sympy():
+    """sympy is optional since 0.16: indices, dispersion, phase matching and
+    d_eff come from the generated modules. Run in a subprocess with sympy
+    blocked so this test cannot be fooled by the test process having it."""
+    import subprocess, sys
+    code = r"""
+import sys
+sys.modules['sympy'] = None          # makes `import sympy` raise ImportError
+sys.modules['mpmath'] = None
+import numpy as np
+import ndispers as nd
+C, G = nd.media.crystals, nd.media.glasses
+b = C.BetaBBO_Eimerl1987()
+assert abs(b.n(0.532, 0, 25, pol='o') - 1.674884049110459) < 1e-12
+assert abs(b.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']['theta'][0] - 22.884169498625802) < 1e-9
+b.GVD(0.8, 0.3, 25, pol='e'); b.TOD(0.8, 0.3, 25, pol='e'); b.woa_theta(0.8, 0.4, 25, pol='e')
+b.deff_sfg(1.064, 1.064, np.radians(22.88), np.radians(90), 25, 'o', 'o', 'e')
+l = C.LBO_KK2018_xy(); l.pmAngles_sfg(1.064, 1.064, 25); l.d_sfg('d32', 1.064, 1.064, 25)
+C.SLN().qpm_period_sfg(1.064, 1.064, np.pi/2, 25, 'e', 'e', 'e')
+G.FusedSilica().GVD(0.8, 20)
+assert b.n_latex('o').startswith('- 1.66')
+for cls in (C.BetaBBO_Eimerl1987, C.LBO_KK2018_xy, C.SLN, C.KTP_zx):
+    cls().n(1.064, 0.5, 25)
+# a user subclass has no generated module and needs sympy: say so clearly
+class MyBBO(C.BetaBBO_Eimerl1987):
+    __slots__ = []
+try:
+    MyBBO().n(0.5, 0, 25)
+except ImportError as e:
+    assert 'ndispers[sym]' in str(e)
+else:
+    raise AssertionError('expected ImportError without sympy')
+print('OK')
+"""
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert r.returncode == 0 and r.stdout.strip() == "OK", r.stderr
