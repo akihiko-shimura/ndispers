@@ -227,10 +227,13 @@ def _(
     _elapsed = time.perf_counter() - _t0
 
     # a held variable that is not swept is fixed; say so in the subtitle
+    # symbols, as in the phase-matching app's plot titles: λ, T, and θ or φ
+    # (whichever angle this medium varies)
+    _angle_name = "φ" if getattr(x, "phi_rad", None) == "var" else "θ"
     _fixed = ", ".join(
-        f"{VARIABLES[k][0]} = {v:g} {u}"
-        for k, v, u in (("wl", wl0.value, "nm"), ("angle", angle.value, "deg"),
-                        ("T", T.value, "°C"))
+        f"{sym} = {v:g}{u}"
+        for k, sym, v, u in (("wl", "λ", wl0.value, " nm"), ("angle", _angle_name, angle.value, "°"),
+                             ("T", "T", T.value, " °C"))
         if k != _v and not (IS_ISOTROPIC and k == "angle")
     )
 

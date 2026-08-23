@@ -315,6 +315,7 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
         _fig.update_yaxes(range=[WL3 * 1e3, _wl_i_max * 1e3], row=1, col=2)
         _fig.update_layout(**{**PLOT_LAYOUT, "showlegend": True, "width": 760}, height=340,
                            legend=dict(x=0.01, y=0.99, bgcolor="rgba(255,255,255,0.6)"))
+        _fig.update_annotations(font_size=11)          # subplot titles at axis-label size
         _out = mo.vstack([mo.md(
             "## Tuning curves\n\n"
             f"Signal and idler that phase-match for pump {WL3 * 1e3:.2f} nm and polarizations "
