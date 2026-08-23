@@ -46,9 +46,10 @@ def _(XTALS, mo, nd):
         f"""
     # Phase-matching calculator
 
-    Collinear sum-frequency generation in {len(XTALS)} birefringent crystals —
-    phase-matching angles, acceptance bandwidths, walk-off and effective
-    nonlinearity, computed in your browser. Powered by
+    Collinear three-wave mixing — sum-frequency generation, or difference-frequency
+    generation / optical parametric amplification and oscillation — in {len(XTALS)}
+    birefringent crystals: phase-matching angles, tuning curves, acceptance
+    bandwidths, walk-off and effective nonlinearity, computed in your browser. Powered by
     [ndispers {nd.__version__}](https://github.com/akihiko-shimura/ndispers).
     """
     )
@@ -56,22 +57,40 @@ def _(XTALS, mo, nd):
 
 
 @app.cell(hide_code=True)
-def _(XTALS, mo):
-    xtal = mo.ui.dropdown(options=list(XTALS), value="BetaBBO_Eimerl1987", label="Crystal")
-    shg = mo.ui.checkbox(value=True, label="Second harmonic (λ₁ = λ₂)")
-    wl1 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1, label="λ₁ (nm)")
-    wl2 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1, label="λ₂ (nm)")
-    T = mo.ui.number(-50, 300, value=25, step=1, label="Temperature (°C)")
-    L = mo.ui.number(0.1, 100.0, value=10.0, step=0.1, label="Crystal length (mm)")
-    return L, T, shg, wl1, wl2, xtal
+def _(mo):
+    process = mo.ui.radio(
+        options=["SFG / SHG", "DFG / OPA / OPO"], value="SFG / SHG", label="Process", inline=True)
+    process
+    return (process,)
 
 
 @app.cell(hide_code=True)
-def _(L, T, mo, shg, wl1, wl2, xtal):
+def _(XTALS, mo, process):
+    IS_DFG = process.value.startswith("DFG")
+    xtal = mo.ui.dropdown(options=list(XTALS), value="BetaBBO_Eimerl1987", label="Crystal")
+    T = mo.ui.number(-50, 300, value=25, step=1, label="Temperature (°C)")
+    L = mo.ui.number(0.1, 100.0, value=10.0, step=0.1, label="Crystal length (mm)")
+    # SFG: the two inputs
+    shg = mo.ui.checkbox(value=True, label="Second harmonic (λ₁ = λ₂)")
+    wl1 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1, label="λ₁ (nm)")
+    wl2 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1, label="λ₂ (nm)")
+    # DFG / OPA / OPO: the pump and one of the two generated waves
+    wlp = mo.ui.number(200.0, 4000.0, value=800.0, step=0.1, label="λ_pump (nm)")
+    given = mo.ui.radio(options=["signal", "idler"], value="signal", label="given wave", inline=True)
+    wlg = mo.ui.number(200.0, 20000.0, value=1300.0, step=0.1, label="λ_signal or λ_idler (nm)")
+    return IS_DFG, L, T, given, shg, wl1, wl2, wlg, wlp, xtal
+
+
+@app.cell(hide_code=True)
+def _(IS_DFG, L, T, given, mo, shg, wl1, wl2, wlg, wlp, xtal):
+    if IS_DFG:
+        _mid = mo.vstack([wlp, wlg, given], gap=0.25)
+    else:
+        _mid = mo.vstack([wl1, wl2 if not shg.value else mo.md("<sub>λ₂ = λ₁</sub>")])
     mo.hstack(
         [
-            mo.vstack([xtal, shg], gap=0.25),
-            mo.vstack([wl1, wl2 if not shg.value else mo.md("<sub>λ₂ = λ₁</sub>")]),
+            mo.vstack([xtal] + ([] if IS_DFG else [shg]), gap=0.25),
+            _mid,
             mo.vstack([T, L], gap=0.25),
         ],
         justify="start",
@@ -81,15 +100,28 @@ def _(L, T, mo, shg, wl1, wl2, xtal):
 
 
 @app.cell(hide_code=True)
-def _(XTALS, T, shg, wl1, wl2, xtal):
+def _(IS_DFG, XTALS, T, given, mo, shg, wl1, wl2, wlg, wlp, xtal):
     x = XTALS[xtal.value]()
-    # ndispers works in µm; the interface is in nm
-    WL1 = wl1.value * 1e-3
-    WL2 = WL1 if shg.value else wl2.value * 1e-3
-    WL3 = 1.0 / (1.0 / WL1 + 1.0 / WL2)
+    # ndispers works in µm; the interface is in nm. Internally everything is
+    # the SFG of waves 1 and 2 into 3; for DFG / OPA / OPO those are
+    # (signal, idler, pump), so every cell below serves both processes.
+    if IS_DFG:
+        mo.stop(wlg.value <= wlp.value,
+                mo.md("*The signal or idler must be longer than the pump — "
+                      "1/λ_p = 1/λ_s + 1/λ_i.*"))
+        WL3 = wlp.value * 1e-3
+        _g = wlg.value * 1e-3
+        _other = x.wl_idler(WL3, _g)
+        WL1, WL2 = (_g, _other) if given.value == "signal" else (_other, _g)
+        WAVES = ("signal", "idler", "pump")
+    else:
+        WL1 = wl1.value * 1e-3
+        WL2 = WL1 if shg.value else wl2.value * 1e-3
+        WL3 = 1.0 / (1.0 / WL1 + 1.0 / WL2)
+        WAVES = ("λ₁", "λ₂", "λ₃")
     T_C = T.value
     ANGLE_KEY = "theta" if x.theta_rad == "var" else "phi"
-    return ANGLE_KEY, T_C, WL1, WL2, WL3, x
+    return ANGLE_KEY, T_C, WAVES, WL1, WL2, WL3, x
 
 
 @app.cell(hide_code=True)
@@ -127,7 +159,7 @@ def _(HAS_PM, POLS, mo, x):
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_KEY, T_C, WL1, WL2, WL3, mo, x):
+def _(ANGLE_KEY, IS_DFG, T_C, WAVES, WL1, WL2, WL3, mo, x):
     # Type I: both inputs share a polarization. Type II: they differ.
     TYPE_OF = {
         "ooe": "I (negative)", "eeo": "I (positive)",
@@ -149,10 +181,12 @@ def _(ANGLE_KEY, T_C, WL1, WL2, WL3, mo, x):
         f"""
     ## Phase-matching angles
 
-    λ₁ = {WL1 * 1e3:.2f} nm, λ₂ = {WL2 * 1e3:.2f} nm → **λ₃ = {WL3 * 1e3:.2f} nm**
+    {(f"pump {WL3 * 1e3:.2f} nm → signal {WL1 * 1e3:.2f} nm + **idler {WL2 * 1e3:.2f} nm**"
+      if IS_DFG else
+      f"λ₁ = {WL1 * 1e3:.2f} nm, λ₂ = {WL2 * 1e3:.2f} nm → **λ₃ = {WL3 * 1e3:.2f} nm**")}
     &nbsp;·&nbsp; the varying angle of this crystal is **{ANGLE_KEY}**
 
-    | polarizations (1,2,3) | type | angle | |
+    | polarizations ({", ".join(WAVES) if IS_DFG else "1,2,3"}) | type | angle | |
     |---|---|---|---|
     {_rows}
     """
@@ -218,6 +252,106 @@ def _(ANGLE_PM, HAS_PM, L, PLOT_LAYOUT, PLOT_TITLE, POLS, T_C, WL1, WL2, make_su
 
 
 @app.cell(hide_code=True)
+def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3, go, make_subplots, mo, np, x):
+    # OPO / OPA tuning curves: the zero contour of dk over (angle, signal
+    # frequency) and over (temperature, signal frequency) - one vectorised
+    # evaluation each, every branch drawn, no root finder needed for a plot.
+    if IS_DFG and HAS_PM:
+        import re as _re
+        # longest idler to draw: the upper edge of the medium's validity range
+        _doc = type(x).__doc__ or ""
+        _sec = (_re.search(r"Validity range\s*\n\s*-+\s*\n(.{0,400})", _doc, _re.S)
+                or _re.search(r"Transparency range\s*:([^\n]*)", _doc))
+        _m = _sec and _re.search(r"(\d+\.?\d*)\s*(?:to|-|–)\s*(\d+\.?\d*)", _sec.group(1))
+        _wl_i_max = min(float(_m.group(2)), 20.0) if _m else 5.0
+        _wl_i_max = max(_wl_i_max, 1.2 * WL2)          # the current idler must be inside
+        _nu_p = 1.0 / WL3
+        _nu_s = np.linspace(_nu_p / 2, _nu_p - 1.0 / _wl_i_max, 400)   # even in frequency
+        _wl_s = 1.0 / _nu_s
+        _wl_i = 1.0 / (_nu_p - _nu_s)
+        _ang = np.linspace(0.0, 90.0, 361)
+        _T = np.linspace(-50.0, 300.0, 141)
+        with np.errstate(all="ignore"):
+            _dk_ang = np.asarray(x.dk_dfg(WL3, _wl_s[None, :], np.radians(_ang)[:, None], T_C, *POLS), float)
+            _dk_T = np.asarray(x.dk_dfg(WL3, _wl_s[None, :], ANGLE_PM, _T[:, None], *POLS), float)
+        _fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12,
+                             subplot_titles=(f"angle tuning at T = {T_C:g} °C",
+                                             f"temperature tuning at {ANGLE_KEY} = {np.degrees(ANGLE_PM):.3f}°"))
+        for _col, _xs, _dk, _xlab in ((1, _ang, _dk_ang, f"{ANGLE_KEY} (deg)"),
+                                      (2, _T, _dk_T, "T (°C)")):
+            for _y, _name, _color in ((_wl_s * 1e3, "signal", "#1f77b4"), (_wl_i * 1e3, "idler", "#d62728")):
+                _fig.add_contour(
+                    x=_xs, y=_y, z=_dk.T, row=1, col=_col, showscale=False,
+                    contours=dict(start=0, end=0, size=1, coloring="none"),
+                    line=dict(color=_color, width=2), name=_name, showlegend=(_col == 1),
+                    hovertemplate=f"%{{x:.3f}}<br>{_name} %{{y:.1f}} nm<extra></extra>")
+        _fig.add_scatter(x=[np.degrees(ANGLE_PM)], y=[WL1 * 1e3], mode="markers",
+                         marker=dict(color="#1f77b4", size=8), row=1, col=1, showlegend=False,
+                         hovertemplate="current signal<extra></extra>")
+        _fig.add_scatter(x=[np.degrees(ANGLE_PM)], y=[WL2 * 1e3], mode="markers",
+                         marker=dict(color="#d62728", size=8), row=1, col=1, showlegend=False,
+                         hovertemplate="current idler<extra></extra>")
+        _fig.add_scatter(x=[T_C], y=[WL1 * 1e3], mode="markers", marker=dict(color="#1f77b4", size=8),
+                         row=1, col=2, showlegend=False, hovertemplate="current signal<extra></extra>")
+        _fig.add_scatter(x=[T_C], y=[WL2 * 1e3], mode="markers", marker=dict(color="#d62728", size=8),
+                         row=1, col=2, showlegend=False, hovertemplate="current idler<extra></extra>")
+        _fig.update_xaxes(title_text=f"{ANGLE_KEY} (deg)", row=1, col=1)
+        _fig.update_xaxes(title_text="T (°C)", row=1, col=2)
+        _fig.update_yaxes(title_text="wavelength (nm)", row=1, col=1)
+        _fig.update_layout(**{**PLOT_LAYOUT, "showlegend": True, "width": 760}, height=340,
+                           legend=dict(x=0.01, y=0.99, bgcolor="rgba(255,255,255,0.6)"))
+        _out = mo.vstack([mo.md(
+            "## Tuning curves\n\n"
+            f"Signal and idler that phase-match for pump {WL3 * 1e3:.2f} nm and polarizations "
+            f"`{''.join(POLS)}`, as the angle or the temperature is tuned; the dots are the present "
+            "operating point. Curves are drawn up to the longer edge of the medium's validity range "
+            f"({_wl_i_max:g} µm) — beyond the range they extrapolate the Sellmeier fit. "
+            "A medium without a temperature term gives a flat temperature curve."),
+            _fig])
+    else:
+        _out = mo.md("")
+    _out
+    return
+
+
+@app.cell(hide_code=True)
+def _(IS_DFG, PLOT_LAYOUT, T_C, WL1, WL3, go, mo, np, x):
+    # Quasi-phase-matching: the poling period that phase-matches each signal
+    # for all waves extraordinary along a principal axis (d33 of LiNbO3, LiTaO3,
+    # KTP). Drawn for every crystal with an e-ray; meaningful for the ferroelectrics.
+    if IS_DFG:
+        try:
+            _nu_p = 1.0 / WL3
+            _nu_s = np.linspace(_nu_p / 2, _nu_p - 1.0 / min(5.5, 12 * WL3), 300)
+            _wl_s = 1.0 / _nu_s
+            _wl_i = 1.0 / (_nu_p - _nu_s)
+            with np.errstate(all="ignore"):
+                _per = np.asarray(x.qpm_period_dfg(WL3, _wl_s, np.pi / 2, T_C, "e", "e", "e"), float)
+            _per_now = float(x.qpm_period_dfg(WL3, WL1, np.pi / 2, T_C, "e", "e", "e"))
+            _fig = go.Figure(go.Scatter(
+                x=_wl_s * 1e3, y=_per, mode="lines", customdata=_wl_i * 1e3,
+                hovertemplate="signal %{x:.1f} nm, idler %{customdata:.1f} nm<br>Λ = %{y:.2f} µm<extra></extra>"))
+            _fig.add_scatter(x=[WL1 * 1e3], y=[_per_now], mode="markers", marker=dict(size=8, color="#d62728"),
+                             hovertemplate="current signal<extra></extra>")
+            _fig.update_layout(**PLOT_LAYOUT, height=280, xaxis_title="signal (nm)",
+                               yaxis_title="poling period Λ (µm)",
+                               title_text=f"QPM, e+e→e along the axis, T = {T_C:g} °C, pump {WL3 * 1e3:.2f} nm")
+            _out = mo.vstack([mo.md(
+                "## Quasi-phase-matching period\n\n"
+                "First-order poling period for all three waves extraordinary, propagating along "
+                "a principal axis (the PPLN / PPSLT / PPKTP geometry, using d33): "
+                f"**Λ = {_per_now:.2f} µm** for the present signal. Temperature tuning follows the "
+                "medium's dn/dT — choose a parameterisation with one (SLN, SLT) for that."),
+                _fig])
+        except ValueError:
+            _out = mo.md("")
+    else:
+        _out = mo.md("")
+    _out
+    return
+
+
+@app.cell(hide_code=True)
 def _(brentq, np):
     def acceptance(factor, x0, span0, threshold=0.5):
         """Full width of factor(x) at `threshold`, centred on the peak at x0.
@@ -259,7 +393,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(
-    ANGLE_PM, ANG_UNITS, HAS_PM, L, POLS, T_C, WL1, WL2, WL_UNITS,
+    ANGLE_PM, ANG_UNITS, HAS_PM, IS_DFG, L, POLS, T_C, WL1, WL2, WL3, WL_UNITS,
     acceptance, ang_unit, mo, np, shg, threshold, wl_unit, x,
 ):
     if HAS_PM:
@@ -274,14 +408,26 @@ def _(
         _d_T = acceptance(
             lambda t: float(x.pmFactor_sfg(WL1, WL2, ANGLE_PM, t, *POLS, _L)),
             T_C, 0.01, _th)
-        # λ₂ held at its stated value, only λ₁ tuned — the SNLO convention
-        _d_wl1 = acceptance(
-            lambda w: float(x.pmFactor_sfg(w, WL2, ANGLE_PM, T_C, *POLS, _L)),
-            WL1, 1e-6, _th)
-        # both tuned together; meaningful for SHG of a broadband source
-        _d_wboth = acceptance(
-            lambda w: float(x.pmFactor_sfg(w, w, ANGLE_PM, T_C, *POLS, _L)),
-            WL1, 1e-6, _th) if shg.value else np.nan
+        if IS_DFG:
+            # pump fixed: tuning the signal moves the idler the other way
+            # (energy conservation) - the parametric gain bandwidth, whose
+            # leading term is the signal-idler group-velocity mismatch
+            _d_sig = acceptance(
+                lambda w: float(x.pmFactor_dfg(WL3, w, ANGLE_PM, T_C, *POLS, _L)),
+                WL1, 1e-6, _th)
+            # signal fixed, pump tuned (idler follows): the pump bandwidth
+            _d_pump = acceptance(
+                lambda w: float(x.pmFactor_dfg(w, WL1, ANGLE_PM, T_C, *POLS, _L)),
+                WL3, 1e-6, _th)
+        else:
+            # λ₂ held at its stated value, only λ₁ tuned — the SNLO convention
+            _d_wl1 = acceptance(
+                lambda w: float(x.pmFactor_sfg(w, WL2, ANGLE_PM, T_C, *POLS, _L)),
+                WL1, 1e-6, _th)
+            # both tuned together; meaningful for SHG of a broadband source
+            _d_wboth = acceptance(
+                lambda w: float(x.pmFactor_sfg(w, w, ANGLE_PM, T_C, *POLS, _L)),
+                WL1, 1e-6, _th) if shg.value else np.nan
 
         def _row(label, value, scale, unit):
             """value is in ndispers' native unit; L-product is per centimetre."""
@@ -294,10 +440,14 @@ def _(
         ACCEPT = [
             ("angle", _d_ang * _as, _au),
             ("temperature", _d_T, "°C"),
-            ("λ₁ only, λ₂ fixed", _d_wl1 * _ws, _wu),
         ]
-        if shg.value:
-            ACCEPT.append(("λ₁ and λ₂ tuned together", _d_wboth * _ws, _wu))
+        if IS_DFG:
+            ACCEPT.append(("signal (pump fixed, idler follows)", _d_sig * _ws, _wu))
+            ACCEPT.append(("pump (signal fixed, idler follows)", _d_pump * _ws, _wu))
+        else:
+            ACCEPT.append(("λ₁ only, λ₂ fixed", _d_wl1 * _ws, _wu))
+            if shg.value:
+                ACCEPT.append(("λ₁ and λ₂ tuned together", _d_wboth * _ws, _wu))
         _rows = [_row(_lbl, _v, 1, _u) for _lbl, _v, _u in ACCEPT]
 
         _out = mo.md(
@@ -311,11 +461,18 @@ def _(
     |---|---|---|
     """ + "\n".join("    " + r for r in _rows) + """
 
-    The wavelength row to compare against tabulated values is **λ₁ only** —
+    """ + (
+    """The **signal** row is the parametric gain bandwidth: the pump is fixed and
+    the idler follows the signal through 1/λ_i = 1/λ_p − 1/λ_s, so to first order
+    it is set by the signal–idler group-velocity mismatch — it opens up towards
+    degeneracy, and fully in a noncollinear geometry. This is a different quantity
+    from SNLO's SFG acceptance, which tunes one input with the other fixed.
+    """ if IS_DFG else
+    """The wavelength row to compare against tabulated values is **λ₁ only** —
     that is what SNLO reports. Tuning λ₁ and λ₂ together makes Δk move twice
     as fast, so that width is exactly half; it is the relevant one when a
     single broadband beam supplies both photons.
-    """
+    """)
         )
     else:
         ACCEPT = []
@@ -325,10 +482,10 @@ def _(
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_PM, HAS_PM, POLS, T_C, WL1, WL2, WL3, mo, np, x):
+def _(ANGLE_PM, HAS_PM, POLS, T_C, WAVES, WL1, WL2, WL3, mo, np, x):
     if HAS_PM:
         _rows = []
-        for _lbl, _wl, _p in (("λ₁", WL1, POLS[0]), ("λ₂", WL2, POLS[1]), ("λ₃", WL3, POLS[2])):
+        for _lbl, _wl, _p in zip(WAVES, (WL1, WL2, WL3), POLS):
             _rho = float(x.woa_theta(_wl, ANGLE_PM, T_C, pol=_p))
             _n = float(x.n(_wl, ANGLE_PM, T_C, pol=_p))
             _rows.append(
@@ -481,8 +638,8 @@ def _(
 
 @app.cell(hide_code=True)
 def _(
-    ACCEPT, ANGLE_KEY, ANGLE_PM, DEFF_MAX, HAS_DEFF, HAS_PM, L, PHI_FREE, PHI_OPT,
-    POLS, SOLUTIONS, T_C, TYPE_OF, WL1, WL2, WL3, deff_args, mo, nd, np, phi_cut,
+    ACCEPT, ANGLE_KEY, ANGLE_PM, DEFF_MAX, HAS_DEFF, HAS_PM, IS_DFG, L, PHI_FREE, PHI_OPT,
+    POLS, SOLUTIONS, T_C, TYPE_OF, WAVES, WL1, WL2, WL3, deff_args, mo, nd, np, phi_cut,
     pmtype, shg, threshold, x, xtal,
 ):
     # A plain-text report of everything above, in the spirit of SNLO's QMIX
@@ -521,11 +678,14 @@ def _(
         _type = TYPE_OF[_pols]
 
         _waves = []
-        for _lbl, _wl, _p in (("wl1", WL1, POLS[0]), ("wl2", WL2, POLS[1]), ("wl3", WL3, POLS[2])):
+        _wn = ("signal", "idler", "pump") if IS_DFG else ("wl1", "wl2", "wl3")
+        for _lbl, _wl, _p in zip(_wn, (WL1, WL2, WL3), POLS):
             _f = lambda q, _wl=_wl, _p=_p: float(getattr(x, q)(_wl, ANGLE_PM, T_C, pol=_p))
             _waves.append((_lbl, _wl, _p, _f("n"), _f("ng"), _f("GV"), _f("GVD"), _f("TOD"),
                            _f("woa_theta") * 1e3, _f("dndT")))
-        _gvm = 1 / _waves[2][5] - 1 / _waves[0][5]          # fs/um
+        _gvm = 1 / _waves[2][5] - 1 / _waves[0][5]          # fs/um, 3 vs 1
+        _gvm_si = 1 / _waves[0][5] - 1 / _waves[1][5]       # 1 vs 2
+        _gvm_pi = 1 / _waves[2][5] - 1 / _waves[1][5]       # 3 vs 2
         _L_um = L.value * 1e3
 
         # "- Point group : 3m (C3v)" in the docstring; the group mixin's name otherwise
@@ -552,11 +712,13 @@ def _(
         _lines += [
             "",
             "CONDITIONS",
-            "  process        SFG  1/wl3 = 1/wl1 + 1/wl2" + ("   (SHG: wl1 = wl2)" if shg.value else ""),
-            f"  wl1, wl2, wl3  {WL1 * 1e3:.2f}, {WL2 * 1e3:.2f}, {WL3 * 1e3:.2f} nm   (vacuum)",
+            ("  process        DFG / OPA / OPO   1/wl_p = 1/wl_s + 1/wl_i" if IS_DFG else
+             "  process        SFG  1/wl3 = 1/wl1 + 1/wl2" + ("   (SHG: wl1 = wl2)" if shg.value else "")),
+            (f"  pump, signal, idler  {WL3 * 1e3:.2f}, {WL1 * 1e3:.2f}, {WL2 * 1e3:.2f} nm   (vacuum)" if IS_DFG else
+             f"  wl1, wl2, wl3  {WL1 * 1e3:.2f}, {WL2 * 1e3:.2f}, {WL3 * 1e3:.2f} nm   (vacuum)"),
             f"  temperature    {T_C:g} degC",
             f"  length         {L.value:g} mm",
-            f"  polarizations  {' '.join(POLS)}   (Type {_type}; index 1,2,3 = wl1,wl2,wl3)",
+            f"  polarizations  {' '.join(POLS)}   (Type {_type}; order = {', '.join(_wn)})",
             f"  cut            {_cut}{_cut_note}",
             "",
             f"PHASE MATCHING   (all solutions at this T and these wavelengths; {ANGLE_KEY} varies)",
@@ -567,16 +729,24 @@ def _(
         _lines += [
             "",
             f"AT THE SELECTED SOLUTION  ({_pols}, {ANGLE_KEY} = {_deg:.3f} deg)",
-            "  wave    wl(nm)  pol      n       n_g    v_g(um/fs)  GVD(fs^2/mm)  TOD(fs^3/mm)  walk-off(mrad)  dn/dT(1/K)",
+            "  wave     wl(nm)  pol      n       n_g    v_g(um/fs)  GVD(fs^2/mm)  TOD(fs^3/mm)  walk-off(mrad)  dn/dT(1/K)",
         ]
         for _w in _waves:
-            _lines.append(f"  {_w[0]:<5s}{_w[1] * 1e3:9.2f}   {_w[2]}   {_w[3]:8.5f} {_w[4]:8.5f}   "
+            _lines.append(f"  {_w[0]:<6s}{_w[1] * 1e3:9.2f}   {_w[2]}   {_w[3]:8.5f} {_w[4]:8.5f}   "
                           f"{_w[5]:9.6f}   {_w[6]:11.2f}   {_w[7]:11.1f}   {_w[8]:12.3f}    {_w[9]:10.3e}")
-        _lines.append(f"  group-velocity mismatch  1/v_g3 - 1/v_g1 = {_gvm:.4f} fs/um   "
-                      f"(walk-through over L: {_gvm * _L_um:.0f} fs)")
+        _n1, _n2, _n3 = _wn
+        _lines.append(f"  group-velocity mismatch  1/v_g({_n3}) - 1/v_g({_n1}) = {_gvm:+.4f} fs/um   "
+                      f"(over L: {_gvm * _L_um:+.0f} fs)")
+        _lines.append(f"                           1/v_g({_n3}) - 1/v_g({_n2}) = {_gvm_pi:+.4f} fs/um   "
+                      f"(over L: {_gvm_pi * _L_um:+.0f} fs)")
+        _lines.append(f"                           1/v_g({_n1}) - 1/v_g({_n2}) = {_gvm_si:+.4f} fs/um   "
+                      f"(over L: {_gvm_si * _L_um:+.0f} fs)"
+                      + ("   <- sets the parametric gain bandwidth" if IS_DFG else ""))
         _lines += ["", f"ACCEPTANCE  (full width at {threshold.value:.2f} of sinc^2(dk L/2);  L = {L.value:g} mm)"]
         _tag = {"λ₁ only, λ₂ fixed": "wl1 only, wl2 fixed  <- what SNLO and tables report",
-                "λ₁ and λ₂ tuned together": "wl1 = wl2 tuned together   (broadband SHG)"}
+                "λ₁ and λ₂ tuned together": "wl1 = wl2 tuned together   (broadband SHG)",
+                "signal (pump fixed, idler follows)": "signal, pump fixed   (idler follows; gain bandwidth)",
+                "pump (signal fixed, idler follows)": "pump, signal fixed   (idler follows)"}
         for _lbl, _v, _u in ACCEPT:
             _name = _tag.get(_lbl, _lbl)
             _u2 = {"°C": "degC", "µrad": "urad", "µm": "um"}.get(_u, _u)
@@ -608,7 +778,9 @@ def _(
             "NOTES",
             "  Angles are internal and measured from the optic/dielectric axes; wavelengths are in vacuum.",
             "  The sign of d_eff is a convention; walk-off is included via theta + rho.",
-            f"  Reproduce:  nd.media.crystals.{xtal.value}().pmAngles_sfg({WL1:g}, {WL2:g}, {T_C:g}, deg=True)",
+            (f"  Reproduce:  nd.media.crystals.{xtal.value}().pmAngles_dfg({WL3:g}, {WL1:g}, {T_C:g}, deg=True)"
+             if IS_DFG else
+             f"  Reproduce:  nd.media.crystals.{xtal.value}().pmAngles_sfg({WL1:g}, {WL2:g}, {T_C:g}, deg=True)"),
         ]
         REPORT = "\n".join(_lines)
         _out = mo.vstack([
