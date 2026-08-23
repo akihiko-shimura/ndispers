@@ -157,7 +157,7 @@ def _(ANGLE_KEY, T_C, WL1, WL2, WL3, mo, x):
     {_rows}
     """
     )
-    return (SOLUTIONS,)
+    return SOLUTIONS, TYPE_OF
 
 
 @app.cell(hide_code=True)
@@ -252,7 +252,7 @@ def _(mo):
     ANG_UNITS = {"mdeg": 180e3 / 3.141592653589793, "mrad": 1e3,
                  "µrad": 1e6, "deg": 180 / 3.141592653589793}
     wl_unit = mo.ui.dropdown(options=list(WL_UNITS), value="pm", label="Wavelength unit")
-    ang_unit = mo.ui.dropdown(options=list(ANG_UNITS), value="mdeg", label="Angle unit")
+    ang_unit = mo.ui.dropdown(options=list(ANG_UNITS), value="mrad", label="Angle unit")
     mo.hstack([threshold, wl_unit, ang_unit], justify="start", gap=0.75)
     return ANG_UNITS, WL_UNITS, ang_unit, threshold, wl_unit
 
@@ -290,13 +290,15 @@ def _(
             return (f"| {label} | **{value * scale:.4g}** {unit} | "
                     f"**{value * scale * _L * 0.1:.4g}** {unit}·cm |")
 
-        _rows = [
-            _row("angle", _d_ang, _as, _au),
-            _row("temperature", _d_T, 1, "°C"),
-            _row("λ₁ only, λ₂ fixed", _d_wl1, _ws, _wu),
+        # (label, width in the chosen unit, unit) - the report cell reads this too
+        ACCEPT = [
+            ("angle", _d_ang * _as, _au),
+            ("temperature", _d_T, "°C"),
+            ("λ₁ only, λ₂ fixed", _d_wl1 * _ws, _wu),
         ]
         if shg.value:
-            _rows.append(_row("λ₁ and λ₂ tuned together", _d_wboth, _ws, _wu))
+            ACCEPT.append(("λ₁ and λ₂ tuned together", _d_wboth * _ws, _wu))
+        _rows = [_row(_lbl, _v, 1, _u) for _lbl, _v, _u in ACCEPT]
 
         _out = mo.md(
             f"""
@@ -316,9 +318,10 @@ def _(
     """
         )
     else:
+        ACCEPT = []
         _out = mo.md("")
     _out
-    return
+    return (ACCEPT,)
 
 
 @app.cell(hide_code=True)
@@ -474,6 +477,150 @@ def _(
         _out = mo.md("")
     _out
     return
+
+
+@app.cell(hide_code=True)
+def _(
+    ACCEPT, ANGLE_KEY, ANGLE_PM, DEFF_MAX, HAS_DEFF, HAS_PM, L, PHI_FREE, PHI_OPT,
+    POLS, SOLUTIONS, T_C, TYPE_OF, WL1, WL2, WL3, deff_args, mo, nd, np, phi_cut,
+    pmtype, shg, threshold, x, xtal,
+):
+    # A plain-text report of everything above, in the spirit of SNLO's QMIX
+    # output but carrying its own provenance: which parameterisation, which
+    # papers, which version - so the numbers can be traced later.
+    import datetime as _dt
+
+    def _section(doc, head):
+        """The lines of a docstring section (`head` underlined with ---)."""
+        _lines = [l.strip() for l in (doc or "").splitlines()]
+        try:
+            _i = _lines.index(head)
+        except ValueError:
+            return []
+        _body = []
+        for l in _lines[_i + 2:]:
+            if l and set(l) <= {"-"}:
+                _body.pop()                      # the previous line was the next heading
+                break
+            _body.append(l)
+        while _body and not _body[-1]:
+            _body.pop()
+        return _body
+
+    if HAS_PM:
+        _deg = np.degrees(ANGLE_PM)
+        _cut = f"theta = {_deg:.3f} deg" if ANGLE_KEY == "theta" else f"phi = {_deg:.3f} deg"
+        if x.theta_rad != "var":
+            _cut = f"theta = {np.degrees(x.theta_rad):g} deg, " + _cut
+        elif PHI_FREE:
+            _cut += f", phi = {phi_cut.value:g} deg"
+        elif not isinstance(x.phi_rad, str):
+            _cut += f", phi = {np.degrees(x.phi_rad):g} deg"
+        _cut_note = "   (internal angles; phi is a free choice here)" if PHI_FREE else "   (internal angles)"
+        _pols = "".join(POLS)
+        _type = TYPE_OF[_pols]
+
+        _waves = []
+        for _lbl, _wl, _p in (("wl1", WL1, POLS[0]), ("wl2", WL2, POLS[1]), ("wl3", WL3, POLS[2])):
+            _f = lambda q, _wl=_wl, _p=_p: float(getattr(x, q)(_wl, ANGLE_PM, T_C, pol=_p))
+            _waves.append((_lbl, _wl, _p, _f("n"), _f("ng"), _f("GV"), _f("GVD"), _f("TOD"),
+                           _f("woa_theta") * 1e3, _f("dndT")))
+        _gvm = 1 / _waves[2][5] - 1 / _waves[0][5]          # fs/um
+        _L_um = L.value * 1e3
+
+        # "- Point group : 3m (C3v)" in the docstring; the group mixin's name otherwise
+        _pg = next((l.split(":", 1)[1].split(";")[0].strip() for l in (x.__doc__ or "").splitlines()
+                    if "Point group" in l), None)
+        if _pg is None:
+            _pg = next((c.__name__.split("_", 1)[1] for c in type(x).__mro__
+                        if c.__name__.startswith(("Uniax_", "Biax_"))), "n/a")
+        _lines = [
+            "ndispers phase-matching report",
+            f"generated {_dt.date.today().isoformat()}  by ndispers {nd.__version__}  "
+            "(akihiko-shimura.github.io/ndispers/phasematching)",
+            "",
+            "CRYSTAL",
+            f"  {xtal.value}   point group {_pg}"
+            + (f", {x.plane} plane" if x.plane != "arb" else ""),
+        ]
+        for l in _section(x.__doc__, "Ref"):
+            if l:                                    # headings flush, references indented
+                _lines.append(("  " if l.endswith(":") else "    ") + l)
+        _vr = _section(x.__doc__, "Validity range")
+        if _vr:
+            _lines.append("  validity:   " + " ".join(_vr))
+        _lines += [
+            "",
+            "CONDITIONS",
+            "  process        SFG  1/wl3 = 1/wl1 + 1/wl2" + ("   (SHG: wl1 = wl2)" if shg.value else ""),
+            f"  wl1, wl2, wl3  {WL1 * 1e3:.2f}, {WL2 * 1e3:.2f}, {WL3 * 1e3:.2f} nm   (vacuum)",
+            f"  temperature    {T_C:g} degC",
+            f"  length         {L.value:g} mm",
+            f"  polarizations  {' '.join(POLS)}   (Type {_type}; index 1,2,3 = wl1,wl2,wl3)",
+            f"  cut            {_cut}{_cut_note}",
+            "",
+            f"PHASE MATCHING   (all solutions at this T and these wavelengths; {ANGLE_KEY} varies)",
+        ]
+        for _k in TYPE_OF:
+            _lines.append(f"  {_k}  Type {TYPE_OF[_k]:<14s} "
+                          + (f"{ANGLE_KEY} = {SOLUTIONS[_k]:.3f} deg" if _k in SOLUTIONS else "none"))
+        _lines += [
+            "",
+            f"AT THE SELECTED SOLUTION  ({_pols}, {ANGLE_KEY} = {_deg:.3f} deg)",
+            "  wave    wl(nm)  pol      n       n_g    v_g(um/fs)  GVD(fs^2/mm)  TOD(fs^3/mm)  walk-off(mrad)  dn/dT(1/K)",
+        ]
+        for _w in _waves:
+            _lines.append(f"  {_w[0]:<5s}{_w[1] * 1e3:9.2f}   {_w[2]}   {_w[3]:8.5f} {_w[4]:8.5f}   "
+                          f"{_w[5]:9.6f}   {_w[6]:11.2f}   {_w[7]:11.1f}   {_w[8]:12.3f}    {_w[9]:10.3e}")
+        _lines.append(f"  group-velocity mismatch  1/v_g3 - 1/v_g1 = {_gvm:.4f} fs/um   "
+                      f"(walk-through over L: {_gvm * _L_um:.0f} fs)")
+        _lines += ["", f"ACCEPTANCE  (full width at {threshold.value:.2f} of sinc^2(dk L/2);  L = {L.value:g} mm)"]
+        _tag = {"λ₁ only, λ₂ fixed": "wl1 only, wl2 fixed  <- what SNLO and tables report",
+                "λ₁ and λ₂ tuned together": "wl1 = wl2 tuned together   (broadband SHG)"}
+        for _lbl, _v, _u in ACCEPT:
+            _name = _tag.get(_lbl, _lbl)
+            _u2 = {"°C": "degC", "µrad": "urad", "µm": "um"}.get(_u, _u)
+            if np.isfinite(_v):
+                _lines.append(f"  {_name.split('  <-')[0].split('   (')[0]:<26s} {_v:10.4g} {_u2:<5s} "
+                              f"{_v * L.value * 0.1:10.4g} {_u2}.cm"
+                              + ("   <- " + _name.split("<- ")[1] if "<-" in _name else "")
+                              + ("   " + _name[_name.index("("):] if "(" in _name else ""))
+        _lines += ["", "EFFECTIVE NONLINEARITY"]
+        if HAS_DEFF:
+            try:
+                _phi = np.radians(phi_cut.value) if PHI_FREE else None
+                _de = float(x.deff_sfg(WL1, WL2, *deff_args(ANGLE_PM, _phi), T_C, *POLS))
+                _lines.append(f"  d_eff = {_de:+.4g} pm/V   at {_cut}"
+                              + (f"   (|d_eff| max {DEFF_MAX:.4g} pm/V at phi = "
+                                 + ", ".join(f"{v:.0f}" for v in PHI_OPT) + " deg)" if PHI_OPT else ""))
+                _lines.append("  " + ", ".join(
+                    f"{il} = {x.d_sfg(il, WL1, WL2, T_C):.4g}" for il in x._d_ref)
+                    + f" pm/V   (Miller-scaled to {WL1 * 1e3:g} + {WL2 * 1e3:g} nm from "
+                    + "; ".join(f"{il} = {d0:g} @ {w1 * 1e3:g}+{w2 * 1e3:g}" for il, (d0, w1, w2) in x._d_ref.items())
+                    + ")")
+                _lines.append(f"  note: {x._d_note}")
+            except ValueError as _e:
+                _lines.append(f"  not available for {_pols}: {_e}")
+        else:
+            _lines.append("  centrosymmetric crystal: no second-order nonlinearity")
+        _lines += [
+            "",
+            "NOTES",
+            "  Angles are internal and measured from the optic/dielectric axes; wavelengths are in vacuum.",
+            "  The sign of d_eff is a convention; walk-off is included via theta + rho.",
+            f"  Reproduce:  nd.media.crystals.{xtal.value}().pmAngles_sfg({WL1:g}, {WL2:g}, {T_C:g}, deg=True)",
+        ]
+        REPORT = "\n".join(_lines)
+        _out = mo.vstack([
+            mo.md("## Report\n\nEverything above as plain text — copy it into a lab notebook "
+                  "or alongside the data it belongs to."),
+            mo.ui.code_editor(REPORT, language="text", disabled=True, min_height=200),
+        ])
+    else:
+        REPORT = ""
+        _out = mo.md("")
+    _out
+    return (REPORT,)
 
 
 if __name__ == "__main__":
