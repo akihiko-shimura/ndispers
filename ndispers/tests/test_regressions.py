@@ -1,5 +1,6 @@
 """Regression tests for bugs fixed in _baseclass.py and the KTP / SLN modules."""
 import pickle
+import re
 
 import numpy as np
 
@@ -292,3 +293,23 @@ def test_every_dispersion_method_is_wired(name):
                 getattr(x, meth)(*args, pol=pol)
             except ValueError:
                 pass          # medium legitimately refuses this polarization
+
+
+# ---------------------------------------------------------------------------
+# A uniaxial crystal's docstring says whether it is negative or positive; the
+# Sellmeier sets must agree. This is the check that catches swapped o/e
+# columns - Zelmon 1997's Table 2 for MgO:LiNbO3 is printed with its n_e and
+# n_o headings interchanged, which is exactly the transcription trap.
+@pytest.mark.parametrize("name", [n for n in ALL_MEDIA if n != "SLN"])
+def test_optic_sign_matches_docstring(name):
+    x = getattr(C, name)()
+    doc = type(x).__doc__
+    m = re.search(r"(Negative|Positive) uniaxial", doc)
+    if not m:
+        pytest.skip("biaxial")
+    no = x.n(1.0, 0.0, 25, pol="o")
+    ne = x.n(1.0, 0.5 * np.pi, 25, pol="e")
+    if m.group(1) == "Negative":
+        assert ne < no, f"{name}: docstring says negative uniaxial but n_e = {ne:.4f} > n_o = {no:.4f}"
+    else:
+        assert ne > no, f"{name}: docstring says positive uniaxial but n_e = {ne:.4f} < n_o = {no:.4f}"

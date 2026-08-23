@@ -133,19 +133,22 @@ Several crystals are provided in more than one parameterisation, named after the
 | LBO (xy / yz / zx principal planes) | `LBO_Castech_*`, `LBO_Ghosh1995_*`, `LBO_KK1994_*`, `LBO_KK2018_*`, `LBO_Newlight_*` |
 | KTP (xy / yz / zx principal planes) | `KTP_xy`, `KTP_yz`, `KTP_zx` |
 | CLBO | `CLBO` |
-| KDP | `KDP` |
+| KDP, DKDP (KD*P) | `KDP`, `DKDP` |
 | KBBF | `KBBF` |
 | RBBF | `RBBF` |
 | LB4 | `LB4` |
 | α-BBO | `AlphaBBO` |
 | Calcite | `Calcite` |
+| Sapphire | `Sapphire` |
+| α-quartz | `Quartz` |
 | 1% MgO-doped stoichiometric LiNbO₃ (e-ray) | `SLN` |
+| 5% MgO-doped congruent LiNbO₃ (both rays) | `MgOLN_Zelmon1997` |
 | 1% MgO-doped stoichiometric LiTaO₃ | `SLT` |
 | Fused silica, CaF₂ (optically isotropic) | `nd.media.glasses.FusedSilica`, `nd.media.glasses.CaF2` |
 
 For biaxial crystals (LBO, KTP), one class per principal dielectric plane is provided; the angle argument is the one that varies in that plane (phi in xy, theta in yz and zx). The `theta_rad` and `phi_rad` attributes of an instance tell which one it is.
 
-Media whose Sellmeier equation carries no temperature term (α-BBO, Calcite) still take the temperature argument for a uniform signature and simply ignore it — their `dndT` returns 0.
+Media whose Sellmeier equation carries no temperature term (α-BBO, Calcite, Sapphire, Quartz, MgOLN_Zelmon1997) still take the temperature argument for a uniform signature and simply ignore it — their `dndT` returns 0.
 
 ## Parallel processing
 

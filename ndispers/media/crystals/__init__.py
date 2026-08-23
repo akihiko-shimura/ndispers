@@ -10,6 +10,7 @@ from ._betaBBO_KK2010 import BetaBBO as BetaBBO_KK2010
 from ._betaBBO_Tamosauskas2018 import BetaBBO as BetaBBO_Tamosauskas2018
 from ._calcite import Calcite
 from ._CLBO import CLBO
+from ._DKDP import DKDP
 from ._KBBF_Li2016 import KBBF
 from ._KDP import KDP
 from ._KTP import KTP_xy, KTP_yz, KTP_zx
@@ -29,7 +30,10 @@ from ._LBO_KK2018 import LBO_zx as LBO_KK2018_zx
 from ._LBO_Newlight import LBO_xy as LBO_Newlight_xy
 from ._LBO_Newlight import LBO_yz as LBO_Newlight_yz
 from ._LBO_Newlight import LBO_zx as LBO_Newlight_zx
+from ._MgOLN_Zelmon1997 import MgOLN as MgOLN_Zelmon1997
+from ._quartz import Quartz
 from ._RBBF_Chen2009 import RBBF
+from ._sapphire import Sapphire
 from ._SLN_MgO_doped import SLN
 from ._SLT_MgO_doped import SLT
 

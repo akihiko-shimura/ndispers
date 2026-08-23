@@ -10,13 +10,16 @@ text you get from `help(x)` or `x?`.
 | [LBO](#lbo) | `LBO_Castech_xy`, `LBO_Castech_yz`, `LBO_Castech_zx`, `LBO_Ghosh1995_xy`, `LBO_Ghosh1995_yz`, `LBO_Ghosh1995_zx`, `LBO_KK1994_xy`, `LBO_KK1994_yz`, `LBO_KK1994_zx`, `LBO_KK2018_xy`, `LBO_KK2018_yz`, `LBO_KK2018_zx`, `LBO_Newlight_xy`, `LBO_Newlight_yz`, `LBO_Newlight_zx` |
 | [KTP](#ktp) | `KTP_xy`, `KTP_yz`, `KTP_zx` |
 | [CLBO](#clbo) | `CLBO` |
-| [KDP](#kdp) | `KDP` |
+| [KDP](#kdp) | `KDP`, `DKDP` |
 | [KBBF](#kbbf) | `KBBF` |
 | [RBBF](#rbbf) | `RBBF` |
 | [LB4](#lb4) | `LB4` |
 | [α-BBO](#alpha-bbo) | `AlphaBBO` |
 | [Calcite](#calcite) | `Calcite` |
+| [Sapphire](#sapphire) | `Sapphire` |
+| [α-quartz](#quartz) | `Quartz` |
 | [SLN](#sln) | `SLN` |
+| [MgO:LN](#mgoln) | `MgOLN_Zelmon1997` |
 | [SLT](#slt) | `SLT` |
 
 ## β-BBO { #beta-bbo }
@@ -87,6 +90,8 @@ Potassium dihydrogen phosphate.
 
 ::: ndispers.media.crystals.KDP
 
+::: ndispers.media.crystals.DKDP
+
 ## KBBF
 
 Potassium beryllium fluoroborate, for deep-UV generation.
@@ -117,11 +122,29 @@ Calcium carbonate.
 
 ::: ndispers.media.crystals.Calcite
 
+## Sapphire
+
+α-Al₂O₃; centrosymmetric, birefringent optic.
+
+::: ndispers.media.crystals.Sapphire
+
+## α-quartz { #quartz }
+
+Crystalline SiO₂; the absolute-scale reference of d coefficients.
+
+::: ndispers.media.crystals.Quartz
+
 ## SLN
 
 1% MgO-doped stoichiometric lithium niobate (extraordinary ray only).
 
 ::: ndispers.media.crystals.SLN
+
+## MgO:LN { #mgoln }
+
+5 mol% MgO-doped congruent LiNbO₃, both rays, at 21 °C.
+
+::: ndispers.media.crystals.MgOLN_Zelmon1997
 
 ## SLT
 
