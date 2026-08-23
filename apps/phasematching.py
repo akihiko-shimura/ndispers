@@ -258,10 +258,11 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
     # evaluation each, every branch drawn, no root finder needed for a plot.
     if IS_DFG and HAS_PM:
         import re as _re
-        # longest idler to draw: the upper edge of the medium's validity range
+        # longest idler to draw: the crystal's transparency edge (the Sellmeier
+        # validity range is usually much narrower than where an OPO actually tunes)
         _doc = type(x).__doc__ or ""
-        _sec = (_re.search(r"Validity range\s*\n\s*-+\s*\n(.{0,400})", _doc, _re.S)
-                or _re.search(r"Transparency range\s*:([^\n]*)", _doc))
+        _sec = (_re.search(r"Transparency range\s*:([^\n]*)", _doc)
+                or _re.search(r"Validity range\s*\n\s*-+\s*\n(.{0,400})", _doc, _re.S))
         _m = _sec and _re.search(r"(\d+\.?\d*)\s*(?:to|-|–)\s*(\d+\.?\d*)", _sec.group(1))
         _wl_i_max = min(float(_m.group(2)), 20.0) if _m else 5.0
         _wl_i_max = max(_wl_i_max, 1.2 * WL2)          # the current idler must be inside
@@ -308,9 +309,10 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
                          row=1, col=2, showlegend=False, hovertemplate="current signal<extra></extra>")
         _fig.add_scatter(x=[T_C], y=[WL2 * 1e3], mode="markers", marker=dict(color="#d62728", size=8),
                          row=1, col=2, showlegend=False, hovertemplate="current idler<extra></extra>")
-        _fig.update_xaxes(title_text=f"{ANGLE_KEY} (deg)", row=1, col=1)
-        _fig.update_xaxes(title_text="T (°C)", row=1, col=2)
-        _fig.update_yaxes(title_text="wavelength (nm)", row=1, col=1)
+        _fig.update_xaxes(title_text=f"{ANGLE_KEY} (deg)", range=[0, 90], row=1, col=1)
+        _fig.update_xaxes(title_text="T (°C)", range=[-50, 300], row=1, col=2)
+        _fig.update_yaxes(title_text="wavelength (nm)", range=[WL3 * 1e3, _wl_i_max * 1e3], row=1, col=1)
+        _fig.update_yaxes(range=[WL3 * 1e3, _wl_i_max * 1e3], row=1, col=2)
         _fig.update_layout(**{**PLOT_LAYOUT, "showlegend": True, "width": 760}, height=340,
                            legend=dict(x=0.01, y=0.99, bgcolor="rgba(255,255,255,0.6)"))
         _out = mo.vstack([mo.md(
