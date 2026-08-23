@@ -274,16 +274,29 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
         with np.errstate(all="ignore"):
             _dk_ang = np.asarray(x.dk_dfg(WL3, _wl_s[None, :], np.radians(_ang)[:, None], T_C, *POLS), float)
             _dk_T = np.asarray(x.dk_dfg(WL3, _wl_s[None, :], ANGLE_PM, _T[:, None], *POLS), float)
+        def _zero_curve(xs, z):
+            """(x, index) points where z changes sign along its second axis, with
+            the crossing interpolated linearly - the dk = 0 locus as a sparse
+            point set (a contour trace would ship the whole grid to the browser)."""
+            _px, _py = [], []
+            for _i, _row in enumerate(z):
+                _ok = np.isfinite(_row)
+                for _j in np.nonzero(np.diff(np.signbit(_row)) & _ok[:-1] & _ok[1:])[0]:
+                    _f = _row[_j] / (_row[_j] - _row[_j + 1])
+                    _px.append(xs[_i]); _py.append(_j + _f)
+            return np.array(_px), np.array(_py)
+
         _fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12,
                              subplot_titles=(f"angle tuning at T = {T_C:g} °C",
                                              f"temperature tuning at {ANGLE_KEY} = {np.degrees(ANGLE_PM):.3f}°"))
-        for _col, _xs, _dk, _xlab in ((1, _ang, _dk_ang, f"{ANGLE_KEY} (deg)"),
-                                      (2, _T, _dk_T, "T (°C)")):
+        _idx = np.arange(_wl_s.size)
+        for _col, _xs, _dk in ((1, _ang, _dk_ang), (2, _T, _dk_T)):
+            _px, _pj = _zero_curve(_xs, _dk)
             for _y, _name, _color in ((_wl_s * 1e3, "signal", "#1f77b4"), (_wl_i * 1e3, "idler", "#d62728")):
-                _fig.add_contour(
-                    x=_xs, y=_y, z=_dk.T, row=1, col=_col, showscale=False,
-                    contours=dict(start=0, end=0, size=1, coloring="none"),
-                    line=dict(color=_color, width=2), name=_name, showlegend=(_col == 1),
+                _fig.add_scatter(
+                    x=_px, y=np.interp(_pj, _idx, _y) if _px.size else [], mode="markers",
+                    marker=dict(color=_color, size=3), row=1, col=_col,
+                    name=_name, showlegend=(_col == 1),
                     hovertemplate=f"%{{x:.3f}}<br>{_name} %{{y:.1f}} nm<extra></extra>")
         _fig.add_scatter(x=[np.degrees(ANGLE_PM)], y=[WL1 * 1e3], mode="markers",
                          marker=dict(color="#1f77b4", size=8), row=1, col=1, showlegend=False,
