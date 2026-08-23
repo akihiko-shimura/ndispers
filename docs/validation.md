@@ -74,6 +74,7 @@ These sit exactly on the 0–90° endpoint and were reported as *no solution* be
 | CLBO | shortest type-I SHG | 473.43 → 236.72 nm | 236.8 nm | Umemura & Kato 1997 | ✓ 0.08 nm |
 | BiBO (yz) | type-I locus at θ = 90° | 545.6 nm | 545.7 nm | Petrov *et al.* 2010, p. 61 | ✓ |
 | ZnGeP₂ (Das 2003) | type-I long-wave limit | 10.74 µm | 10.78 µm | Kato 1997 | ✓ |
+| KTP (x-cut: θ = 90°, φ = 0) | type-II OPO signal / idler, 1064 nm pump (`tuning_dfg`) | 1570.8 / 3297.6 nm | ≈ 1.57 / 3.3 µm | standard value for the noncritical KTP OPO | ✓ |
 
 ## Derived quantities
 
@@ -215,7 +216,17 @@ birefringence, and is what this package uses. LiIO₃'s ordinary UV pole is
 0.0350823 in the Handbook and 0.0350832 in refractiveindex.info's transcription
 of the same set (a difference of 3 × 10⁻⁷ in n).
 
-## 10. Coverage limits
+## 10. DFG / OPA / OPO (0.17) is validated by construction, not yet by tuning curves
+
+Every `_dfg` method is the SFG one evaluated at (signal, idler), and the test
+suite checks that equality exactly on eleven crystals; `tuning_dfg` is checked
+by round trip against `pmAngles_dfg` (angle → wavelength → the same angle).
+The only literature tuning point in the tables is the noncritical KTP OPO
+above. Published angle- and temperature-tuning curves (BBO at 355 nm, LBO,
+PPLN after Myers *et al.* 1995) have not been compared because the sources
+were not at hand; when they are, the rows go in the tables above.
+
+## 11. Coverage limits
 
 - **SLN** holds only d₃₃ and has no ordinary-ray Sellmeier equation, so only
   eee (quasi-phase-matched) interactions can be evaluated; every combination

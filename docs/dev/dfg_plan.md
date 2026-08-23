@@ -1,6 +1,12 @@
 # DFG / OPA / OPO の位相整合 — 実装計画
 
-> 状況（2026-08-23）: 計画段階。未実装。
+> 状況（2026-08-23）: 段階 1–4 実装済み（v0.17.0）。`wl_idler`, `dk_dfg`, `pmFactor_dfg`,
+> `qpm_period_dfg`, `pmAngles_dfg`, `tuning_dfg`, `d_dfg`, `deff_dfg`; アプリに Process 切替、
+> チューニング曲線（Δk のゼロ等高線; 根探索は曲線描画には不要だった）、QPM 周期曲線、OPA 帯域、
+> GVM 3 種。段階 5（NOPA）は未着手 — 理論ノートから。
+> 文献値による検証は KTP x カット NCPM OPO の 1 点のみ（`docs/validation.md`）。Dmitriev / Myers 1995 /
+> Cheng 1988 の PDF が手元に無く、他のチューニング曲線は自己無撞着テスト（SFG との厳密一致、
+> 角度⇄波長の往復）で押さえている。PDF が入手できたら表に追加する。
 
 ## 0. 物理の整理 — 何が同じで何が違うか
 
