@@ -147,6 +147,11 @@ case λ₁ = λ₂.
 - `pmFactor_sfg` returns sinc²(Δk·L/2), the relative conversion
   efficiency of a crystal of length `L_mm`.
 
+- `qpm_period_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, order=1)`
+  returns the quasi-phase-matching period Λ = 2πm/|Δk| in µm for the same
+  arguments; for PPLN/PPKTP use `angle_rad = pi/2` and `('e', 'e', 'e')`
+  (all waves along the polar axis, d33).
+
 ## Second-order nonlinearity
 
 Crystals whose point group allows a second-order nonlinearity inherit a

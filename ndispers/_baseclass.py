@@ -286,6 +286,39 @@ class Medium:
         dk_sfg = 2*pi * (n3/wl3 - n2/wl2 - n1/wl1)
         return dk_sfg
 
+    def qpm_period_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, order=1):
+        """
+        Quasi-phase-matching period for sum-frequency generation.
+
+        Lambda = 2 pi m / |dk| in µm, with m the QPM order and dk the collinear
+        wavevector mismatch of ``dk_sfg``. For the usual PPLN/PPKTP geometry -
+        propagation along a principal axis, all three waves polarized along the
+        polar axis (d33) - use the extraordinary ray at angle_rad = pi/2 and
+        ``('e', 'e', 'e')``; the temperature tuning follows from the medium's
+        dn/dT.
+
+        Parameters
+        ----------
+        wl1, wl2 : float or array_like
+            Pump wavelengths in µm.
+        angle_rad : float or array_like
+            theta or phi angle in radians (see ``n``).
+        T_degC : float or array_like
+            Crystal temperature in degC.
+        pol1, pol2, pol3 : {'o', 'e'}
+            Polarizations of the two pumps and of the sum-frequency wave.
+        order : int, default 1
+            QPM order m.
+
+        Return
+        ------
+        float or array_like
+            Poling period in µm. Infinite where the interaction is
+            birefringently phase-matched (dk = 0).
+        """
+        dk = self.dk_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3)
+        return 2 * pi * order / np.abs(dk)
+
     def pmAngles_sfg(self, wl1, wl2, T_degC, tol_deg=0.001, deg=False):
         """
         Phase-matching (PM) angles for sum-frequency generation (SFG) and sum-frequency wavelength.

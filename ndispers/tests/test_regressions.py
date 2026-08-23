@@ -157,6 +157,33 @@ def test_isotropic_spot_values():
     m = C.MgF2()
     assert m.n(0.5893, 0, 20, pol='o') == pytest.approx(1.378, abs=1e-3)
     assert m.n(0.5893, np.pi / 2, 20, pol='e') - m.n(0.5893, 0, 20, pol='o') == pytest.approx(0.0119, abs=5e-4)
+    # the rest of the isotropic set, against textbook values
+    assert G.ZnSe().n(10.6, 20) == pytest.approx(2.403, abs=1e-3)
+    assert G.ZnS().n(1.064, 20) == pytest.approx(2.288, abs=2e-3)
+    assert G.Si().n(2.0, 20) == pytest.approx(3.453, abs=2e-3)
+    assert G.Ge().n(4.0, 20) == pytest.approx(4.025, abs=2e-3)
+    assert G.Diamond().n(0.5876, 20) == pytest.approx(2.4175, abs=5e-4)
+    assert G.SF10().n(0.5876, 20) == pytest.approx(1.72825, abs=1e-4)
+    assert G.SF11().n(0.5876, 20) == pytest.approx(1.78472, abs=1e-4)
+    assert G.SF57().n(0.5876, 20) == pytest.approx(1.84666, abs=1e-4)
+    # YVO4: strongly positive uniaxial; LiIO3 negative
+    y = C.YVO4()
+    assert y.n(1.064, np.pi / 2, 20, pol='e') - y.n(1.064, 0, 20, pol='o') == pytest.approx(0.208, abs=3e-3)
+    li = C.LiIO3()
+    assert (li.n(1.064, 0, 20, pol='o'), li.n(1.064, np.pi / 2, 20, pol='e')) == pytest.approx((1.8559, 1.7164), abs=1e-3)
+
+
+def test_qpm_period():
+    """First-order period for 1064 nm SHG in 5% MgO:LiNbO3 along x, eee (d33):
+    Lambda = lambda / (2 (n_2w - n_w)) for the extraordinary index; and the
+    relation to dk_sfg."""
+    x = C.MgOLN_Zelmon1997()
+    ne = lambda wl: x.n(wl, np.pi / 2, 20, pol='e')
+    expect = 1.064 / (2 * (ne(0.532) - ne(1.064)))
+    got = x.qpm_period_sfg(1.064, 1.064, np.pi / 2, 20, 'e', 'e', 'e')
+    assert got == pytest.approx(expect, rel=1e-12)
+    assert 6.0 < got < 7.5                                   # the familiar ~6.5-7 um
+    assert x.qpm_period_sfg(1.064, 1.064, np.pi / 2, 20, 'e', 'e', 'e', order=3) == pytest.approx(3 * got)
 
 
 @pytest.mark.parametrize("wl", [0.532, 1.064])
@@ -226,7 +253,8 @@ ALL_MEDIA = [nm for nm in sorted(dir(C))
 # would have flagged it - that one needed reading the literature.
 POINT_GROUPS = {                    # point group: (crystal system, centrosymmetric)
     '3m': ('trigonal', False), '3̄m': ('trigonal', True), '32': ('trigonal', False),
-    '4̄2m': ('tetragonal', False), '4mm': ('tetragonal', False), '4/mmm': ('tetragonal', True),
+    '4̄2m': ('tetragonal', False), '4mm': ('tetragonal', False), '4/mmm': ('tetragonal', True), '4/m': ('tetragonal', True),
+    '6': ('hexagonal', False), '4̄3m': ('cubic', False),
     'mm2': ('orthorhombic', False), '2': ('monoclinic', False), 'm3̄m': ('cubic', True),
 }
 

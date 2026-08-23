@@ -22,6 +22,8 @@ text you get from `help(x)` or `x?`.
 | [Calcite](#calcite) | `Calcite` |
 | [Sapphire](#sapphire) | `Sapphire` |
 | [α-quartz](#quartz) | `Quartz` |
+| [LiIO₃](#liio3) | `LiIO3` |
+| [YVO₄](#yvo4) | `YVO4` |
 | [MgF₂](#mgf2) | `MgF2` |
 | [SLN](#sln) | `SLN` |
 | [MgO:LN](#mgoln) | `MgOLN_Zelmon1997` |
@@ -170,6 +172,18 @@ Calcium carbonate.
 Crystalline SiO₂; the absolute-scale reference of d coefficients.
 
 ::: ndispers.media.crystals.Quartz
+
+## LiIO₃ { #liio3 }
+
+Lithium iodate, point group 6.
+
+::: ndispers.media.crystals.LiIO3
+
+## YVO₄ { #yvo4 }
+
+Yttrium orthovanadate; centrosymmetric, strongly positive uniaxial - polarizers and displacers.
+
+::: ndispers.media.crystals.YVO4
 
 ## MgF₂ { #mgf2 }
 

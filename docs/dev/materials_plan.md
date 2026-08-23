@@ -39,6 +39,11 @@ SBO（同上）。d 値の方は Pack 2004 (KTA, RTP) と Petrov 1998 (CBO d₁�
 窓材料として LiF, MgF₂, BaF₂ も v0.12 で追加（Tropf 1995 Table 22 から転写; Li 1976, Dodge 1984, Malitson 1964）。
 Oxide 社のラインナップのうち未収録は LBGO（LaBGeO₅, UV QPM 用、一次文献待ち）と KTN（EO 偏向用、組成依存のため見送り）。
 
+超短パルス向け（v0.12 追加）: 分散計算用に ZnSe, ZnS, Si, Ge, diamond, SCHOTT SF10/SF11/SF57（等方）、
+偏光子材料 YVO₄、非線形結晶 LiIO₃（点群 6 のクラス `Uniax_6`）、機能として `qpm_period_sfg`。
+見送り: KNbO₃（Zysset の n_x,n_y,n_z と結晶軸・d テンソルの軸対応が文献間で食い違い、整理がつくまで保留）、
+GaSe・LGS（d 値の一次文献なし）、Yb:KGW/KYW（RII にも Sellmeier なし）、OP-GaAs/GaP（QPM 半導体、d₁₄ 出典待ち）。
+
 ## 第 2 段（当初の候補表）
 
 | 材料 | 群 | コスト | 理由・出典の当て |

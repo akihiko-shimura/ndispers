@@ -31,8 +31,8 @@ class MgF2(Medium):
     walk-off of the e-ray.
 
     The e-ray's infrared pole is 23.771995 µm (Dodge 1984, as transcribed by
-    refractiveindex.info, main/MgF2/nk/Dodge-e). The text extraction of the
-    Handbook table reads 12.771995 there; that value gives n_e = 1.3882 at
+    refractiveindex.info, main/MgF2/nk/Dodge-e). The Handbook table prints
+    12.771995 there (a typo in the Handbook); that value gives n_e = 1.3882 at
     589 nm and a birefringence of 0.0105, against the measured 1.3895 and
     0.0118 that 23.771995 reproduces, and the o-ray's matching pole is
     23.793604 - so 23.771995 is taken as the source value.
@@ -67,7 +67,7 @@ class MgF2(Medium):
         self._A2_e = 0.50497499
         self._B2_e = 0.09076162
         self._A3_e = 2.4904862
-        self._B3_e = 23.771995   # see Note: the Handbook text dump reads 12.771995
+        self._B3_e = 23.771995   # see Note: the Handbook prints 12.771995
 
     def n_o_expr(self):
         """ Sympy expression, dispersion formula for o-wave """

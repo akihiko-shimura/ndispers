@@ -16,3 +16,19 @@ here because it is cubic; see [Conventions](../conventions.md) for the split.
 ::: ndispers.media.glasses.LiF
 
 ::: ndispers.media.glasses.BaF2
+
+::: ndispers.media.glasses.ZnSe
+
+::: ndispers.media.glasses.ZnS
+
+::: ndispers.media.glasses.Si
+
+::: ndispers.media.glasses.Ge
+
+::: ndispers.media.glasses.Diamond
+
+::: ndispers.media.glasses.SF10
+
+::: ndispers.media.glasses.SF11
+
+::: ndispers.media.glasses.SF57

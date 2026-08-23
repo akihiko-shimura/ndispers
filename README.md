@@ -111,7 +111,7 @@ Phase-matching angles for sum-frequency generation are solved directly. For Type
  'oeo': {'theta': [], 'phi': None}}
 ```
 
-`dk_sfg` and `pmFactor_sfg` give the phase mismatch and the sinc² phase-matching factor for arbitrary angles.
+`dk_sfg` and `pmFactor_sfg` give the phase mismatch and the sinc² phase-matching factor for arbitrary angles, and `qpm_period_sfg` the quasi-phase-matching period — for 1064 nm SHG in 5% MgO:LiNbO₃ along x with all waves extraordinary (d33), `MgOLN_Zelmon1997().qpm_period_sfg(1.064, 1.064, np.pi/2, 20, 'e', 'e', 'e')` gives the familiar ~7.0 µm.
 
 The effective nonlinear coefficient at that angle, for the φ = 90° cut:
 
@@ -150,6 +150,7 @@ Non-centrosymmetric: phase matching, acceptance bandwidths and d_eff are availab
 | Potassium beryllium fluoroborate | KBBF | KBe₂BO₃F₂ | 32 | negative uniaxial |
 | Rubidium beryllium fluoroborate | RBBF | RbBe₂BO₃F₂ | 32 | negative uniaxial |
 | Lithium tetraborate | LB4 (also LBT) | Li₂B₄O₇ | 4mm | negative uniaxial |
+| Lithium iodate | — | LiIO₃ | 6 | negative uniaxial |
 | Zinc germanium phosphide | ZGP | ZnGeP₂ | 4̄2m | positive uniaxial, mid-infrared |
 | Silver thiogallate | AGS | AgGaS₂ | 4̄2m | negative uniaxial, mid-infrared |
 | Silver gallium selenide | AGSe | AgGaSe₂ | 4̄2m | negative uniaxial, mid-infrared |
@@ -169,6 +170,7 @@ thermo-optics for windows, polarizers and compensators.
 | Calcite | — | CaCO₃ | 3̄m | negative uniaxial |
 | Sapphire | — | α-Al₂O₃ | 3̄m | negative uniaxial |
 | Magnesium fluoride | — | MgF₂ | 4/mmm | positive uniaxial |
+| Yttrium orthovanadate | YVO₄ | YVO₄ | 4/m | positive uniaxial |
 
 ### Optically isotropic media
 
@@ -181,13 +183,16 @@ One refractive index, no angle or polarization argument: methods take `(wl_um, T
 | Lithium fluoride | LiF (cubic, m3̄m) |
 | Barium fluoride | BaF₂ (cubic, m3̄m) |
 | Yttrium aluminium garnet (YAG) | Y₃Al₅O₁₂ (cubic, m3̄m) |
-| N-BK7 (SCHOTT) | borosilicate crown glass |
+| N-BK7, SF10, SF11, SF57 (SCHOTT) | borosilicate crown and dense flint glasses |
+| Zinc selenide, zinc sulfide | ZnSe, ZnS (cubic, 4̄3m; CVD grades) |
+| Silicon, germanium | Si, Ge (cubic, m3̄m) |
+| Diamond | C (cubic, m3̄m) |
 
 For biaxial crystals one class per principal dielectric plane is provided; the
 angle argument is the one that varies in that plane (φ in xy, θ in yz and zx),
 and an instance's `theta_rad` / `phi_rad` attributes say which. Media whose
 Sellmeier equation carries no temperature term (α-BBO, calcite, sapphire,
-quartz, MgF₂, 5% MgO:LiNbO₃, BiBO, the mid-infrared crystals, YAG, N-BK7, LiF, BaF₂) still take the temperature argument for a uniform
+quartz, MgF₂, 5% MgO:LiNbO₃, BiBO, the mid-infrared crystals, YAG, N-BK7, LiF, BaF₂, and the rest of the isotropic set) still take the temperature argument for a uniform
 signature and ignore it; their `dndT` returns 0.
 
 ## Parallel processing

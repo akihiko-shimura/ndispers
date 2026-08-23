@@ -22,6 +22,7 @@ from ._KDP import KDP
 from ._KTP import KTP_xy, KTP_yz, KTP_zx
 from ._LB4 import LB4
 from ._LBO_Castech import LBO_xy as LBO_Castech_xy
+from ._LiIO3 import LiIO3
 from ._LBO_Castech import LBO_yz as LBO_Castech_yz
 from ._LBO_Castech import LBO_zx as LBO_Castech_zx
 from ._LBO_Ghosh1995 import LBO_xy as LBO_Ghosh1995_xy
@@ -43,6 +44,7 @@ from ._RBBF_Chen2009 import RBBF
 from ._sapphire import Sapphire
 from ._SLN_MgO_doped import SLN
 from ._SLT_MgO_doped import SLT
+from ._YVO4 import YVO4
 from ._ZGP_Das2003 import ZGP as ZGP_Das2003
 from ._ZGP_Zelmon2001 import ZGP as ZGP_Zelmon2001
 

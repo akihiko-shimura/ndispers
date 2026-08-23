@@ -134,3 +134,21 @@ class Biax_2(BiaxialGroup):
         "d13": [("xzz", +1), ("zzx", +1)],
         "d14": [("xyz", +1), ("yzx", +1), ("zxy", +1)],
     }
+
+
+class Uniax_6(UniaxialGroup):
+    """
+    Point group 6 (C6): LiIO3.
+
+        d = [[  0,    0,   0,  d14,  d15,  0 ],
+             [  0,    0,   0,  d15, -d14,  0 ],
+             [ d31,  d31, d33,  0,    0,   0 ]],   d15 = d31 and d14 = 0 (Kleinman)
+
+    Under Kleinman symmetry the pattern is that of 4mm: independent d31
+    and d33, d33 entering only eee, type-II d_eff vanishing.
+    """
+    __slots__ = []
+    _d_entries = {
+        "d31": [("zxx", +1), ("zyy", +1), ("xzx", +1), ("yzy", +1)],
+        "d33": [("zzz", +1)],
+    }

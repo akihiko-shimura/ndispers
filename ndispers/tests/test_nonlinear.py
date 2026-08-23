@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 
 import ndispers.media.crystals as C
-from ndispers.groups import NonlinearGroup, Uniax_3m, Uniax_32, Uniax_42m, Uniax_4mm, Biax_mm2, Biax_2
+from ndispers.groups import NonlinearGroup, Uniax_3m, Uniax_32, Uniax_42m, Uniax_4mm, Biax_mm2, Biax_2, Uniax_6
 
 NAMES = sorted(n for n in dir(C) if isinstance(getattr(C, n), type)
                and issubclass(getattr(C, n), NonlinearGroup))
@@ -239,7 +239,7 @@ def test_closed_form_2_BiBO(ang):
 
 # ---------------------------------------------------------------------------
 # 4. Bookkeeping: the group a crystal inherits matches its docstring
-GROUP_OF = {"3m": Uniax_3m, "32": Uniax_32, "4̄2m": Uniax_42m, "4mm": Uniax_4mm, "mm2": Biax_mm2, "2": Biax_2}
+GROUP_OF = {"3m": Uniax_3m, "32": Uniax_32, "4̄2m": Uniax_42m, "4mm": Uniax_4mm, "mm2": Biax_mm2, "2": Biax_2, "6": Uniax_6}
 
 
 @pytest.mark.parametrize("name", NAMES)

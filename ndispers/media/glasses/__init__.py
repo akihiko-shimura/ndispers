@@ -18,3 +18,11 @@ from ._yag import YAG
 from ._nbk7 import NBK7
 from ._lif import LiF
 from ._baf2 import BaF2
+from ._znse import ZnSe
+from ._zns import ZnS
+from ._si import Si
+from ._ge import Ge
+from ._diamond import Diamond
+from ._sf10 import SF10
+from ._sf11 import SF11
+from ._sf57 import SF57
