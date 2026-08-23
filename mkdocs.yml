@@ -32,6 +32,7 @@ theme:
 nav:
   - Home: index.md
   - Conventions: conventions.md
+  - Validation: validation.md
   - Media catalog:
       - Crystals: api/crystals.md
       - Glasses: api/glasses.md

@@ -191,6 +191,7 @@ array([1.89001202, 1.69328828, 1.66985875, 1.6612891 , 1.65633946,
 
 - **[ブラウザアプリ](https://akihiko-shimura.github.io/ndispers/)** — 屈折率エクスプローラと位相整合計算機。インストール不要、クライアントサイドで動作。
 - [チュートリアルノートブック](examples/basic_usage.ipynb) — 結晶の Sellmeier 方程式の確認から位相整合曲線までの基本の流れ。GitHub 上でそのまま閲覧可。
+- [検証記録 (Validation)](https://ndispers.readthedocs.io/en/latest/validation/) — 文献値との照合結果を数値と出典つきで、および監査で判明した注意点。
 - [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — 規約（単位、角度、符号の規約）と、全結晶・ガラスの式・有効範囲・文献を載せた [媒質カタログ](https://ndispers.readthedocs.io/en/latest/api/crystals/)。
 
 ## 開発
