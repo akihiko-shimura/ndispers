@@ -3,7 +3,7 @@
 **Live: <https://akihiko-shimura.github.io/ndispers/>**
 
 Two [marimo](https://marimo.io) notebooks that run entirely in the browser —
-no server, no install. ndispers is a pure-Python wheel, numpy, scipy and sympy
+no server, no install. ndispers is a pure-Python wheel, numpy and sympy
 all ship with Pyodide, and plotly installs from PyPI as a pure-Python wheel, so
 the whole calculation happens client-side.
 

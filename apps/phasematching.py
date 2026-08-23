@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.14.0", "numpy", "scipy", "sympy", "matplotlib"]
+# dependencies = ["ndispers==0.15.0", "numpy", "plotly"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 
@@ -22,9 +22,10 @@ def _():
 @app.cell(hide_code=True)
 def _():
     import numpy as np
-    import matplotlib.pyplot as plt
-    from scipy.optimize import brentq
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
     import sympy
+    from ndispers.helper import brentq
     import ndispers as nd
     import ndispers.media.crystals as _C
 
@@ -37,7 +38,7 @@ def _():
         _x = _cls()
         if "var" in (_x.theta_rad, _x.phi_rad):
             XTALS[_name] = _cls
-    return XTALS, brentq, nd, np, plt, sympy
+    return XTALS, brentq, go, make_subplots, nd, np, sympy
 
 
 @app.cell(hide_code=True)
@@ -182,31 +183,34 @@ def _(ANGLE_KEY, SOLUTIONS, T_C, np, pmtype, xtal):
         f"{SOLUTIONS[pmtype.value]:.3f}°, pol = {pmtype.value}"
         if HAS_PM else ""
     )
-    return ANGLE_PM, HAS_PM, PLOT_TITLE, POLS
+    PLOT_LAYOUT = dict(
+        title=dict(font_size=11, x=0, xanchor="left", y=0.97, yanchor="top"),
+        width=560, margin=dict(l=60, r=20, t=40, b=45), font_size=11,
+        template="plotly_white", showlegend=False, modebar=dict(orientation="v"),
+    )
+    return ANGLE_PM, HAS_PM, PLOT_LAYOUT, PLOT_TITLE, POLS
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_PM, HAS_PM, L, PLOT_TITLE, POLS, T_C, WL1, WL2, mo, np, plt, x):
+def _(ANGLE_PM, HAS_PM, L, PLOT_LAYOUT, PLOT_TITLE, POLS, T_C, WL1, WL2, make_subplots, mo, np, x):
     if HAS_PM:
         _w = np.radians(0.15)
         _a = np.linspace(ANGLE_PM - _w, ANGLE_PM + _w, 400)
         _dk = x.dk_sfg(WL1, WL2, _a, T_C, *POLS)
         _sinc = x.pmFactor_sfg(WL1, WL2, _a, T_C, *POLS, L.value)
 
-        plt.rcParams.update({"font.size": 8})
-        _fig, (_a1, _a2) = plt.subplots(2, 1, sharex=True, figsize=(5.25, 3.3))
-        _a1.set_title(PLOT_TITLE, fontsize=8)
-        _a1.plot(np.degrees(_a), _dk)
-        _a1.axhline(0, color="gray", lw=0.8)
-        _a1.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
-        _a1.set_ylabel(r"$\Delta k$ (rad/µm)")
-        _a2.plot(np.degrees(_a), _sinc)
-        _a2.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
-        _a2.set_xlabel("angle (deg)")
-        _a2.set_ylabel(r"sinc$^2(\Delta k L/2)$")
-        for _ax in (_a1, _a2):
-            _ax.grid(alpha=0.3)
-        plt.tight_layout()
+        _deg = np.degrees(_a)
+        _fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.06)
+        _fig.add_scatter(x=_deg, y=_dk, mode="lines", row=1, col=1,
+                         hovertemplate="%{x:.4f}°<br>Δk %{y:.5g} rad/µm<extra></extra>")
+        _fig.add_scatter(x=_deg, y=_sinc, mode="lines", row=2, col=1,
+                         hovertemplate="%{x:.4f}°<br>sinc² %{y:.4f}<extra></extra>")
+        _fig.add_hline(y=0, line=dict(color="gray", width=0.8), row=1, col=1)
+        _fig.add_vline(x=np.degrees(ANGLE_PM), line=dict(color="red", width=0.8, dash="dash"))
+        _fig.update_yaxes(title_text="Δk (rad/µm)", row=1, col=1)
+        _fig.update_yaxes(title_text="sinc²(ΔkL/2)", row=2, col=1)
+        _fig.update_xaxes(title_text="angle (deg)", row=2, col=1)
+        _fig.update_layout(**PLOT_LAYOUT, title_text=PLOT_TITLE, height=360)
         _out = mo.vstack([mo.md("## Phase mismatch and conversion"), _fig])
     else:
         _out = mo.md("")
@@ -384,8 +388,8 @@ def _(PHI_FREE, PHI_OPT, mo):
 
 @app.cell(hide_code=True)
 def _(
-    ANGLE_PM, DEFF_MAX, HAS_DEFF, HAS_PM, PHI_FREE, PHI_OPT, PLOT_TITLE, POLS,
-    T_C, WL1, WL2, deff_args, mo, np, phi_cut, plt, x,
+    ANGLE_PM, DEFF_MAX, HAS_DEFF, HAS_PM, PHI_FREE, PHI_OPT, PLOT_LAYOUT, PLOT_TITLE, POLS,
+    T_C, WL1, WL2, deff_args, go, mo, np, phi_cut, x,
 ):
     # closed forms per point group (walk-off angles ρ_m of the e-waves included);
     # the library evaluates the tensor contraction directly, these are for reading
@@ -412,17 +416,16 @@ def _(
             _amax = np.pi if _group == "Biax_2" else np.pi / 2
             _a = np.linspace(0.02, _amax - 0.02, 200 if _amax < 2 else 400)
             _curve = np.abs(x.deff_sfg(WL1, WL2, *deff_args(_a, _phi), T_C, *POLS))
-            plt.rcParams.update({"font.size": 8})
-            _fig, _ax = plt.subplots(figsize=(5.25, 2.25))
-            _ax.set_title(PLOT_TITLE + (f", φ = {phi_cut.value:.0f}°" if PHI_FREE else ""), fontsize=8)
-            _ax.plot(np.degrees(_a), _curve)
-            _ax.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
+            _fig = go.Figure(go.Scatter(
+                x=np.degrees(_a), y=_curve, mode="lines",
+                hovertemplate="%{x:.2f}°<br>|d_eff| %{y:.4g} pm/V<extra></extra>"))
+            _fig.add_vline(x=np.degrees(ANGLE_PM), line=dict(color="red", width=0.8, dash="dash"))
             if _group == "Biax_2":
-                _ax.axvline(180 - np.degrees(ANGLE_PM), color="r", lw=0.8, ls=":")
-            _ax.set_xlabel("angle (deg)")
-            _ax.set_ylabel(r"|$d_\mathrm{eff}$| (pm/V)")
-            _ax.grid(alpha=0.3)
-            plt.tight_layout()
+                _fig.add_vline(x=180 - np.degrees(ANGLE_PM), line=dict(color="red", width=0.8, dash="dot"))
+            _fig.update_layout(
+                **PLOT_LAYOUT, height=260,
+                title_text=PLOT_TITLE + (f", φ = {phi_cut.value:.0f}°" if PHI_FREE else ""),
+                xaxis_title="angle (deg)", yaxis_title="|d_eff| (pm/V)")
 
             _forbidden = float(np.max(_curve)) < 1e-9 * max(
                 abs(x.d_sfg(il, WL1, WL2, T_C)) for il in x._d_ref)
