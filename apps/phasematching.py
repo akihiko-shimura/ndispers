@@ -263,7 +263,7 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
         _doc = type(x).__doc__ or ""
         _sec = (_re.search(r"Transparency range\s*:([^\n]*)", _doc)
                 or _re.search(r"Validity range\s*\n\s*-+\s*\n(.{0,400})", _doc, _re.S))
-        _m = _sec and _re.search(r"(\d+\.?\d*)\s*(?:to|-|–)\s*(\d+\.?\d*)", _sec.group(1))
+        _m = _sec and _re.search(r"(\d+\.?\d*)\s*(?:µm|um)?\s*(?:to|-|–)\s*(\d+\.?\d*)", _sec.group(1))
         _wl_i_max = min(float(_m.group(2)), 20.0) if _m else 5.0
         _wl_i_max = max(_wl_i_max, 1.2 * WL2)          # the current idler must be inside
         _nu_p = 1.0 / WL3
@@ -319,8 +319,8 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
             "## Tuning curves\n\n"
             f"Signal and idler that phase-match for pump {WL3 * 1e3:.2f} nm and polarizations "
             f"`{''.join(POLS)}`, as the angle or the temperature is tuned; the dots are the present "
-            "operating point. Curves are drawn up to the longer edge of the medium's validity range "
-            f"({_wl_i_max:g} µm) — beyond the range they extrapolate the Sellmeier fit. "
+            "operating point. Curves are drawn up to the crystal's transparency edge "
+            f"({_wl_i_max:g} µm); outside the Sellmeier validity range they extrapolate the fit. "
             "A medium without a temperature term gives a flat temperature curve."),
             _fig])
     else:
