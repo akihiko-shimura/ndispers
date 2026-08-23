@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.12.1", "numpy", "scipy", "sympy", "matplotlib"]
+# dependencies = ["ndispers==0.13.0", "numpy", "scipy", "sympy", "matplotlib"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 

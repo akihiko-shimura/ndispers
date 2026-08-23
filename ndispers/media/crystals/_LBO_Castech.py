@@ -32,6 +32,14 @@ class LBO(Biax_mm2):
 
     Note
     ----
+    The vendor's thermo-optic coefficients are internally inconsistent with the
+    vendor's own noncritical figure: this set puts 90-degree phase matching for
+    1.064 um SHG in the xy plane at about 240 degC, against the 148 degC of the
+    same data sheet (Table 3) and of Kato, Grechin & Umemura 2018. Its
+    wavelength-independent dn_y/dT makes d(delta n)/dT roughly 1.8 times too
+    small. Use LBO_KK2018 for temperature tuning; this class is faithful to the
+    data sheet, which is the point of having it.
+
     In the current version, biaxial crystals are limited to the principal dielectric planes,
     xy, yz or zx planes. In other words, a wavevector of light must be within any one of
     the three planes. Correspondence between principal plane, polarization orientations of

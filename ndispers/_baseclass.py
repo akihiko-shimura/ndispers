@@ -330,7 +330,11 @@ class Medium:
         wl2 : float or array_like
             2nd pump wavelength in µm.
         tol_deg : float, default=0.001
-            Absolute tolerance of the returned angle in degrees.
+            Absolute tolerance of the returned angle in degrees. An endpoint of
+            the 0 to 90 degree range counts as a solution when its wavevector
+            mismatch is within this tolerance of zero, so noncritical phase
+            matching is reported as 90 (or 0) degrees rather than as no
+            solution at all.
         deg : bool, default=False
             If returned angles are expressed in radians (False) or degrees (True).
 
@@ -361,6 +365,26 @@ class Medium:
             dk = lambda a: float(self.dk_sfg(wl1, wl2, a, T_degC, pol1, pol2, pol3))
             angle_pm = [brentq(dk, angle_ar[i], angle_ar[i+1], xtol=tol_deg*pi/180)
                         for i in crossings]
+
+            # Noncritical phase matching puts the root exactly on an endpoint of
+            # [0, pi/2], where a sign change never happens, so the scan above
+            # misses it: LBO at its 90-degree temperature, the shortest SHG
+            # wavelength of a crystal, and every NCPM cut would report "no
+            # solution". Accept an endpoint whose dk is within one angular
+            # tolerance of zero, judged by the local slope.
+            tol_rad = tol_deg * pi / 180
+            for i_edge, edge in ((0, 0.0), (-1, 0.5 * pi)):
+                if any(abs(a - edge) <= tol_rad for a in angle_pm):
+                    continue
+                dk_edge = float(dk_ar[i_edge])
+                if dk_edge == 0.0:
+                    angle_pm.append(edge)
+                    continue
+                i_in = 1 if i_edge == 0 else -2
+                slope = abs(dk_ar[i_in] - dk_edge) / (angle_ar[1] - angle_ar[0])
+                if slope > 0 and abs(dk_edge) <= slope * tol_rad:
+                    angle_pm.append(edge)
+            angle_pm.sort()
             if deg:
                 angle_pm = [a * 180/pi for a in angle_pm]
             pm_angles = dict()

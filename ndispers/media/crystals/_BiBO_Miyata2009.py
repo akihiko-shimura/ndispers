@@ -40,6 +40,15 @@ class BiBO(Biax_2):
     optic-axis angle Omega, and in the yz plane the three terms carry relative
     signs that matter.
 
+    Two conventions for naming BiBO's planes are in circulation. This class
+    follows the dielectric frame with the two-fold axis along x, in which the
+    zx plane is the x-z plane of Petrov et al. 2010 (its type-I ooe locus runs
+    1181.5 to 2272.8 nm and the eeo branch starts at 614.3 nm, both reproduced
+    here). The cut usually quoted for 1064 nm SHG - "xz, theta = 168.5 deg,
+    d_eff = 3.5 pm/V" - is written in the other convention (two-fold axis along
+    y) and is this class's **yz** plane at theta = 168.8 deg, where d_eff comes
+    out 3.62 pm/V.
+
     Because the group has no mirror plane through the z axis, theta and
     180 deg - theta phase-match alike (the index is the same) but give
     different d_eff: for 800 nm type-I SHG in the yz plane, theta = 28.8 deg

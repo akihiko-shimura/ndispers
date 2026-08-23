@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.12.1", "numpy", "plotly"]
+# dependencies = ["ndispers==0.13.0", "numpy", "plotly"]
 # ///
 """Refractive index explorer — browse ndispers media interactively.
 

@@ -415,3 +415,43 @@ def test_docstring_states_a_wavelength_range(name):
             assert 0 < lo < hi, f"{name}: range {lo}-{hi} um is not ordered"
             return
     pytest.fail(f"{name}: no parsable validity or transparency range in the docstring")
+
+
+def test_noncritical_phase_matching_is_found():
+    """A noncritical solution sits exactly on an end of the scanned 0-90 degree
+    range, where dk never changes sign, so the sign-change scan alone reported
+    no solution for every NCPM cut. At the exact NCPM point the endpoint is now
+    returned; a tenth of a degree or a tenth of a nanometre away there really is
+    no solution, and none is reported.
+
+    The three NCPM points below agree with the sources: LBO's 90-degree
+    temperature for 1064 nm SHG is 147.0 C here against Kato, Grechin & Umemura
+    2018 (149 C calculated, 148-151 C observed); Li2B4O7's shortest SHG is
+    487.7 -> 243.9 nm against Komatsu et al. 1997 Table I (487.6 -> 243.8 nm at
+    theta = 90 deg); CLBO's is 473.4 -> 236.7 nm against Umemura & Kato 1997
+    (236.8 nm).
+    """
+    from scipy.optimize import brentq
+
+    lbo = C.LBO_KK2018_xy()                    # xy plane: the NCPM cut is phi = 0
+    T_ncpm = brentq(lambda T: float(lbo.dk_sfg(1.064, 1.064, 0.0, T, 'o', 'o', 'e')), 100, 300)
+    assert T_ncpm == pytest.approx(147.0, abs=1.0)
+    assert lbo.pmAngles_sfg(1.064, 1.064, T_ncpm, deg=True)['ooe']['phi'] == pytest.approx([0.0], abs=0.01)
+    assert lbo.pmAngles_sfg(1.064, 1.064, T_ncpm + 0.1, deg=True)['ooe']['phi'] == []
+
+    for x, expect_um, lo, hi in ((C.LB4(), 0.4877, 0.45, 0.55), (C.CLBO(), 0.4734, 0.45, 0.52)):
+        wl = brentq(lambda w: float(x.dk_sfg(w, w, 0.5 * np.pi, 20, 'o', 'o', 'e')), lo, hi)
+        assert wl == pytest.approx(expect_um, abs=5e-4)
+        assert x.pmAngles_sfg(wl, wl, 20, deg=True)['ooe']['theta'] == pytest.approx([90.0], abs=0.01)
+        # shorter than the NCPM wavelength there is no solution at all; longer,
+        # the angle backs off the endpoint in the ordinary way
+        assert x.pmAngles_sfg(wl - 1e-4, wl - 1e-4, 20, deg=True)['ooe']['theta'] == []
+        assert x.pmAngles_sfg(wl + 1e-4, wl + 1e-4, 20, deg=True)['ooe']['theta'][0] == pytest.approx(88.7, abs=0.3)
+
+
+def test_pmAngles_does_not_invent_endpoint_solutions():
+    """The endpoint rule must not fire where dk is merely small: beta-BBO at
+    1064 nm has one type-I solution at 22.88 deg and nothing at 90 deg."""
+    pm = C.BetaBBO_Eimerl1987().pmAngles_sfg(1.064, 1.064, 25, deg=True)
+    assert pm['ooe']['theta'] == pytest.approx([22.884], abs=0.01)
+    assert pm['eeo']['theta'] == []

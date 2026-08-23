@@ -24,6 +24,8 @@ class ZGP(Uniax_42m):
 
     Note
     ----
+    This set's type-I limit falls at about 10.55 um, just short of the 10.6 um CO2 line, so SHG of a CO2 laser returns no solution here while ZGP_Das2003 (limit 10.74 um, against the 10.78 um of Kato 1997) finds 81.4 deg. Published ZGP Sellmeier sets differ by 10-20 degrees near the range boundaries; treat any angle within ~0.2 um of the limit as indicative only.
+
     The Sellmeier equation has no temperature term: T_degC is accepted for
     signature uniformity and ignored, and dndT returns 0.
     Coefficients as tabulated by refractiveindex.info (main/ZnGeP2/nk/Zelmon-o, -e; accessed 2026-08-23) from the source; cross-checked against the Das 2003 set (ZGP_Das2003) to 5e-3 over 2.5-8 µm.

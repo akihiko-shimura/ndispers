@@ -28,6 +28,12 @@ class LBO(Biax_mm2):
 
     Note
     ----
+    The 1994 thermo-optic formula does not reach 90-degree phase matching for
+    1.064 um SHG in the xy plane at any temperature (its closest approach is
+    near 300 degC, against the observed 148-151 degC). Kato, Grechin & Umemura
+    2018 - the LBO_KK2018 class - was written to correct exactly this; use it
+    for temperature tuning.
+
     In the current version, biaxial crystals are limited to the principal dielectric planes,
     xy, yz or zx planes. In other words, a wavevector of light must be within any one of
     the three planes. Correspondence between principal plane, polarization orientations of

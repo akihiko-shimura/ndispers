@@ -24,6 +24,8 @@ class ZGP(Uniax_42m):
 
     Note
     ----
+    Its type-I limit, 10.74 um, is close to the 10.78 um of Kato 1997, and it does phase-match SHG of the 10.6 um CO2 line (81.4 deg) where ZGP_Zelmon2001 falls 5e-4 in index short. Published ZGP Sellmeier sets differ by 10-20 degrees near the range boundaries.
+
     The Sellmeier equation has no temperature term: T_degC is accepted for
     signature uniformity and ignored, and dndT returns 0.
     Coefficients as tabulated by refractiveindex.info (main/ZnGeP2/nk/Das-o, -e; accessed 2026-08-23) from the source; cross-checked against the Zelmon 2001 set (ZGP_Zelmon2001) to 5e-3 over 2.5-8 µm.
