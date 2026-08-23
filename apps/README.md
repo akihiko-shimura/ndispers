@@ -10,6 +10,10 @@ the whole calculation happens client-side.
 | app | what it does |
 |---|---|
 | `explorer.py` | plot any of n, n_g, GVD, TOD, dn/dT or walk-off against any of wavelength, temperature or angle, for every medium |
+
+The explorer sweeps each medium over the wavelength range its own docstring
+states, not a fixed window: a 250-2000 nm sweep is empty for Ge or ZnGeP2 and
+extrapolates quartz five times past the end of its fit.
 | `phasematching.py` | collinear SFG: phase-matching angles, acceptance bandwidths, walk-off, effective nonlinearity |
 
 ## Run locally

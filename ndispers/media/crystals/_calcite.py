@@ -10,7 +10,7 @@ class Calcite(Medium):
     - Crystal system : Trigonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Transparency range : 
+    - Transparency range : 0.2 to 2.2 µm (o-ray), 0.2 to 3.3 µm (e-ray), from the fits below
 
     Sellmeier equation
     ------------------

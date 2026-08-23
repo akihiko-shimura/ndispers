@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.10.0", "numpy", "scipy", "sympy", "matplotlib"]
+# dependencies = ["ndispers==0.12.1", "numpy", "scipy", "sympy", "matplotlib"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 
@@ -424,6 +424,8 @@ def _(
             _ax.grid(alpha=0.3)
             plt.tight_layout()
 
+            _forbidden = float(np.max(_curve)) < 1e-9 * max(
+                abs(x.d_sfg(il, WL1, WL2, T_C)) for il in x._d_ref)
             _opt = (
                 " &nbsp;·&nbsp; |d_eff| peaks at **φ = "
                 + ", ".join(f"{v:.0f}°" for v in PHI_OPT)
@@ -444,6 +446,11 @@ def _(
                     "## Effective nonlinearity\n\n" + _formula
                     + f"At the phase-matching angle{f' and φ = {phi_cut.value:.0f}°' if PHI_FREE else ''}: "
                     f"**{_at:.4g} pm/V**{_opt}.\n\n"
+                    + ("This interaction phase-matches but its d_eff vanishes "
+                       "identically: the tensor has no component that couples "
+                       f"these polarizations in the {x.plane} plane, so no light "
+                       "is generated. Choose another interaction or plane.\n\n"
+                       if _forbidden else "")
                     + ("In a monoclinic crystal the mirror angle 180° − θ phase-matches "
                        "too but with a different d_eff: "
                        f"**{abs(float(x.deff_sfg(WL1, WL2, *deff_args(np.pi - ANGLE_PM, _phi), T_C, *POLS))):.4g} pm/V** "

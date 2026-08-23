@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.10.0", "numpy", "plotly"]
+# dependencies = ["ndispers==0.12.1", "numpy", "plotly"]
 # ///
 """Refractive index explorer — browse ndispers media interactively.
 
@@ -50,13 +50,36 @@ def _(np):
         "dndT": ("dn/dT", "1/K", lambda v: v),
         "woa_theta": ("walk-off angle", "deg", np.degrees),
     }
-    # variable -> (label, unit, default sweep)
+    # variable -> (label, unit, fallback sweep when the docstring says nothing)
     VARIABLES = {
         "wl": ("wavelength", "nm", (250.0, 2000.0)),
         "T": ("temperature", "°C", (-50.0, 300.0)),
         "angle": ("angle", "deg", (0.0, 90.0)),
     }
-    return QUANTITIES, VARIABLES
+
+    def wl_range_nm(medium):
+        """The medium's own wavelength range, in nm, from its docstring.
+
+        A fixed 250-2000 nm window is useless for Ge or ZnGeP2 and misleading
+        for quartz, whose fit stops at 710 nm, so the sweep follows the
+        Validity range if the docstring states one and the transparency range
+        otherwise.
+        """
+        import re
+        doc = type(medium).__doc__ or ""
+        for pattern in (r"Validity range\s*\n\s*-+\s*\n(.{0,600}?)(?:\n\s*\n|$)",
+                        r"Transparency range\s*:([^\n]*)"):
+            m = re.search(pattern, doc, re.S)
+            if not m:
+                continue
+            got = re.search(r"(\d+\.?\d*)\s*(?:to|-|–)\s*(\d+\.?\d*)", m.group(1))
+            if got:
+                lo, hi = (float(got.group(1)) * 1e3, float(got.group(2)) * 1e3)
+                if hi > lo:
+                    return lo, hi
+        return VARIABLES["wl"][2]
+
+    return QUANTITIES, VARIABLES, wl_range_nm
 
 
 @app.cell(hide_code=True)
@@ -132,9 +155,12 @@ def _(IS_ISOTROPIC, mo, pol, sympy, x):
 
 
 @app.cell(hide_code=True)
-def _(mo):
-    wl0 = mo.ui.number(200.0, 4000.0, value=1064.0, step=0.1)
-    return (wl0,)
+def _(mo, wl_range_nm, x):
+    WL_LO, WL_HI = wl_range_nm(x)
+    # a wavelength inside this medium's range, 1064 nm when that is inside it
+    _default = 1064.0 if WL_LO < 1064.0 < WL_HI else round(0.5 * (WL_LO + WL_HI), 1)
+    wl0 = mo.ui.number(WL_LO, WL_HI, value=_default, step=0.1)
+    return WL_HI, WL_LO, wl0
 
 
 @app.cell(hide_code=True)
@@ -175,12 +201,14 @@ def _(IS_ISOTROPIC, T, angle, mo, quantity, variable, wl0):
 
 @app.cell(hide_code=True)
 def _(
-    IS_ISOTROPIC, QUANTITIES, T, VARIABLES, angle, go, mo, np, pol,
-    quantity, time, variable, wl0, x,
+    IS_ISOTROPIC, QUANTITIES, T, VARIABLES, WL_HI, WL_LO, angle, go, mo, np,
+    pol, quantity, time, variable, wl0, x,
 ):
     _q, _v = quantity.value, variable.value
     _qlabel, _qunit, _post = QUANTITIES[_q]
     _vlabel, _vunit, (_lo, _hi) = VARIABLES[_v]
+    if _v == "wl":                          # this medium's range, not a fixed window
+        _lo, _hi = WL_LO, WL_HI
 
     _sweep = np.linspace(_lo, _hi, 400)
     if _v == "angle":                       # keep off the exact 0 and 90 poles
@@ -246,6 +274,8 @@ def _(
         _note = "  ·  isotropic medium: angle and polarization ignored"
     else:
         _note = ""
+    if _v == "wl":
+        _note += f"  ·  swept over this medium's own range, {WL_LO:g}-{WL_HI:g} nm"
 
     mo.vstack([
         _fig,

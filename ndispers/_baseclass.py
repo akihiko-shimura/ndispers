@@ -348,7 +348,15 @@ class Medium:
         def pmAngle_for_pol(pol1, pol2, pol3):
             # coarse grid locates each sign change, brentq refines it
             angle_ar = np.linspace(0, 0.5*pi, 361)
-            dk_ar = self.dk_sfg(wl1, wl2, angle_ar, T_degC, pol1, pol2, pol3)
+            try:
+                dk_ar = self.dk_sfg(wl1, wl2, angle_ar, T_degC, pol1, pol2, pol3)
+            except ValueError:
+                # this medium has no Sellmeier equation for one of these
+                # polarizations (SLN is e-ray only), so the combination has no
+                # solution rather than being an error
+                empty = {'theta': [], 'phi': []}
+                empty['theta' if self.theta_rad == 'var' else 'phi'] = []
+                return empty
             crossings = np.nonzero(np.diff(np.signbit(dk_ar)))[0]
             dk = lambda a: float(self.dk_sfg(wl1, wl2, a, T_degC, pol1, pol2, pol3))
             angle_pm = [brentq(dk, angle_ar[i], angle_ar[i+1], xtol=tol_deg*pi/180)

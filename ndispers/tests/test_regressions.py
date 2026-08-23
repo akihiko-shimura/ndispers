@@ -184,6 +184,9 @@ def test_qpm_period():
     assert got == pytest.approx(expect, rel=1e-12)
     assert 6.0 < got < 7.5                                   # the familiar ~6.5-7 um
     assert x.qpm_period_sfg(1.064, 1.064, np.pi / 2, 20, 'e', 'e', 'e', order=3) == pytest.approx(3 * got)
+    # the documented trap: at theta = 0 the e-ray degenerates to the o-ray, so
+    # the same call returns a period computed from n_o
+    assert x.qpm_period_sfg(1.064, 1.064, 0.0, 20, 'e', 'e', 'e') == pytest.approx(5.91, abs=0.02)
 
 
 @pytest.mark.parametrize("wl", [0.532, 1.064])
@@ -382,3 +385,33 @@ def test_optic_sign_matches_docstring(name):
         assert ne < no, f"{name}: docstring says negative uniaxial but n_e = {ne:.4f} > n_o = {no:.4f}"
     else:
         assert ne > no, f"{name}: docstring says positive uniaxial but n_e = {ne:.4f} < n_o = {no:.4f}"
+
+
+def test_pmAngles_skips_unsupported_polarizations():
+    """SLN has no ordinary-ray Sellmeier equation. pmAngles_sfg used to raise
+    ValueError out of dk_sfg for every combination containing 'o', which took
+    the phase-matching app down when SLN was selected; those combinations now
+    report no solution."""
+    pm = C.SLN().pmAngles_sfg(1.064, 1.064, 25, deg=True)
+    assert pm['wl3'] == pytest.approx(0.532)
+    for key in ('ooe', 'eeo', 'oee', 'eoe', 'eoo', 'oeo'):
+        assert pm[key]['theta'] == []
+    # a medium that does support both rays still finds its solutions
+    assert C.BetaBBO_Eimerl1987().pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']['theta']
+
+
+@pytest.mark.parametrize("name", ALL_MEDIA)
+def test_docstring_states_a_wavelength_range(name):
+    """The explorer sweeps each medium over the range its docstring states, so
+    every medium needs one that parses and is ordered."""
+    import re
+    doc = getattr(C, name).__doc__ or ""
+    for pattern in (r"Validity range\s*\n\s*-+\s*\n(.{0,600}?)(?:\n\s*\n|$)",
+                    r"Transparency range\s*:([^\n]*)"):
+        m = re.search(pattern, doc, re.S)
+        if m and re.search(r"(\d+\.?\d*)\s*(?:to|-|–)\s*(\d+\.?\d*)", m.group(1)):
+            got = re.search(r"(\d+\.?\d*)\s*(?:to|-|–)\s*(\d+\.?\d*)", m.group(1))
+            lo, hi = float(got.group(1)), float(got.group(2))
+            assert 0 < lo < hi, f"{name}: range {lo}-{hi} um is not ordered"
+            return
+    pytest.fail(f"{name}: no parsable validity or transparency range in the docstring")

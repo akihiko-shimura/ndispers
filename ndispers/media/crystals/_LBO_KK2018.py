@@ -11,6 +11,7 @@ class LBO(Biax_mm2):
     - Crystal system : orthorhombic
     - Dielectric principal axes, x // a, y // -c, z // b
     - Biaxial, with two optic axes in xz plane, symmetric with respect to z-axis
+    - Transparency range : 0.16 to 2.6 µm
 
     Sellmeier equation
     ------------------
@@ -24,6 +25,8 @@ class LBO(Biax_mm2):
 
     Validity range
     --------------
+    0.16 to 2.6 µm, LBO's transparency range; the paper states no separate
+    validity range for the fit.
 
     Note
     ----

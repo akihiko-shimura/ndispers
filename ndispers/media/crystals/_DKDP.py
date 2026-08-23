@@ -12,7 +12,7 @@ class DKDP(Uniax_42m):
     - Crystal system : Tetragonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
     - Negative uniaxial, with optic axis parallel to z-axis
-    - Transparency range : not given by the source; deuteration moves the infrared edge beyond KDP's 1.57 µm
+    - Transparency range : 0.2 to 2.1 µm (deuteration moves the infrared edge beyond KDP's 1.57 µm; the source states no figure)
 
     Sellmeier equation
     ------------------
@@ -30,9 +30,11 @@ class DKDP(Uniax_42m):
 
     Validity range
     ---------------
-    Ghosh 1992 states no wavelength range for the KD*P fit; its thermo-optic
-    model is plotted over 0.1 to 2.1 µm. Sellmeier rms deviation 7.7e-5 (o),
-    3.0e-5 (e) in the source's Table I.
+    0.2 to 1.5 µm, the range of the KDP-family index data the fit rests on.
+    Ghosh 1992 states no separate range for KD*P; its thermo-optic model is
+    plotted over 0.1 to 2.1 µm, but the Sellmeier poles at 0.114 µm (o) and
+    0.120 µm (e) make n complex below about 0.13 µm. Sellmeier rms deviation
+    7.7e-5 (o), 3.0e-5 (e) in the source's Table I.
 
     Ref
     ---
