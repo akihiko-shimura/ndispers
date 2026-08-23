@@ -16,9 +16,8 @@ c_umfs = c_ms * 1e-9  #(µm/fs)
 
 import numpy as np
 
-from scipy.optimize import brentq
 
-from .helper import returnShape, vars2
+from .helper import returnShape, vars2, brentq
 
 
 class Medium:

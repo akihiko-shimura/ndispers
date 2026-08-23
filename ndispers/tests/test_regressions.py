@@ -70,7 +70,7 @@ def test_sln_qpm_matches_gayer_figure4(T_degC, wl_nm):
     Fig. 4 of Gayer 2008 (SHG in a 19.36 um period crystal); the old value drifts
     to 1614 nm at 200 degC. Room-temperature n is nearly insensitive to b1, so
     phase matching is what pins it."""
-    from scipy.optimize import brentq
+    from ndispers.helper import brentq
     sln = C.SLN()
     period = 19.36 * (1 + 1.54e-5 * (T_degC - 25))       # a-axis thermal expansion
 
@@ -431,7 +431,7 @@ def test_noncritical_phase_matching_is_found():
     theta = 90 deg); CLBO's is 473.4 -> 236.7 nm against Umemura & Kato 1997
     (236.8 nm).
     """
-    from scipy.optimize import brentq
+    from ndispers.helper import brentq
 
     lbo = C.LBO_KK2018_xy()                    # xy plane: the NCPM cut is phi = 0
     T_ncpm = brentq(lambda T: float(lbo.dk_sfg(1.064, 1.064, 0.0, T, 'o', 'o', 'e')), 100, 300)
@@ -455,3 +455,19 @@ def test_pmAngles_does_not_invent_endpoint_solutions():
     pm = C.BetaBBO_Eimerl1987().pmAngles_sfg(1.064, 1.064, 25, deg=True)
     assert pm['ooe']['theta'] == pytest.approx([22.884], abs=0.01)
     assert pm['eeo']['theta'] == []
+
+
+def test_brentq_replaces_scipy():
+    """scipy was dropped in 0.15 (19 MB of the browser apps' 48 MB download,
+    for one root finder). helper.brentq must hit a root to the requested
+    tolerance, honour exact endpoints, and refuse an unbracketed interval."""
+    from math import cos, pi
+    from ndispers.helper import brentq
+    assert abs(brentq(cos, 1.0, 2.0) - pi / 2) < 1e-12
+    assert abs(brentq(lambda x: x ** 3 - 2 * x - 5, 2.0, 3.0) - 2.0945514815423265) < 1e-12
+    assert brentq(lambda x: x, 0.0, 1.0) == 0.0                      # root on an endpoint
+    with pytest.raises(ValueError):
+        brentq(lambda x: x * x + 1, -1.0, 1.0)
+    # the number the README and validation page quote must not move
+    assert abs(C.BetaBBO_Eimerl1987().pmAngles_sfg(1.064, 1.064, 25, deg=True)
+               ['ooe']['theta'][0] - 22.884169498625802) < 1e-9

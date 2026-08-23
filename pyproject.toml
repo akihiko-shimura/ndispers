@@ -37,7 +37,6 @@ classifiers = [
 dependencies = [
     "mpmath",
     "numpy",
-    "scipy",
     "sympy",
 ]
 

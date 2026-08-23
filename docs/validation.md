@@ -231,5 +231,5 @@ of the same set (a difference of 3 × 10⁻⁷ in n).
 
 ---
 
-*Recomputed against ndispers 0.13.0. To reproduce any row, call the method
+*Recomputed against ndispers 0.15.0. To reproduce any row, call the method
 named in it; the package's own test suite pins the values marked "exact".*
