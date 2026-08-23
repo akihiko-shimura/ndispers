@@ -9,11 +9,15 @@ text you get from `help(x)` or `x?`.
 | [β-BBO](#beta-bbo) | `BetaBBO_Eimerl1987`, `BetaBBO_Ghosh1995`, `BetaBBO_KK2010`, `BetaBBO_Tamosauskas2018` |
 | [LBO](#lbo) | `LBO_Castech_xy`, `LBO_Castech_yz`, `LBO_Castech_zx`, `LBO_Ghosh1995_xy`, `LBO_Ghosh1995_yz`, `LBO_Ghosh1995_zx`, `LBO_KK1994_xy`, `LBO_KK1994_yz`, `LBO_KK1994_zx`, `LBO_KK2018_xy`, `LBO_KK2018_yz`, `LBO_KK2018_zx`, `LBO_Newlight_xy`, `LBO_Newlight_yz`, `LBO_Newlight_zx` |
 | [KTP](#ktp) | `KTP_xy`, `KTP_yz`, `KTP_zx` |
+| [BiBO](#bibo) | `BiBO_Miyata2009_xy`, `BiBO_Miyata2009_yz`, `BiBO_Miyata2009_zx` |
 | [CLBO](#clbo) | `CLBO` |
 | [KDP](#kdp) | `KDP`, `DKDP` |
 | [KBBF](#kbbf) | `KBBF` |
 | [RBBF](#rbbf) | `RBBF` |
 | [LB4](#lb4) | `LB4` |
+| [ZGP](#zgp) | `ZGP_Zelmon2001`, `ZGP_Das2003` |
+| [AgGaS₂](#ags) | `AGS_Kato1996`, `AGS_Takaoka1999` |
+| [AgGaSe₂](#agse) | `AGSe_Kato2021` |
 | [α-BBO](#alpha-bbo) | `AlphaBBO` |
 | [Calcite](#calcite) | `Calcite` |
 | [Sapphire](#sapphire) | `Sapphire` |
@@ -78,6 +82,16 @@ Potassium titanyl phosphate, biaxial: one class per principal plane.
 
 ::: ndispers.media.crystals.KTP_zx
 
+## BiBO
+
+Bismuth triborate, monoclinic (point group 2), biaxial: one class per principal plane.
+
+::: ndispers.media.crystals.BiBO_Miyata2009_xy
+
+::: ndispers.media.crystals.BiBO_Miyata2009_yz
+
+::: ndispers.media.crystals.BiBO_Miyata2009_zx
+
 ## CLBO
 
 Caesium lithium borate.
@@ -109,6 +123,28 @@ Rubidium beryllium fluoroborate.
 Lithium tetraborate.
 
 ::: ndispers.media.crystals.LB4
+
+## ZGP
+
+Zinc germanium phosphide, mid-infrared; two parameterisations.
+
+::: ndispers.media.crystals.ZGP_Zelmon2001
+
+::: ndispers.media.crystals.ZGP_Das2003
+
+## AgGaS₂ { #ags }
+
+Silver thiogallate, mid-infrared; two parameterisations.
+
+::: ndispers.media.crystals.AGS_Kato1996
+
+::: ndispers.media.crystals.AGS_Takaoka1999
+
+## AgGaSe₂ { #agse }
+
+Silver gallium selenide, mid-infrared.
+
+::: ndispers.media.crystals.AGSe_Kato2021
 
 ## α-BBO { #alpha-bbo }
 

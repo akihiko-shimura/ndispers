@@ -22,7 +22,21 @@ v0.10 で群クラスが汎用化されたので、既存の点群（3m, 32, 4̄
 | α-quartz | `Quartz` | 32 | Tropf 1995 Table 22 (Radhakrishnan 1951) | d₁₁ = 0.30 (Shoji 1997) | 絶対スケールの基準、正単軸、旋光性は未モデル |
 | 5%MgO:CLN 両波 | `MgOLN_Zelmon1997` | 3m | Zelmon 1997 Table 2 (21 °C) | d₃₃ 25.0, d₃₁ 4.4 (Shoji 1997), d₂₂ 2.1 (Roberts 1992, 逆符号) | LN の複屈折 d_eff が初めて計算可能 |
 
-## 第 2 段（候補、着手順）
+## 第 2 段（v0.12 で実装した分と見送り）
+
+実装: ZGP（Zelmon 2001, Das 2003）, AgGaS₂（Kato & Shirahata 1996, Takaoka & Kato 1999）,
+AgGaSe₂（Kato, Miyata & Petrov 2021）, BiBO（Miyata 2009 の Sellmeier, Hellwig 1999 の d,
+点群 2 のクラス `Biax_2`）, YAG（Zelmon 1998）, N-BK7（SCHOTT カタログ）。
+中赤外結晶と YAG/BK7 の係数は refractiveindex.info の転写から取ったので、
+同一結晶の 2 文献が 10⁻³ 台で一致することをテストで固定した（ZGP, AGS）。BiBO は
+レビュー本文の Table 3 の屈折率値を 10⁻⁵ まで再現することで転写を固定した。
+
+見送り（一次文献にアクセスできず、RII にも無い、または不適）:
+KTA（Fenimore 1995 の係数が取れない）, RTP（RII の Carvajal 2007 は Nb 添加系で
+Pack 2004 の実測と 8×10⁻³ ずれる; Mikami 2009 が要る）, CBO（Sellmeier の出典 PDF 無し）,
+SBO（同上）。d 値の方は Pack 2004 (KTA, RTP) と Petrov 1998 (CBO d₁₄ = 1.08) が手元にある。
+
+## 第 2 段（当初の候補表）
 
 | 材料 | 群 | コスト | 理由・出典の当て |
 |---|---|---|---|

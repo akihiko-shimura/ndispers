@@ -14,3 +14,5 @@ the crystals.
 
 from ._fusedsilica import FusedSilica
 from ._caf2 import CaF2
+from ._yag import YAG
+from ._nbk7 import NBK7

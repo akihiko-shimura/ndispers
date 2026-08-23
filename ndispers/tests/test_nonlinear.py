@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 
 import ndispers.media.crystals as C
-from ndispers.groups import NonlinearGroup, Uniax_3m, Uniax_32, Uniax_42m, Uniax_4mm, Biax_mm2
+from ndispers.groups import NonlinearGroup, Uniax_3m, Uniax_32, Uniax_42m, Uniax_4mm, Biax_mm2, Biax_2
 
 NAMES = sorted(n for n in dir(C) if isinstance(getattr(C, n), type)
                and issubclass(getattr(C, n), NonlinearGroup))
@@ -61,7 +61,9 @@ def test_deff_smoke(name, pols):
         pytest.skip("no o-ray Sellmeier equation")
     th = 0.6 if x.theta_rad == 'var' else None
     ph = 0.4 if x.phi_rad in ('var', 'arb') else None
-    for wl1, wl2 in [(1.064, 1.064), (0.8, 0.4)]:
+    # infrared crystals: stay inside their transparency range
+    pairs = [(3.0, 3.0), (5.0, 2.5)] if name.startswith(("ZGP", "AGS")) else [(1.064, 1.064), (0.8, 0.4)]
+    for wl1, wl2 in pairs:
         try:
             v = x.deff_sfg(wl1, wl2, th, ph, T, *pols)
         except ValueError as e:
@@ -72,12 +74,13 @@ def test_deff_smoke(name, pols):
     # array angle in, array out, matching the scalar values
     if x.theta_rad == 'var':
         ths = np.array([0.3, 0.6, 0.9])
+        w = pairs[0][0]
         try:
-            arr = x.deff_sfg(1.064, 1.064, ths, ph, T, *pols)
+            arr = x.deff_sfg(w, w, ths, ph, T, *pols)
         except ValueError:
             return
         assert arr.shape == ths.shape
-        assert arr[1] == pytest.approx(x.deff_sfg(1.064, 1.064, 0.6, ph, T, *pols))
+        assert arr[1] == pytest.approx(x.deff_sfg(w, w, 0.6, ph, T, *pols))
 
 
 def test_missing_component_is_loud():
@@ -209,9 +212,34 @@ def test_closed_form_mm2_KTP(ang):
         abs(d32 * np.sin(Th(zx, WL2, ang, 'e'))), rel=1e-12)
 
 
+@pytest.mark.parametrize("ang", [0.4, 1.1])
+def test_closed_form_2_BiBO(ang):
+    # Petrov et al. 2010, Table 1 (Tzankov & Petrov 2005): point group 2 with x
+    # the two-fold axis, walk-off of each e-wave written in. Relative signs of
+    # the three yz-plane terms are part of the check.
+    xy, yz, zx = C.BiBO_Miyata2009_xy(), C.BiBO_Miyata2009_yz(), C.BiBO_Miyata2009_zx()
+    d12, d13, d14 = d(xy, "d12"), d(xy, "d13"), d(xy, "d14")
+    # xy plane: ooe = -d13 sin(phi+rho3); eoe = d14 sin(2 phi) with both e-waves' walk-off
+    assert abs(xy.deff_sfg(WL1, WL2, None, ang, T, 'o', 'o', 'e')) == pytest.approx(
+        abs(d13 * np.sin(Ph(xy, WL3, ang, 'e'))), rel=1e-12)
+    assert abs(xy.deff_sfg(WL1, WL2, None, ang, T, 'e', 'o', 'e')) == pytest.approx(
+        abs(d14 * np.sin(Ph(xy, WL1, ang, 'e') + Ph(xy, WL3, ang, 'e'))), rel=1e-12)
+    # yz plane: oeo = 0; eeo = d12 cos^2 + d13 sin^2 - d14 sin 2theta
+    assert yz.deff_sfg(WL1, WL2, ang, None, T, 'o', 'e', 'o') == pytest.approx(0., abs=1e-15)
+    T1, T2 = Th(yz, WL1, ang, 'e'), Th(yz, WL2, ang, 'e')
+    assert abs(yz.deff_sfg(WL1, WL2, ang, None, T, 'e', 'e', 'o')) == pytest.approx(
+        abs(d12 * np.cos(T1) * np.cos(T2) + d13 * np.sin(T1) * np.sin(T2) - d14 * np.sin(T1 + T2)), rel=1e-12)
+    # zx plane: oeo = d12 cos theta; eeo = -d14 sin 2theta; ooe = -d12 cos theta; oee = -d14 sin 2theta
+    T1, T2, T3 = Th(zx, WL1, ang, 'e'), Th(zx, WL2, ang, 'e'), Th(zx, WL3, ang, 'e')
+    assert abs(zx.deff_sfg(WL1, WL2, ang, None, T, 'o', 'e', 'o')) == pytest.approx(abs(d12 * np.cos(T2)), rel=1e-12)
+    assert abs(zx.deff_sfg(WL1, WL2, ang, None, T, 'e', 'e', 'o')) == pytest.approx(abs(d14 * np.sin(T1 + T2)), rel=1e-12)
+    assert abs(zx.deff_sfg(WL1, WL2, ang, None, T, 'o', 'o', 'e')) == pytest.approx(abs(d12 * np.cos(T3)), rel=1e-12)
+    assert abs(zx.deff_sfg(WL1, WL2, ang, None, T, 'o', 'e', 'e')) == pytest.approx(abs(d14 * np.sin(T2 + T3)), rel=1e-12)
+
+
 # ---------------------------------------------------------------------------
 # 4. Bookkeeping: the group a crystal inherits matches its docstring
-GROUP_OF = {"3m": Uniax_3m, "32": Uniax_32, "4̄2m": Uniax_42m, "4mm": Uniax_4mm, "mm2": Biax_mm2}
+GROUP_OF = {"3m": Uniax_3m, "32": Uniax_32, "4̄2m": Uniax_42m, "4mm": Uniax_4mm, "mm2": Biax_mm2, "2": Biax_2}
 
 
 @pytest.mark.parametrize("name", NAMES)
@@ -225,7 +253,7 @@ def test_every_non_centrosymmetric_crystal_has_nonlinear_data():
     # alpha-BBO and calcite are centrosymmetric; everything else should be covered
     for n in sorted(n for n in dir(C) if isinstance(getattr(C, n), type)):
         doc = getattr(C, n).__doc__ or ""
-        if "centrosymmetric" in doc or re.search(r'Point group\s*:\s*3̄m', doc):
+        if re.search(r"(?<!non)centrosymmetric", doc) or re.search(r'Point group\s*:\s*3̄m', doc):
             assert not issubclass(getattr(C, n), NonlinearGroup), n
         else:
             assert n in NAMES, f"{n} has no point-group class"

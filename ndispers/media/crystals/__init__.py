@@ -3,11 +3,17 @@ ndispers.media.crystals/__init__.py
 anisotropic crystals
 """
 
+from ._AGS_Kato1996 import AGS as AGS_Kato1996
+from ._AGS_Takaoka1999 import AGS as AGS_Takaoka1999
+from ._AGSe_Kato2021 import AGSe as AGSe_Kato2021
 from ._alphaBBO import AlphaBBO
 from ._betaBBO_Eimerl1987 import BetaBBO as BetaBBO_Eimerl1987
 from ._betaBBO_Ghosh1995 import BetaBBO as BetaBBO_Ghosh1995
 from ._betaBBO_KK2010 import BetaBBO as BetaBBO_KK2010
 from ._betaBBO_Tamosauskas2018 import BetaBBO as BetaBBO_Tamosauskas2018
+from ._BiBO_Miyata2009 import BiBO_xy as BiBO_Miyata2009_xy
+from ._BiBO_Miyata2009 import BiBO_yz as BiBO_Miyata2009_yz
+from ._BiBO_Miyata2009 import BiBO_zx as BiBO_Miyata2009_zx
 from ._calcite import Calcite
 from ._CLBO import CLBO
 from ._DKDP import DKDP
@@ -36,6 +42,8 @@ from ._RBBF_Chen2009 import RBBF
 from ._sapphire import Sapphire
 from ._SLN_MgO_doped import SLN
 from ._SLT_MgO_doped import SLT
+from ._ZGP_Das2003 import ZGP as ZGP_Das2003
+from ._ZGP_Zelmon2001 import ZGP as ZGP_Zelmon2001
 
 # The classes above are exported under source-named aliases (several modules
 # define a class literally named BetaBBO or LBO_xy). Stamp the public name

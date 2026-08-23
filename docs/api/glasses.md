@@ -8,3 +8,7 @@ here because it is cubic; see [Conventions](../conventions.md) for the split.
 ::: ndispers.media.glasses.CaF2
 
 ::: ndispers.media.glasses.FusedSilica
+
+::: ndispers.media.glasses.YAG
+
+::: ndispers.media.glasses.NBK7

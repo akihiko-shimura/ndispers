@@ -143,12 +143,16 @@ Non-centrosymmetric: phase matching, acceptance bandwidths and d_eff are availab
 | β-Barium borate | β-BBO | β-BaB₂O₄ | 3m | negative uniaxial |
 | Lithium triborate | LBO | LiB₃O₅ | mm2 | biaxial, three principal planes |
 | Potassium titanyl phosphate | KTP | KTiOPO₄ | mm2 | biaxial, three principal planes |
+| Bismuth triborate | BiBO | BiB₃O₆ | 2 | biaxial (monoclinic), three principal planes |
 | Cesium lithium borate | CLBO | CsLiB₆O₁₀ | 4̄2m | negative uniaxial |
 | Potassium dihydrogen phosphate | KDP | KH₂PO₄ | 4̄2m | negative uniaxial |
 | Deuterated potassium dihydrogen phosphate | DKDP, KD*P | KD₂PO₄ | 4̄2m | negative uniaxial |
 | Potassium beryllium fluoroborate | KBBF | KBe₂BO₃F₂ | 32 | negative uniaxial |
 | Rubidium beryllium fluoroborate | RBBF | RbBe₂BO₃F₂ | 32 | negative uniaxial |
 | Lithium tetraborate | LB4 (also LBT) | Li₂B₄O₇ | 4mm | negative uniaxial |
+| Zinc germanium phosphide | ZGP | ZnGeP₂ | 4̄2m | positive uniaxial, mid-infrared |
+| Silver thiogallate | AGS | AgGaS₂ | 4̄2m | negative uniaxial, mid-infrared |
+| Silver gallium selenide | AGSe | AgGaSe₂ | 4̄2m | negative uniaxial, mid-infrared |
 | α-Quartz | — | SiO₂ | 32 | positive uniaxial |
 | Lithium niobate, 5% MgO-doped congruent | MgO:LN | MgO:LiNbO₃ | 3m | negative uniaxial, both rays |
 | Lithium niobate, 1% MgO-doped stoichiometric | MgO:SLN | MgO:LiNbO₃ | 3m | negative uniaxial, e-ray only |
@@ -173,12 +177,14 @@ One refractive index, no angle or polarization argument: methods take `(wl_um, T
 |---|---|
 | Fused silica | SiO₂ (amorphous) |
 | Calcium fluoride | CaF₂ (cubic, m3̄m) |
+| Yttrium aluminium garnet (YAG) | Y₃Al₅O₁₂ (cubic, m3̄m) |
+| N-BK7 (SCHOTT) | borosilicate crown glass |
 
 For biaxial crystals one class per principal dielectric plane is provided; the
 angle argument is the one that varies in that plane (φ in xy, θ in yz and zx),
 and an instance's `theta_rad` / `phi_rad` attributes say which. Media whose
 Sellmeier equation carries no temperature term (α-BBO, calcite, sapphire,
-quartz, 5% MgO:LiNbO₃) still take the temperature argument for a uniform
+quartz, 5% MgO:LiNbO₃, BiBO, the mid-infrared crystals, YAG, N-BK7) still take the temperature argument for a uniform
 signature and ignore it; their `dndT` returns 0.
 
 ## Parallel processing

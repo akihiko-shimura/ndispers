@@ -1,0 +1,80 @@
+import sympy
+from ndispers._baseclass import wl, phi, theta, T
+from ndispers.groups import Uniax_42m
+from ndispers.helper import vars2
+
+class ZGP(Uniax_42m):
+    """
+    ZGP (ZnGeP₂, zinc germanium phosphide) crystal, Zelmon2001 parameterisation
+
+    - Point group : 4̄2m  (D2d)
+    - Crystal system : Tetragonal
+    - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
+    - Positive uniaxial, with optic axis parallel to z-axis
+    - Transparency range : about 0.74 to 12 µm (strong absorption below 2 µm)
+
+    Sellmeier equation
+    ------------------
+        n(wl)**2 = A_i + B_i * wl**2 / (wl**2 - C_i) + D_i * wl**2 / (wl**2 - E_i)   for i = o, e
+        (C, E in µm**2)
+
+    Validity range
+    ---------------
+    2 to 9 µm, at 21-22 degC
+
+    Note
+    ----
+    The Sellmeier equation has no temperature term: T_degC is accepted for
+    signature uniformity and ignored, and dndT returns 0.
+    Coefficients as tabulated by refractiveindex.info (main/ZnGeP2/nk/Zelmon-o, -e; accessed 2026-08-23) from the source; cross-checked against the Das 2003 set (ZGP_Das2003) to 5e-3 over 2.5-8 µm.
+
+    Ref
+    ---
+    Sellmeier equation:
+      Zelmon, D. E., Hanning, E. A., & Schunemann, P. G. (2001). Refractive-index measurements and Sellmeier coefficients for zinc germanium phosphide from 2 to 9 µm with implications for phase matching in optical frequency-conversion devices. JOSA B, 18(9), 1307-1310. https://doi.org/10.1364/josab.18.001307
+    Nonlinear optical coefficient:
+      Roberts, D. A. (1992). Simplified characterization of uniaxial and biaxial nonlinear optical crystals: a plea for standardization of nomenclature and conventions. IEEE Journal of Quantum Electronics, 28(10), 2057-2074. https://doi.org/10.1109/3.159516
+    """
+    __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
+                 "_A_e", "_B_e", "_C_e", "_D_e", "_E_e"]
+
+    _d_ref = {"d36": (69.0, 10.6, 10.6)}
+    _d_note = ("Roberts 1992, Table VI: 69 pm/V for 10.6 um SHG, on his scale d36(KDP) = "
+               "0.39 pm/V. Miller scaling untested for ZnGeP2.")
+
+    def __init__(self):
+        super().__init__()
+        self._plane = 'arb'
+        self._theta_rad = 'var'
+        self._phi_rad = 'arb'
+
+        """ Constants of dispersion formula """
+        # For ordinary ray
+        self._A_o = 1 + 7.0409   # RII 'formula 2' lists n**2 - 1 = c1 + ...
+        self._B_o = 1.68625
+        self._C_o = 0.40824
+        self._D_o = 1.288
+        self._E_o = 611.05
+        # For extraordinary ray
+        self._A_e = 1 + 7.0929
+        self._B_e = 1.8649
+        self._C_e = 0.41468
+        self._D_e = 0.84052
+        self._E_e = 452.05
+
+    def n_o_expr(self):
+        """ Sympy expression, dispersion formula for o-wave """
+        return sympy.sqrt(self._A_o + self._B_o * wl**2 / (wl**2 - self._C_o) + self._D_o * wl**2 / (wl**2 - self._E_o))
+
+    def n_e_expr(self):
+        """ Sympy expression, dispersion formula for theta=90 deg e-wave """
+        return sympy.sqrt(self._A_e + self._B_e * wl**2 / (wl**2 - self._C_e) + self._D_e * wl**2 / (wl**2 - self._E_e))
+
+    def n_expr(self, pol):
+        """ Sympy expression, dispersion formula of a general ray with an angle theta to optic axis. If theta = 0, this expression reduces to 'no_expre'. """
+        if pol == 'o':
+            return self.n_o_expr()
+        elif pol == 'e':
+            return self.n_e_expr() / sympy.sqrt( sympy.sin(theta)**2 + (self.n_e_expr()/self.n_o_expr())**2 * sympy.cos(theta)**2 )
+        else:
+            raise ValueError("pol = '%s' must be 'o' or 'e'" % pol)

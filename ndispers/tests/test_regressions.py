@@ -102,7 +102,14 @@ SAME_CRYSTAL = {
     **{f'LBO_{p}': [f'LBO_{s}_{p}' for s in
                     ('Castech', 'Ghosh1995', 'KK1994', 'KK2018', 'Newlight')]
        for p in ('xy', 'yz', 'zx')},
+    # infrared crystals: the sets were taken from refractiveindex.info's
+    # transcription of the papers, so two sources agreeing is the check that
+    # the transcription (theirs and ours) is sound - evaluated at their own
+    # wavelengths below
+    'ZGP': ['ZGP_Zelmon2001', 'ZGP_Das2003'],
+    'AGS': ['AGS_Kato1996', 'AGS_Takaoka1999'],
 }
+IR_WL = {'ZGP': [2.5, 3.0, 5.0, 8.0], 'AGS': [1.064, 2.0, 5.0, 10.0]}
 
 
 def _spread(names, meth, wl, T, pol):
@@ -110,13 +117,39 @@ def _spread(names, meth, wl, T, pol):
     return max(v) - min(v)
 
 
-@pytest.mark.parametrize("group", sorted(SAME_CRYSTAL))
+@pytest.mark.parametrize("group", sorted(g for g in SAME_CRYSTAL if g not in IR_WL))
 @pytest.mark.parametrize("wl,T", [(0.4, 20), (0.532, 20), (1.064, 20), (1.064, 100), (1.55, 20)])
 @pytest.mark.parametrize("pol", ['o', 'e'])
 def test_sources_agree_on_index(group, wl, T, pol):
     """Observed worst case is 1.6e-3; anything past 5e-3 is a transcription error,
     not source scatter (the KTP sign bug was 0.17-0.61)."""
     assert _spread(SAME_CRYSTAL[group], 'n', wl, T, pol) < 5e-3
+
+
+@pytest.mark.parametrize("group", sorted(IR_WL))
+@pytest.mark.parametrize("pol", ['o', 'e'])
+def test_ir_sources_agree_on_index(group, pol):
+    """ZGP: Zelmon 2001 vs Das 2003 differ by up to 5e-3 at 8 um (different
+    samples, different ranges); AGS: Kato 1996 vs Takaoka 1999 by < 1e-3."""
+    for wl in IR_WL[group]:
+        assert _spread(SAME_CRYSTAL[group], 'n', wl, 20, pol) < 6e-3, (group, wl)
+
+
+def test_bibo_reproduces_review_index_values():
+    """Petrov et al. 2010, Table 3: n at 632.8 nm and 1064 nm computed from the
+    Table 2 Sellmeier set. Pins the transcription of that set."""
+    x = C.BiBO_Miyata2009_xy()
+    nx = lambda wl: float(x._n_axis('x', wl, 20)); ny = lambda wl: float(x._n_axis('y', wl, 20)); nz = lambda wl: float(x._n_axis('z', wl, 20))
+    assert (round(nx(0.6328), 5), round(ny(0.6328), 5), round(nz(0.6328), 5)) == (1.77668, 1.80641, 1.94582)
+    assert (round(nx(1.064), 5), round(nz(1.064), 5)) == (1.75752, 1.91711)
+
+
+def test_isotropic_spot_values():
+    """YAG n_d = 1.8328 (Zelmon 1998 fit; Hrabovsky 2021 gives 1.8325); N-BK7
+    n_d = 1.5168 is the catalog value."""
+    import ndispers.media.glasses as G
+    assert G.YAG().n(0.5876, 20) == pytest.approx(1.8328, abs=1e-4)
+    assert G.NBK7().n(0.5876, 20) == pytest.approx(1.5168, abs=1e-4)
 
 
 @pytest.mark.parametrize("wl", [0.532, 1.064])
@@ -187,7 +220,7 @@ ALL_MEDIA = [nm for nm in sorted(dir(C))
 POINT_GROUPS = {                    # point group: (crystal system, centrosymmetric)
     '3m': ('trigonal', False), '3̄m': ('trigonal', True), '32': ('trigonal', False),
     '4̄2m': ('tetragonal', False), '4mm': ('tetragonal', False),
-    'mm2': ('orthorhombic', False), 'm3̄m': ('cubic', True),
+    'mm2': ('orthorhombic', False), '2': ('monoclinic', False), 'm3̄m': ('cubic', True),
 }
 
 
@@ -272,10 +305,11 @@ def test_injected_angle_matches_hand_written_wrapper(name):
             for pol in ('o', 'e'):
                 try:
                     by_wrapper = float(getattr(x, meth)(*args, pol=pol))
-                except ValueError:
+                except (ValueError, TypeError):   # pol not defined, or complex outside the range
                     continue
                 by_base = float(getattr(Medium, meth)(x, *x._full_args(args), pol=pol))
-                assert by_base == by_wrapper, (name, meth, args, pol)
+                # outside a crystal's range both are nan (e.g. AgGaSe2 at 0.4 um)
+                assert by_base == by_wrapper or (np.isnan(by_base) and np.isnan(by_wrapper)), (name, meth, args, pol)
 
 
 @pytest.mark.parametrize("name", ALL_MEDIA)

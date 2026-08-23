@@ -407,13 +407,18 @@ def _(
         _phi = np.radians(phi_cut.value) if PHI_FREE else None
         try:
             _at = abs(float(x.deff_sfg(WL1, WL2, *deff_args(ANGLE_PM, _phi), T_C, *POLS)))
-            _a = np.linspace(0.02, np.pi / 2 - 0.02, 200)
+            # point group 2 (BiBO): theta and pi - theta phase-match alike but
+            # d_eff differs, so sweep the full half-circle there
+            _amax = np.pi if _group == "Biax_2" else np.pi / 2
+            _a = np.linspace(0.02, _amax - 0.02, 200 if _amax < 2 else 400)
             _curve = np.abs(x.deff_sfg(WL1, WL2, *deff_args(_a, _phi), T_C, *POLS))
             plt.rcParams.update({"font.size": 8})
             _fig, _ax = plt.subplots(figsize=(5.25, 2.25))
             _ax.set_title(PLOT_TITLE + (f", φ = {phi_cut.value:.0f}°" if PHI_FREE else ""), fontsize=8)
             _ax.plot(np.degrees(_a), _curve)
             _ax.axvline(np.degrees(ANGLE_PM), color="r", lw=0.8, ls="--")
+            if _group == "Biax_2":
+                _ax.axvline(180 - np.degrees(ANGLE_PM), color="r", lw=0.8, ls=":")
             _ax.set_xlabel("angle (deg)")
             _ax.set_ylabel(r"|$d_\mathrm{eff}$| (pm/V)")
             _ax.grid(alpha=0.3)
@@ -439,7 +444,11 @@ def _(
                     "## Effective nonlinearity\n\n" + _formula
                     + f"At the phase-matching angle{f' and φ = {phi_cut.value:.0f}°' if PHI_FREE else ''}: "
                     f"**{_at:.4g} pm/V**{_opt}.\n\n"
-                    "| component | reference (pm/V) | measured at (nm) | scaled to these wavelengths |\n"
+                    + ("In a monoclinic crystal the mirror angle 180° − θ phase-matches "
+                       "too but with a different d_eff: "
+                       f"**{abs(float(x.deff_sfg(WL1, WL2, *deff_args(np.pi - ANGLE_PM, _phi), T_C, *POLS))):.4g} pm/V** "
+                       "(dotted line).\n\n" if _group == "Biax_2" else "")
+                    + "| component | reference (pm/V) | measured at (nm) | scaled to these wavelengths |\n"
                     "|---|---|---|---|\n" + _rows + "\n\n"
                     f"<sub>Reference values and how far to trust the Miller-rule scaling: {x._d_note}</sub>"
                 ),

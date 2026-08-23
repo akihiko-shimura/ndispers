@@ -107,3 +107,30 @@ class Biax_mm2(BiaxialGroup):
             "d32": [(c + b + b, +1), (b + b + c, +1)],
             "d33": [(c + c + c, +1)],
         }
+
+
+class Biax_2(BiaxialGroup):
+    """
+    Point group 2 (C2): BiB3O6 (BiBO). Monoclinic; the two-fold axis is the
+    dielectric x axis (the convention of Hellwig 1999 / Petrov 2010 for BiBO).
+
+    With x the two-fold axis the nonzero components are d11, d12, d13, d14,
+    d25, d26, d35, d36; Kleinman symmetry gives d14 = d25 = d36,
+    d12 = d26, d13 = d35, leaving four independent: d11, d12, d13, d14.
+
+        d = [[ d11, d12, d13, d14,  0,   0  ],
+             [  0,   0,   0,   0,  d14, d12 ],
+             [  0,   0,   0,   0,  d13, d14 ]]
+
+    All dil refer to the dielectric xyz frame, not the crystallographic one.
+    The principal planes of a monoclinic crystal rotate slightly with
+    wavelength (about +-1 deg over BiBO's range); that rotation is neglected,
+    as in the literature d_eff expressions (Tzankov & Petrov 2005).
+    """
+    __slots__ = []
+    _d_entries = {
+        "d11": [("xxx", +1)],
+        "d12": [("xyy", +1), ("yxy", +1)],
+        "d13": [("xzz", +1), ("zzx", +1)],
+        "d14": [("xyz", +1), ("yzx", +1), ("zxy", +1)],
+    }
