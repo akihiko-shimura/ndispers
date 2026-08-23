@@ -42,6 +42,8 @@ Python 3.9 以降が必要です。
 pip install ndispers
 ```
 
+依存パッケージは numpy だけです。分散式は sympy の式として書かれていますが、実際に評価される関数は事前に生成して同梱しています。式そのもの（`n_expr` など）を扱う場合や、媒質を自分でサブクラス化して評価する場合は `pip install ndispers[sym]` で sympy を追加してください。
+
 ## クイックスタート
 
 結晶の Sellmeier 方程式の確認から位相整合曲線まで、図付きの案内は [チュートリアルノートブック](examples/basic_usage.ipynb)（GitHub 上でそのまま読めます）を参照してください。要点:

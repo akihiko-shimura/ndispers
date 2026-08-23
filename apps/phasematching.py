@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.15.0", "numpy", "plotly"]
+# dependencies = ["ndispers==0.16.0", "numpy", "plotly"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 
@@ -24,7 +24,6 @@ def _():
     import numpy as np
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
-    import sympy
     from ndispers.helper import brentq
     import ndispers as nd
     import ndispers.media.crystals as _C
@@ -38,7 +37,7 @@ def _():
         _x = _cls()
         if "var" in (_x.theta_rad, _x.phi_rad):
             XTALS[_name] = _cls
-    return XTALS, brentq, go, make_subplots, nd, np, sympy
+    return XTALS, brentq, go, make_subplots, nd, np
 
 
 @app.cell(hide_code=True)
@@ -107,10 +106,10 @@ def _(mo, x):
 
 
 @app.cell(hide_code=True)
-def _(HAS_PM, POLS, mo, sympy, x):
+def _(HAS_PM, POLS, mo, x):
     if HAS_PM:
         _md = "\n\n".join(
-            f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$"
+            f"$$n_{{{_p}}} = {x.n_latex(_p)}$$"
             for _p in dict.fromkeys(POLS)
         )
         _out = mo.accordion({

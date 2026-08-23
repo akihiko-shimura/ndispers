@@ -42,6 +42,8 @@ Requires Python 3.9 or later.
 pip install ndispers
 ```
 
+The only dependency is numpy: the dispersion formulas are written as sympy expressions, but the functions the package evaluates are generated from them ahead of time and shipped. To work with the expressions themselves (`n_expr` and friends), or to evaluate your own subclass of a medium, add sympy with `pip install ndispers[sym]`.
+
 ## Quick start
 
 For a guided tour with plots — from inspecting a crystal's Sellmeier equation to phase-matching curves — see the [tutorial notebook](examples/basic_usage.ipynb), readable directly on GitHub. The essentials:

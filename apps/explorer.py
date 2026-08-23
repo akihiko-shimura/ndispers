@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.15.0", "numpy", "plotly"]
+# dependencies = ["ndispers==0.16.0", "numpy", "plotly"]
 # ///
 """Refractive index explorer — browse ndispers media interactively.
 
@@ -24,7 +24,6 @@ def _():
     _t0 = time.perf_counter()
     import numpy as np
     import plotly.graph_objects as go
-    import sympy
     import ndispers as nd
     import ndispers.media.crystals as _C
     import ndispers.media.glasses as _G
@@ -36,7 +35,7 @@ def _():
             if isinstance(_obj, type):
                 MEDIA[_name] = _obj
     IMPORT_S = time.perf_counter() - _t0
-    return IMPORT_S, MEDIA, go, nd, np, sympy, time
+    return IMPORT_S, MEDIA, go, nd, np, time
 
 
 @app.cell(hide_code=True)
@@ -139,10 +138,10 @@ def _(mo, x):
 
 
 @app.cell(hide_code=True)
-def _(IS_ISOTROPIC, mo, pol, sympy, x):
+def _(IS_ISOTROPIC, mo, pol, x):
     _pols = ["o"] if IS_ISOTROPIC else [pol.value]
     _md = "\n\n".join(
-        f"$$n_{{{_p}}} = {sympy.latex(x.n_expr(_p))}$$" for _p in _pols
+        f"$$n_{{{_p}}} = {x.n_latex(_p)}$$" for _p in _pols
     )
     mo.accordion({
         "Sellmeier equation as evaluated": mo.md(

@@ -28,22 +28,30 @@ remove.
 
 ## Cutting a release
 
-1. Update `__version__` in `ndispers/__init__.py`. Follow the project's
+1. If any medium, `_baseclass.py` or `groups/_base.py` changed, regenerate the
+   pre-generated numpy functions and commit them:
+
+   ```
+   uv run python tools/compile_media.py
+   ```
+
+   (`test_compiled_modules_are_current` fails until this is done.)
+2. Update `__version__` in `ndispers/__init__.py`. Follow the project's
    practice: bump the minor version when computed results change, even if the
    change is a bug fix, so the change cannot reach a pinned install silently.
-2. Commit and push to `main`.
-3. Tag and push:
+3. Commit and push to `main`.
+4. Tag and push:
 
    ```
    git tag -a v1.2.3 -m "v1.2.3 — short summary"
    git push origin v1.2.3
    ```
 
-4. The workflow then verifies that the tag matches `ndispers.__version__`, runs
+5. The workflow then verifies that the tag matches `ndispers.__version__`, runs
    the test suite and the docs build, builds the sdist and wheel, checks them
    with `twine check`, and uploads. If the `pypi` environment requires a
    reviewer, approve the run in the Actions tab.
-5. Write the release notes at
+6. Write the release notes at
    <https://github.com/akihiko-shimura/ndispers/releases>. When results change,
    state the before and after values for the affected media — someone who has
    already computed with an earlier version needs to know whether to recompute.
