@@ -16,3 +16,5 @@ from ._fusedsilica import FusedSilica
 from ._caf2 import CaF2
 from ._yag import YAG
 from ._nbk7 import NBK7
+from ._lif import LiF
+from ._baf2 import BaF2

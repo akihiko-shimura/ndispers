@@ -168,6 +168,7 @@ thermo-optics for windows, polarizers and compensators.
 | α-Barium borate | α-BBO | α-BaB₂O₄ | 3̄m | negative uniaxial |
 | Calcite | — | CaCO₃ | 3̄m | negative uniaxial |
 | Sapphire | — | α-Al₂O₃ | 3̄m | negative uniaxial |
+| Magnesium fluoride | — | MgF₂ | 4/mmm | positive uniaxial |
 
 ### Optically isotropic media
 
@@ -177,6 +178,8 @@ One refractive index, no angle or polarization argument: methods take `(wl_um, T
 |---|---|
 | Fused silica | SiO₂ (amorphous) |
 | Calcium fluoride | CaF₂ (cubic, m3̄m) |
+| Lithium fluoride | LiF (cubic, m3̄m) |
+| Barium fluoride | BaF₂ (cubic, m3̄m) |
 | Yttrium aluminium garnet (YAG) | Y₃Al₅O₁₂ (cubic, m3̄m) |
 | N-BK7 (SCHOTT) | borosilicate crown glass |
 
@@ -184,7 +187,7 @@ For biaxial crystals one class per principal dielectric plane is provided; the
 angle argument is the one that varies in that plane (φ in xy, θ in yz and zx),
 and an instance's `theta_rad` / `phi_rad` attributes say which. Media whose
 Sellmeier equation carries no temperature term (α-BBO, calcite, sapphire,
-quartz, 5% MgO:LiNbO₃, BiBO, the mid-infrared crystals, YAG, N-BK7) still take the temperature argument for a uniform
+quartz, MgF₂, 5% MgO:LiNbO₃, BiBO, the mid-infrared crystals, YAG, N-BK7, LiF, BaF₂) still take the temperature argument for a uniform
 signature and ignore it; their `dndT` returns 0.
 
 ## Parallel processing

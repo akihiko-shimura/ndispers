@@ -12,3 +12,7 @@ here because it is cubic; see [Conventions](../conventions.md) for the split.
 ::: ndispers.media.glasses.YAG
 
 ::: ndispers.media.glasses.NBK7
+
+::: ndispers.media.glasses.LiF
+
+::: ndispers.media.glasses.BaF2

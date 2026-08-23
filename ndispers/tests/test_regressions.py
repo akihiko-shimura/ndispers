@@ -146,10 +146,17 @@ def test_bibo_reproduces_review_index_values():
 
 def test_isotropic_spot_values():
     """YAG n_d = 1.8328 (Zelmon 1998 fit; Hrabovsky 2021 gives 1.8325); N-BK7
-    n_d = 1.5168 is the catalog value."""
+    n_d = 1.5168 is the catalog value; LiF, BaF2 and MgF2 at 0.5893 um against
+    Tropf's Table 20 n_infinity-style listings (1.388 / 1.4744 / 1.3734(o)) and the
+    textbook MgF2 birefringence (+0.012)."""
     import ndispers.media.glasses as G
     assert G.YAG().n(0.5876, 20) == pytest.approx(1.8328, abs=1e-4)
     assert G.NBK7().n(0.5876, 20) == pytest.approx(1.5168, abs=1e-4)
+    assert G.LiF().n(0.5893, 20) == pytest.approx(1.392, abs=2e-3)
+    assert G.BaF2().n(0.5893, 20) == pytest.approx(1.474, abs=2e-3)
+    m = C.MgF2()
+    assert m.n(0.5893, 0, 20, pol='o') == pytest.approx(1.378, abs=1e-3)
+    assert m.n(0.5893, np.pi / 2, 20, pol='e') - m.n(0.5893, 0, 20, pol='o') == pytest.approx(0.0119, abs=5e-4)
 
 
 @pytest.mark.parametrize("wl", [0.532, 1.064])
@@ -219,7 +226,7 @@ ALL_MEDIA = [nm for nm in sorted(dir(C))
 # would have flagged it - that one needed reading the literature.
 POINT_GROUPS = {                    # point group: (crystal system, centrosymmetric)
     '3m': ('trigonal', False), '3̄m': ('trigonal', True), '32': ('trigonal', False),
-    '4̄2m': ('tetragonal', False), '4mm': ('tetragonal', False),
+    '4̄2m': ('tetragonal', False), '4mm': ('tetragonal', False), '4/mmm': ('tetragonal', True),
     'mm2': ('orthorhombic', False), '2': ('monoclinic', False), 'm3̄m': ('cubic', True),
 }
 

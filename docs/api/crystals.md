@@ -22,6 +22,7 @@ text you get from `help(x)` or `x?`.
 | [Calcite](#calcite) | `Calcite` |
 | [Sapphire](#sapphire) | `Sapphire` |
 | [α-quartz](#quartz) | `Quartz` |
+| [MgF₂](#mgf2) | `MgF2` |
 | [SLN](#sln) | `SLN` |
 | [MgO:LN](#mgoln) | `MgOLN_Zelmon1997` |
 | [SLT](#slt) | `SLT` |
@@ -169,6 +170,12 @@ Calcium carbonate.
 Crystalline SiO₂; the absolute-scale reference of d coefficients.
 
 ::: ndispers.media.crystals.Quartz
+
+## MgF₂ { #mgf2 }
+
+Magnesium fluoride; centrosymmetric, positive uniaxial - VUV windows and wave plates.
+
+::: ndispers.media.crystals.MgF2
 
 ## SLN
 

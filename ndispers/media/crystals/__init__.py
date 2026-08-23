@@ -36,6 +36,7 @@ from ._LBO_KK2018 import LBO_zx as LBO_KK2018_zx
 from ._LBO_Newlight import LBO_xy as LBO_Newlight_xy
 from ._LBO_Newlight import LBO_yz as LBO_Newlight_yz
 from ._LBO_Newlight import LBO_zx as LBO_Newlight_zx
+from ._MgF2 import MgF2
 from ._MgOLN_Zelmon1997 import MgOLN as MgOLN_Zelmon1997
 from ._quartz import Quartz
 from ._RBBF_Chen2009 import RBBF

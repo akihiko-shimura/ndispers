@@ -36,6 +36,9 @@ KTA（Fenimore 1995 の係数が取れない）, RTP（RII の Carvajal 2007 は
 Pack 2004 の実測と 8×10⁻³ ずれる; Mikami 2009 が要る）, CBO（Sellmeier の出典 PDF 無し）,
 SBO（同上）。d 値の方は Pack 2004 (KTA, RTP) と Petrov 1998 (CBO d₁₄ = 1.08) が手元にある。
 
+窓材料として LiF, MgF₂, BaF₂ も v0.12 で追加（Tropf 1995 Table 22 から転写; Li 1976, Dodge 1984, Malitson 1964）。
+Oxide 社のラインナップのうち未収録は LBGO（LaBGeO₅, UV QPM 用、一次文献待ち）と KTN（EO 偏向用、組成依存のため見送り）。
+
 ## 第 2 段（当初の候補表）
 
 | 材料 | 群 | コスト | 理由・出典の当て |
