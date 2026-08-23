@@ -152,6 +152,29 @@ case λ₁ = λ₂.
   arguments; for PPLN/PPKTP use `angle_rad = pi/2` and `('e', 'e', 'e')`
   (all waves along the polar axis, d33).
 
+### Difference-frequency generation, OPA and OPO
+
+The parametric processes are the same interaction entered from the pump
+side: k_p = k_s + k_i with 1/λ_p = 1/λ_s + 1/λ_i. Every `_dfg` method is the
+`_sfg` one evaluated at (signal, idler), and the **three-letter keys and
+polarization arguments read (signal, idler, pump)** — the order SNLO uses
+(red1, red2, blue) — so `'ooe'` is a Type I OPA and `'oee'`/`'eoe'` Type II.
+
+- `wl_idler(wl_p, wl_s)` is the idler; the signal must be longer than the pump.
+- `pmAngles_dfg(wl_p, wl_s, T_degC)` returns the `pmAngles_sfg` dictionary
+  with `'wl_i'` in place of `'wl3'`; `dk_dfg`, `pmFactor_dfg`,
+  `qpm_period_dfg`, `d_dfg`, `deff_dfg` mirror their SFG counterparts.
+- `tuning_dfg(wl_p, angle_rad, T_degC, pol_s, pol_i, pol_p, wl_i_max=20)`
+  solves Δk(λ_s) = 0 at a fixed angle and temperature and returns every
+  (λ_s, λ_i) pair with λ_s ≤ λ_i — one point of an OPO tuning curve. The
+  Type II branch with the other wave as signal is the triple with pol_s
+  and pol_i exchanged. Sellmeier equations are extrapolated up to
+  `wl_i_max`; mind the medium's validity range.
+- Bandwidths differ from SFG: for an OPA the pump is fixed and the idler
+  follows the signal, so the gain bandwidth is set to first order by the
+  signal–idler group-velocity mismatch. The phase-matching app computes it
+  that way in its DFG mode.
+
 ## Second-order nonlinearity
 
 Crystals whose point group allows a second-order nonlinearity inherit a
