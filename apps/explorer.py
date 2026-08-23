@@ -8,6 +8,7 @@ Runs in the browser via marimo's WASM export; see apps/README.md.
 """
 import marimo
 
+__generated_with = "0.24.0"
 app = marimo.App(width="medium")
 
 

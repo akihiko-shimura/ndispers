@@ -565,3 +565,20 @@ print('OK')
 """
     r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
     assert r.returncode == 0 and r.stdout.strip() == "OK", r.stderr
+
+
+def test_validation_page_is_recomputed_for_this_version():
+    """docs/validation.md quotes computed numbers; its footer names the
+    version they were recomputed against. Bumping __version__ without
+    re-checking that page would let the tables go stale silently."""
+    import os, re
+    import ndispers
+    path = os.path.join(os.path.dirname(__file__), "..", "..", "docs", "validation.md")
+    if not os.path.exists(path):
+        pytest.skip("docs not present in this checkout")
+    text = open(path, encoding="utf-8").read()
+    m = re.search(r"Recomputed against ndispers (\d+\.\d+\.\d+)", text)
+    assert m, "validation.md footer lost its 'Recomputed against ndispers x.y.z' line"
+    assert m.group(1) == ndispers.__version__, (
+        f"validation.md says {m.group(1)}, package is {ndispers.__version__}: "
+        "re-check the tables and bump the footer in the same commit as the version")

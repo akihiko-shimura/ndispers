@@ -68,3 +68,12 @@ there is no φ slider. d_eff is available for every non-centrosymmetric crystal
 in the package since ndispers 0.10; the table under the plot lists the tensor
 components, their reference measurement, and the Miller-rule value at the
 chosen wavelengths.
+
+## After a deploy
+
+GitHub Pages sits behind a CDN that keeps the previous page for a few minutes.
+Before judging a deploy in the browser, confirm the new code is being served:
+
+```
+curl -s "https://akihiko-shimura.github.io/ndispers/phasematching/?x=$RANDOM" | grep -c "<some new string>"
+```

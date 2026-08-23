@@ -32,7 +32,8 @@ Yb:KGW/KYW, OP-GaAs/GaP, **LBGO**（Oxide 社ラインナップで唯一追加�
 ## 保守
 
 - `AGS_Takaoka1999` は deprecated、1.0 で削除。
-- 数値が変わるリリースでは `docs/validation.md` の表とフッタの版数を同じコミットで更新する。
+- 数値が変わるリリースでは `docs/validation.md` の表とフッタの版数を同じコミットで更新する
+  （フッタの版数 ≠ `__version__` はテストが止める。表の中身の再確認は人手）。
 - 媒質・`*_expr` を触ったら `uv run python tools/compile_media.py`（テストが止める）。
-- apps の `marimo check` 警告（`__generated_with` 無し）は放置中。消すなら各アプリ先頭に 1 行。
-- Pages の CDN は更新後数分キャッシュが残る。確認は `curl | grep` で新コードを見てから。
+- ~~apps の `marimo check` 警告~~ → `__generated_with` を付けて解消。
+- ~~Pages の CDN キャッシュ~~ → `apps/README.md` に確認手順を記載。
