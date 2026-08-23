@@ -69,6 +69,13 @@ in the package since ndispers 0.10; the table under the plot lists the tensor
 components, their reference measurement, and the Miller-rule value at the
 chosen wavelengths.
 
+## What the apps list
+
+Every medium in the package except parameterisations kept only to reproduce
+earlier calculations: the LBO sets other than `LBO_KK2018_*` are hidden
+(`_HIDDEN` at the top of each app; the reasons are in the validation page's
+*Module status* table).
+
 ## After a deploy
 
 GitHub Pages sits behind a CDN that keeps the previous page for a few minutes.

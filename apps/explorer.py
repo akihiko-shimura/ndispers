@@ -29,11 +29,15 @@ def _():
     import ndispers.media.crystals as _C
     import ndispers.media.glasses as _G
 
+    # Parameterisations kept in the package only to reproduce earlier
+    # calculations are not offered in the apps: every LBO set except KK2018
+    # (see docs/validation.md, "Module status").
+    _HIDDEN = lambda name: name.startswith("LBO_") and not name.startswith("LBO_KK2018")
     MEDIA = {}
     for _mod in (_C, _G):
         for _name in sorted(n for n in dir(_mod) if not n.startswith("_")):
             _obj = getattr(_mod, _name)
-            if isinstance(_obj, type):
+            if isinstance(_obj, type) and not _HIDDEN(_name):
                 MEDIA[_name] = _obj
     IMPORT_S = time.perf_counter() - _t0
     return IMPORT_S, MEDIA, go, nd, np, time

@@ -29,11 +29,15 @@ def _():
     import ndispers as nd
     import ndispers.media.crystals as _C
 
+    # Parameterisations kept in the package only to reproduce earlier
+    # calculations are not offered in the apps: every LBO set except KK2018
+    # (see docs/validation.md, "Module status").
+    _HIDDEN = lambda name: name.startswith("LBO_") and not name.startswith("LBO_KK2018")
     # only media that can phase-match: one of the two angles must be free
     XTALS = {}
     for _name in sorted(n for n in dir(_C) if not n.startswith("_")):
         _cls = getattr(_C, _name)
-        if not isinstance(_cls, type):
+        if not isinstance(_cls, type) or _HIDDEN(_name):
             continue
         _x = _cls()
         if "var" in (_x.theta_rad, _x.phi_rad):

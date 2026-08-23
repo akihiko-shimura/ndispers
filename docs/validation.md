@@ -108,10 +108,10 @@ better than others. This table says which to reach for.
 
 | Module | Status | Why |
 |---|---|---|
-| `LBO_KK2018_*` | **recommended** | the only LBO set that reproduces the observed 90° temperature (147.0 °C against 148–151 °C observed) |
-| `LBO_Ghosh1995_*`, `LBO_Newlight_*` | faithful | 130 °C and 158 °C for the same point — usable for temperature work only as a rough guide |
-| `LBO_Castech_*` | faithful | its dn/dT contradicts the 148 °C printed on the same data sheet, giving 240 °C. Room-temperature indices agree with every other set to 7 × 10⁻⁵; use it to reproduce the vendor sheet, not to tune temperature |
-| `LBO_KK1994_*` | faithful | reaches no 90° solution at any temperature. Kato, Grechin & Umemura published the 2018 formula to correct exactly this |
+| `LBO_KK2018_*` | **recommended** | the only LBO set that reproduces the observed 90° temperature (147.0 °C against 148–151 °C observed). The only LBO set offered in the browser apps |
+| `LBO_Ghosh1995_*`, `LBO_Newlight_*` | faithful, package only | 130 °C and 158 °C for the same point — usable for temperature work only as a rough guide. Kept to reproduce earlier calculations; not listed in the apps |
+| `LBO_Castech_*` | faithful, package only | its dn/dT contradicts the 148 °C printed on the same data sheet, giving 240 °C. Room-temperature indices agree with every other set to 7 × 10⁻⁵; use it to reproduce the vendor sheet, not to tune temperature. Not listed in the apps |
+| `LBO_KK1994_*` | faithful, package only | reaches no 90° solution at any temperature. Kato, Grechin & Umemura published the 2018 formula to correct exactly this. Not listed in the apps |
 | `AGS_Kato1996` | **recommended** | reproduces Kato *et al.* 2019's table to ≤ 0.3° |
 | `AGS_Takaoka1999` | **deprecated** | deviates up to 1.35° on the same table, and the thermo-optic formula that is the paper's actual contribution is not implemented here, so nothing is gained over `AGS_Kato1996` |
 | `ZGP_Das2003` | **recommended** | its type-I limit, 10.74 µm, matches Kato 1997's 10.78 µm, so it covers the CO₂ line |
