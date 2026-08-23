@@ -242,5 +242,5 @@ were not at hand; when they are, the rows go in the tables above.
 
 ---
 
-*Recomputed against ndispers 0.17.0. To reproduce any row, call the method
+*Recomputed against ndispers 0.18.0. To reproduce any row, call the method
 named in it; the package's own test suite pins the values marked "exact".*

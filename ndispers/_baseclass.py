@@ -528,12 +528,14 @@ class Medium:
         return {'wl_i': wl_i, **d}
 
     def tuning_dfg(self, wl_p, angle_rad, T_degC, pol_s, pol_i, pol_p,
-                   wl_i_max=20.0, tol_um=1e-6, n_grid=2001):
+                   wl_i_max=20.0, tol_um=1e-6, n_grid=2001, qpm_period=None, qpm_order=1):
         """
         Signal/idler pairs that phase-match at a fixed angle and temperature -
         one point of an OPO/OPA tuning curve.
 
-        Solves Δk(wl_s) = 0 with 1/wl_i = 1/wl_p - 1/wl_s, for the signal on
+        Solves Δk(wl_s) = 0 - or, with ``qpm_period`` given, the quasi-phase-
+        matching condition |Δk(wl_s)| = 2π·qpm_order/Λ - with 1/wl_i = 1/wl_p
+        - 1/wl_s, for the signal on
         the short-wavelength side of degeneracy (wl_s <= wl_i). The search runs
         on an even grid in signal frequency from degeneracy (wl_s = 2 wl_p) to
         the signal whose idler is ``wl_i_max``; each sign change is refined with
@@ -561,6 +563,13 @@ class Medium:
             Absolute tolerance of the returned signal wavelength, in µm.
         n_grid : int, default 2001
             Points of the coarse frequency grid.
+        qpm_period : float, optional
+            Poling period Λ in µm. When given, the condition solved is
+            |Δk| = 2π m/Λ (m = ``qpm_order``) instead of Δk = 0 - the tuning of
+            a periodically poled crystal at fixed Λ, e.g. PPLN's signal versus
+            temperature with ``('e', 'e', 'e')`` at angle_rad = pi/2.
+        qpm_order : int, default 1
+            QPM order m.
 
         Return
         ------
@@ -571,14 +580,19 @@ class Medium:
         nu_p = 1. / wl_p
         nu_s = np.linspace(nu_p / 2, nu_p - 1. / wl_i_max, n_grid)   # even in frequency
         wl_s_ar = 1. / nu_s
+        # the residual that must vanish: dk itself, or |dk| less the grating vector
+        k_g = 0.0 if qpm_period is None else 2 * pi * qpm_order / qpm_period
+
+        def resid(w):
+            d = self.dk_dfg(wl_p, w, angle_rad, T_degC, pol_s, pol_i, pol_p)
+            return d if qpm_period is None else np.abs(d) - k_g
         try:
             with np.errstate(invalid='ignore', divide='ignore'):
-                dk_ar = np.asarray(self.dk_dfg(wl_p, wl_s_ar, angle_rad, T_degC,
-                                               pol_s, pol_i, pol_p), dtype=float)
+                dk_ar = np.asarray(resid(wl_s_ar), dtype=float)
         except ValueError:
             return []                         # no Sellmeier equation for a polarization
         ok = np.isfinite(dk_ar)
-        dk = lambda w: float(self.dk_dfg(wl_p, w, angle_rad, T_degC, pol_s, pol_i, pol_p))
+        dk = lambda w: float(resid(w))
         roots = []
         sign = np.signbit(dk_ar)
         for i in np.nonzero(np.diff(sign) & ok[:-1] & ok[1:])[0]:

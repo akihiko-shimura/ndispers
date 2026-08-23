@@ -8,9 +8,8 @@
   （ベクトル Δk、群速度整合条件 v_s = v_i cos Ω、Type II の分枝、d_eff の波ごとの k̂）。
   検証値は BBO 400 nm 励起 θ ≈ 31.5°, α ≈ 3.7° を Cerullo & De Silvestri 2003 /
   Wilhelm, Piel, Riedle 1997 の PDF（手元にあり）で内部角・外部角を確定してから。
-- **QPM の温度チューニング曲線** λ_s(T) at fixed Λ — アプリは Λ(λ_s) しか描いていない。
-  PPLN ユーザーが一番見る図。`tuning_dfg` に `qpm_period=` 引数（Δk − 2π/Λ = 0 を解く）を
-  足せば一関数で済む。
+- ~~QPM の温度チューニング曲線~~ → v0.18.0: `tuning_dfg(..., qpm_period=Λ)` とアプリの
+  「temperature tuning at Λ」パネル（Λ は入力可）。
 - **二軸結晶の主平面外**（θ, φ とも自由）— `Medium` は面ごとのクラスで主平面に限定。
   NOPA の面外版と合わせて要る。
 - 位相整合アプリの **Δk/sinc² 曲線データの CSV 書き出し**（レポート検討時に見送り）。

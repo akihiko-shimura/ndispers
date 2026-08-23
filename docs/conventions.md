@@ -169,7 +169,10 @@ polarization arguments read (signal, idler, pump)** — the order SNLO uses
   (λ_s, λ_i) pair with λ_s ≤ λ_i — one point of an OPO tuning curve. The
   Type II branch with the other wave as signal is the triple with pol_s
   and pol_i exchanged. Sellmeier equations are extrapolated up to
-  `wl_i_max`; mind the medium's validity range.
+  `wl_i_max`; mind the medium's validity range. With `qpm_period=Λ` (and
+  `qpm_order`) it solves |Δk| = 2πm/Λ instead — the temperature tuning of a
+  periodically poled crystal: `SLN().tuning_dfg(1.064, pi/2, T, 'e', 'e', 'e',
+  qpm_period=30.85)` moves the signal from 1550 nm at 25 °C to 1640 nm at 200 °C.
 - Bandwidths differ from SFG: for an OPA the pump is fixed and the idler
   follows the signal, so the gain bandwidth is set to first order by the
   signal–idler group-velocity mismatch. The phase-matching app computes it

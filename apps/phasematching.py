@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["ndispers==0.17.0", "numpy", "plotly"]
+# dependencies = ["ndispers==0.18.0", "numpy", "plotly"]
 # ///
 """Phase-matching calculator for sum-frequency generation.
 
@@ -254,7 +254,23 @@ def _(ANGLE_PM, HAS_PM, L, PLOT_LAYOUT, PLOT_TITLE, POLS, T_C, WL1, WL2, make_su
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_PM, ANGLE_SYM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3, go, make_subplots, mo, np, x):
+def _(np):
+    def zero_curve(xs, z):
+        """(x, fractional index) points where z changes sign along its second
+        axis, the crossing interpolated linearly - a zero locus as a sparse
+        point set (a contour trace would ship the whole grid to the browser)."""
+        _px, _py = [], []
+        for _i, _row in enumerate(z):
+            _ok = np.isfinite(_row)
+            for _j in np.nonzero(np.diff(np.signbit(_row)) & _ok[:-1] & _ok[1:])[0]:
+                _f = _row[_j] / (_row[_j] - _row[_j + 1])
+                _px.append(xs[_i]); _py.append(_j + _f)
+        return np.array(_px), np.array(_py)
+    return (zero_curve,)
+
+
+@app.cell(hide_code=True)
+def _(ANGLE_PM, ANGLE_SYM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3, make_subplots, mo, np, x, zero_curve):
     # OPO / OPA tuning curves: the zero contour of dk over (angle, signal
     # frequency) and over (temperature, signal frequency) - one vectorised
     # evaluation each, every branch drawn, no root finder needed for a plot.
@@ -277,24 +293,12 @@ def _(ANGLE_PM, ANGLE_SYM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
         with np.errstate(all="ignore"):
             _dk_ang = np.asarray(x.dk_dfg(WL3, _wl_s[None, :], np.radians(_ang)[:, None], T_C, *POLS), float)
             _dk_T = np.asarray(x.dk_dfg(WL3, _wl_s[None, :], ANGLE_PM, _T[:, None], *POLS), float)
-        def _zero_curve(xs, z):
-            """(x, index) points where z changes sign along its second axis, with
-            the crossing interpolated linearly - the dk = 0 locus as a sparse
-            point set (a contour trace would ship the whole grid to the browser)."""
-            _px, _py = [], []
-            for _i, _row in enumerate(z):
-                _ok = np.isfinite(_row)
-                for _j in np.nonzero(np.diff(np.signbit(_row)) & _ok[:-1] & _ok[1:])[0]:
-                    _f = _row[_j] / (_row[_j] - _row[_j + 1])
-                    _px.append(xs[_i]); _py.append(_j + _f)
-            return np.array(_px), np.array(_py)
-
         _fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12,
                              subplot_titles=(f"angle tuning at T = {T_C:g} °C",
                                              f"temperature tuning at {ANGLE_SYM} = {np.degrees(ANGLE_PM):.3f}°"))
         _idx = np.arange(_wl_s.size)
         for _col, _xs, _dk in ((1, _ang, _dk_ang), (2, _T, _dk_T)):
-            _px, _pj = _zero_curve(_xs, _dk)
+            _px, _pj = zero_curve(_xs, _dk)
             for _y, _name, _color in ((_wl_s * 1e3, "signal", "#1f77b4"), (_wl_i * 1e3, "idler", "#d62728")):
                 _fig.add_scatter(
                     x=_px, y=np.interp(_pj, _idx, _y) if _px.size else [], mode="markers",
@@ -333,36 +337,76 @@ def _(ANGLE_PM, ANGLE_SYM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
 
 
 @app.cell(hide_code=True)
-def _(IS_DFG, PLOT_LAYOUT, T_C, WL1, WL3, go, mo, np, x):
+def _(IS_DFG, T_C, WL1, WL3, mo, np, x):
+    # the poling period that phase-matches the present signal - the default
+    # for the temperature-tuning panel, editable to "my crystal has Λ = 30 µm"
+    try:
+        QPM_NOW = float(x.qpm_period_dfg(WL3, WL1, np.pi / 2, T_C, "e", "e", "e")) if IS_DFG else np.nan
+    except ValueError:
+        QPM_NOW = np.nan
+    qpm_period = mo.ui.number(
+        0.1, 10000.0, value=round(QPM_NOW, 2) if np.isfinite(QPM_NOW) else 30.0, step=0.01,
+        label="Poling period Λ (µm) for the temperature panel")
+    return QPM_NOW, qpm_period
+
+
+@app.cell(hide_code=True)
+def _(IS_DFG, PLOT_LAYOUT, QPM_NOW, T_C, WL1, WL2, WL3, make_subplots, mo, np, qpm_period, x, zero_curve):
     # Quasi-phase-matching: the poling period that phase-matches each signal
     # for all waves extraordinary along a principal axis (d33 of LiNbO3, LiTaO3,
-    # KTP). Drawn for every crystal with an e-ray; meaningful for the ferroelectrics.
-    if IS_DFG:
-        try:
-            _nu_p = 1.0 / WL3
-            _nu_s = np.linspace(_nu_p / 2, _nu_p - 1.0 / min(5.5, 12 * WL3), 300)
-            _wl_s = 1.0 / _nu_s
-            _wl_i = 1.0 / (_nu_p - _nu_s)
-            with np.errstate(all="ignore"):
-                _per = np.asarray(x.qpm_period_dfg(WL3, _wl_s, np.pi / 2, T_C, "e", "e", "e"), float)
-            _per_now = float(x.qpm_period_dfg(WL3, WL1, np.pi / 2, T_C, "e", "e", "e"))
-            _fig = go.Figure(go.Scatter(
-                x=_wl_s * 1e3, y=_per, mode="lines", customdata=_wl_i * 1e3,
-                hovertemplate="signal %{x:.1f} nm, idler %{customdata:.1f} nm<br>Λ = %{y:.2f} µm<extra></extra>"))
-            _fig.add_scatter(x=[WL1 * 1e3], y=[_per_now], mode="markers", marker=dict(size=8, color="#d62728"),
-                             hovertemplate="current signal<extra></extra>")
-            _fig.update_layout(**PLOT_LAYOUT, height=280, xaxis_title="signal (nm)",
-                               yaxis_title="poling period Λ (µm)",
-                               title_text=f"QPM, e+e→e along the axis, T = {T_C:g} °C, pump {WL3 * 1e3:.2f} nm")
-            _out = mo.vstack([mo.md(
-                "## Quasi-phase-matching period\n\n"
-                "First-order poling period for all three waves extraordinary, propagating along "
-                "a principal axis (the PPLN / PPSLT / PPKTP geometry, using d33): "
-                f"**Λ = {_per_now:.2f} µm** for the present signal. Temperature tuning follows the "
-                "medium's dn/dT — choose a parameterisation with one (SLN, SLT) for that."),
-                _fig])
-        except ValueError:
-            _out = mo.md("")
+    # KTP), and the signal/idler a fixed period selects as the temperature is
+    # tuned. Drawn for every crystal with an e-ray; meaningful for the ferroelectrics.
+    if IS_DFG and np.isfinite(QPM_NOW):
+        _nu_p = 1.0 / WL3
+        _nu_s = np.linspace(_nu_p / 2, _nu_p - 1.0 / min(5.5, 12 * WL3), 300)
+        _wl_s = 1.0 / _nu_s
+        _wl_i = 1.0 / (_nu_p - _nu_s)
+        _T = np.linspace(-50.0, 300.0, 141)
+        _Lam = qpm_period.value
+        with np.errstate(all="ignore"):
+            _per = np.asarray(x.qpm_period_dfg(WL3, _wl_s, np.pi / 2, T_C, "e", "e", "e"), float)
+            # |dk| - 2π/Λ over (T, signal): its zero locus is the temperature tuning curve
+            _res = np.abs(np.asarray(x.dk_dfg(WL3, _wl_s[None, :], np.pi / 2, _T[:, None], "e", "e", "e"),
+                                     float)) - 2 * np.pi / _Lam
+        _fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12,
+                             subplot_titles=(f"period for each signal, T = {T_C:g} °C",
+                                             f"temperature tuning at Λ = {_Lam:g} µm"))
+        _fig.add_scatter(x=_wl_s * 1e3, y=_per, mode="lines", customdata=_wl_i * 1e3, row=1, col=1,
+                         line=dict(color="#1f77b4"), showlegend=False,
+                         hovertemplate="signal %{x:.1f} nm, idler %{customdata:.1f} nm<br>Λ = %{y:.2f} µm<extra></extra>")
+        _fig.add_scatter(x=[WL1 * 1e3], y=[QPM_NOW], mode="markers", marker=dict(size=8, color="#d62728"),
+                         row=1, col=1, showlegend=False, hovertemplate="current signal<extra></extra>")
+        _px, _pj = zero_curve(_T, _res)
+        _idx = np.arange(_wl_s.size)
+        for _y, _name, _color in ((_wl_s * 1e3, "signal", "#1f77b4"), (_wl_i * 1e3, "idler", "#d62728")):
+            _fig.add_scatter(x=_px, y=np.interp(_pj, _idx, _y) if _px.size else [], mode="markers",
+                             marker=dict(color=_color, size=3), row=1, col=2, name=_name,
+                             hovertemplate=f"%{{x:.1f}} °C<br>{_name} %{{y:.1f}} nm<extra></extra>")
+        if abs(_Lam - QPM_NOW) < 0.005 + 1e-9:
+            _fig.add_scatter(x=[T_C, T_C], y=[WL1 * 1e3, WL2 * 1e3], mode="markers",
+                             marker=dict(size=8, color=["#1f77b4", "#d62728"]), row=1, col=2,
+                             showlegend=False, hovertemplate="present operating point<extra></extra>")
+        _fig.update_xaxes(title_text="signal (nm)", row=1, col=1)
+        _fig.update_yaxes(title_text="poling period Λ (µm)", row=1, col=1)
+        _fig.update_xaxes(title_text="T (°C)", range=[-50, 300], row=1, col=2)
+        _fig.update_yaxes(title_text="wavelength (nm)", range=[WL3 * 1e3, _wl_i.max() * 1e3], row=1, col=2)
+        _fig.update_layout(**{**PLOT_LAYOUT, "showlegend": True, "width": 760}, height=320,
+                           title_text=f"QPM, e+e→e along the axis, pump {WL3 * 1e3:.2f} nm",
+                           legend=dict(x=0.52, y=0.99, bgcolor="rgba(255,255,255,0.6)"))
+        _fig.update_annotations(font_size=11)
+        _flat = float(np.ptp(_res, axis=0).max()) < 1e-12
+        _out = mo.vstack([mo.md(
+            "## Quasi-phase-matching\n\n"
+            "First-order poling period for all three waves extraordinary, propagating along "
+            "a principal axis (the PPLN / PPSLT / PPKTP geometry, using d33): "
+            f"**Λ = {QPM_NOW:.2f} µm** for the present signal. The right panel is the signal "
+            "and idler that a crystal of the period entered below selects as it is heated — the "
+            "temperature-tuning curve of a PPLN OPO."
+            + (" **Flat here: Δk does not change with temperature for this medium — either its "
+               "Sellmeier equation has no temperature term, or its dn/dT is the same for all "
+               "wavelengths and cancels between the three waves. SLN and SLT carry a "
+               "wavelength-dependent dn/dT.**" if _flat else "")),
+            qpm_period, _fig])
     else:
         _out = mo.md("")
     _out

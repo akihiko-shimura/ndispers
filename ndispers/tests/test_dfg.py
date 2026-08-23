@@ -106,3 +106,21 @@ def test_tuning_no_solution_cases():
     assert b.tuning_dfg(0.355, np.radians(5), 25, "o", "o", "e", wl_i_max=3.0) == []   # far from PM
     assert C.SLN().tuning_dfg(1.064, np.pi / 2, 25, "o", "o", "e") == []               # no o-ray
     assert b.tuning_dfg(0.355, 0.5, 25, "o", "o", "e", wl_i_max=0.5) == []             # empty range
+
+
+def test_tuning_with_qpm_period_round_trips_and_tunes_with_temperature():
+    """PPLN-style: the period that phase-matches (1064 -> 1550 + 3393 nm) at
+    25 degC gives that signal back from tuning_dfg(qpm_period=...), and the
+    same period at 150 degC gives a different signal because SLN carries dn/dT."""
+    s = C.SLN()
+    per = s.qpm_period_dfg(1.064, 1.55, np.pi / 2, 25, "e", "e", "e")
+    pairs = s.tuning_dfg(1.064, np.pi / 2, 25, "e", "e", "e", wl_i_max=5.0, qpm_period=per)
+    assert any(abs(ws - 1.55) < 1e-5 for ws, wi in pairs), pairs
+    hot = s.tuning_dfg(1.064, np.pi / 2, 150, "e", "e", "e", wl_i_max=5.0, qpm_period=per)
+    assert hot and abs(hot[0][0] - 1.55) > 1e-3
+    # a medium with no temperature term: same signal at any T
+    m = C.MgOLN_Zelmon1997()
+    per = m.qpm_period_dfg(1.064, 1.55, np.pi / 2, 25, "e", "e", "e")
+    a = m.tuning_dfg(1.064, np.pi / 2, 25, "e", "e", "e", wl_i_max=5.0, qpm_period=per)
+    b = m.tuning_dfg(1.064, np.pi / 2, 200, "e", "e", "e", wl_i_max=5.0, qpm_period=per)
+    assert a and b and abs(a[0][0] - b[0][0]) < 1e-9

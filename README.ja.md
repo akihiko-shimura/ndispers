@@ -112,7 +112,7 @@ array([1.89001202, 1.69328828, 1.66985875, 1.6612891 , 1.65633946,
  'oeo': {'theta': [], 'phi': None}}
 ```
 
-差周波発生・光パラメトリック増幅/発振では同じ相互作用をポンプ側から入ります: `pmAngles_dfg(wl_p, wl_s, T)` が位相整合角（と遊休波長）、`tuning_dfg(wl_p, angle, T, pol_s, pol_i, pol_p)` が固定角度で位相整合する信号/遊休の組（OPO チューニング曲線の 1 点）を返し、`dk_dfg`・`pmFactor_dfg`・`qpm_period_dfg`・`deff_dfg` は SFG 版と対になります（波の順序は signal, idler, pump）。1064 nm 励起の x カット KTP なら `KTP_zx().tuning_dfg(1.064, np.pi/2, 25, 'o', 'e', 'o')` がおなじみの非臨界の組 1571 / 3298 nm を返します。
+差周波発生・光パラメトリック増幅/発振では同じ相互作用をポンプ側から入ります: `pmAngles_dfg(wl_p, wl_s, T)` が位相整合角（と遊休波長）、`tuning_dfg(wl_p, angle, T, pol_s, pol_i, pol_p)` が固定角度で位相整合する信号/遊休の組（OPO チューニング曲線の 1 点）を返し、`dk_dfg`・`pmFactor_dfg`・`qpm_period_dfg`・`deff_dfg` は SFG 版と対になります（波の順序は signal, idler, pump）。1064 nm 励起の x カット KTP なら `KTP_zx().tuning_dfg(1.064, np.pi/2, 25, 'o', 'e', 'o')` がおなじみの非臨界の組 1571 / 3298 nm を返します。`qpm_period=` を渡せば同じ関数で周期分極反転結晶の温度チューニングが得られます。
 
 `dk_sfg` と `pmFactor_sfg` は任意の角度での位相不整合と sinc² 位相整合因子を、`qpm_period_sfg` は擬似位相整合周期を返します。5% MgO:LiNbO₃ の x 軸伝搬・全波異常光線（d33）での 1064 nm SHG なら `MgOLN_Zelmon1997().qpm_period_sfg(1.064, 1.064, np.pi/2, 20, 'e', 'e', 'e')` でおなじみの約 7.0 µm です。
 
