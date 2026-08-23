@@ -93,6 +93,37 @@ These sit exactly on the 0–90° endpoint and were reported as *no solution* be
 
 ---
 
+# Module status
+
+Several media come in more than one parameterisation. They are not
+interchangeable: each is faithful to its own source, and some sources are
+better than others. This table says which to reach for.
+
+| Status | Meaning |
+|---|---|
+| **recommended** | the default choice for that material |
+| **faithful** | correct transcription of its source, but the source has a stated limitation; keep it to reproduce that source, not to get the best number |
+| **deprecated** | superseded with no remaining advantage; slated for removal |
+
+| Module | Status | Why |
+|---|---|---|
+| `LBO_KK2018_*` | **recommended** | the only LBO set that reproduces the observed 90° temperature (147.0 °C against 148–151 °C observed) |
+| `LBO_Ghosh1995_*`, `LBO_Newlight_*` | faithful | 130 °C and 158 °C for the same point — usable for temperature work only as a rough guide |
+| `LBO_Castech_*` | faithful | its dn/dT contradicts the 148 °C printed on the same data sheet, giving 240 °C. Room-temperature indices agree with every other set to 7 × 10⁻⁵; use it to reproduce the vendor sheet, not to tune temperature |
+| `LBO_KK1994_*` | faithful | reaches no 90° solution at any temperature. Kato, Grechin & Umemura published the 2018 formula to correct exactly this |
+| `AGS_Kato1996` | **recommended** | reproduces Kato *et al.* 2019's table to ≤ 0.3° |
+| `AGS_Takaoka1999` | **deprecated** | deviates up to 1.35° on the same table, and the thermo-optic formula that is the paper's actual contribution is not implemented here, so nothing is gained over `AGS_Kato1996` |
+| `ZGP_Das2003` | **recommended** | its type-I limit, 10.74 µm, matches Kato 1997's 10.78 µm, so it covers the CO₂ line |
+| `ZGP_Zelmon2001` | faithful | valid over its stated 2–9 µm; do not use it near 10.6 µm, where its limit falls 0.2 µm short |
+| `MgOLN_Zelmon1997` | **recommended** for birefringent phase matching | both rays, so ooe/oee d_eff can be evaluated |
+| `SLN` | **recommended** for quasi-phase matching | *not* superseded by `MgOLN_Zelmon1997`: it is the only LiNbO₃ here with a temperature-dependent index, and the QPM period it gives moves from 7.03 µm at 25 °C to 6.74 µm at 200 °C, where `MgOLN_Zelmon1997` returns 6.995 µm at every temperature. Its *absolute* dn/dT is not physical (see caveat 10); the index *differences* that QPM depends on are what Gayer's coefficients were fitted to |
+| `BetaBBO_*` (four) | all usable | they agree to 0.1° on the 1064 nm SHG angle; `Tamosauskas2018` is closest at 800 nm |
+
+`LBO_EKSMA` was removed in 0.14.0. It had never been exported from
+`ndispers.media.crystals`, so no code could reach it.
+
+---
+
 # Caveats
 
 These came out of the same audit. None is a defect in the package's arithmetic;

@@ -188,6 +188,8 @@ One refractive index, no angle or polarization argument: methods take `(wl_um, T
 | Silicon, germanium | Si, Ge (cubic, m3̄m) |
 | Diamond | C (cubic, m3̄m) |
 
+Where a material has several parameterisations they are **not** interchangeable — each is faithful to its own source, and some sources are better than others. The [validation page](https://ndispers.readthedocs.io/en/latest/validation/) says which to reach for and why.
+
 For biaxial crystals one class per principal dielectric plane is provided; the
 angle argument is the one that varies in that plane (φ in xy, θ in yz and zx),
 and an instance's `theta_rad` / `phi_rad` attributes say which. Media whose

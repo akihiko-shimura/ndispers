@@ -7,6 +7,14 @@ class AGS(Uniax_42m):
     """
     AGS (AgGaS₂, silver thiogallate) crystal, Takaoka & Kato 1999 parameterisation
 
+    DEPRECATED. Use AGS_Kato1996, which reproduces the phase-matching table of
+    Kato et al. 2019 to 0.3 degrees where this set deviates by up to 1.35. The
+    thermo-optic dispersion formula that is the actual contribution of Takaoka
+    & Kato 1999 is not implemented here (the paper was not available for
+    transcription), so this class offers nothing the other does not. It is kept
+    for one release as an independent check on the transcription of the
+    room-temperature set, and will be removed in 1.0.
+
     - Point group : 4̄2m  (D2d)
     - Crystal system : Tetragonal
     - Dielectric principal axis, z // c-axis (x, y-axes are arbitrary)
