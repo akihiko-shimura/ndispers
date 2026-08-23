@@ -121,7 +121,8 @@ def _(IS_DFG, XTALS, T, given, mo, shg, wl1, wl2, wlg, wlp, xtal):
         WAVES = ("λ₁", "λ₂", "λ₃")
     T_C = T.value
     ANGLE_KEY = "theta" if x.theta_rad == "var" else "phi"
-    return ANGLE_KEY, T_C, WAVES, WL1, WL2, WL3, x
+    ANGLE_SYM = "θ" if ANGLE_KEY == "theta" else "φ"      # for titles and labels
+    return ANGLE_KEY, ANGLE_SYM, T_C, WAVES, WL1, WL2, WL3, x
 
 
 @app.cell(hide_code=True)
@@ -159,7 +160,7 @@ def _(HAS_PM, POLS, mo, x):
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_KEY, IS_DFG, T_C, WAVES, WL1, WL2, WL3, mo, x):
+def _(ANGLE_KEY, ANGLE_SYM, IS_DFG, T_C, WAVES, WL1, WL2, WL3, mo, x):
     # Type I: both inputs share a polarization. Type II: they differ.
     TYPE_OF = {
         "ooe": "I (negative)", "eeo": "I (positive)",
@@ -184,7 +185,7 @@ def _(ANGLE_KEY, IS_DFG, T_C, WAVES, WL1, WL2, WL3, mo, x):
     {(f"pump {WL3 * 1e3:.2f} nm → signal {WL1 * 1e3:.2f} nm + **idler {WL2 * 1e3:.2f} nm**"
       if IS_DFG else
       f"λ₁ = {WL1 * 1e3:.2f} nm, λ₂ = {WL2 * 1e3:.2f} nm → **λ₃ = {WL3 * 1e3:.2f} nm**")}
-    &nbsp;·&nbsp; the varying angle of this crystal is **{ANGLE_KEY}**
+    &nbsp;·&nbsp; the varying angle of this crystal is **{ANGLE_SYM}**
 
     | polarizations ({", ".join(WAVES) if IS_DFG else "1,2,3"}) | type | angle | |
     |---|---|---|---|
@@ -206,13 +207,13 @@ def _(SOLUTIONS, mo):
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_KEY, SOLUTIONS, T_C, np, pmtype, xtal):
+def _(ANGLE_SYM, SOLUTIONS, T_C, np, pmtype, xtal):
     HAS_PM = bool(SOLUTIONS) and pmtype.value in SOLUTIONS
     ANGLE_PM = np.radians(SOLUTIONS[pmtype.value]) if HAS_PM else np.nan
     POLS = tuple(pmtype.value) if HAS_PM else ("o", "o", "e")
     # the state every plot below was computed at
     PLOT_TITLE = (
-        f"{xtal.value}   T = {T_C:g} °C, {ANGLE_KEY} = "
+        f"{xtal.value}   T = {T_C:g} °C, {ANGLE_SYM} = "
         f"{SOLUTIONS[pmtype.value]:.3f}°, pol = {pmtype.value}"
         if HAS_PM else ""
     )
@@ -252,7 +253,7 @@ def _(ANGLE_PM, HAS_PM, L, PLOT_LAYOUT, PLOT_TITLE, POLS, T_C, WL1, WL2, make_su
 
 
 @app.cell(hide_code=True)
-def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3, go, make_subplots, mo, np, x):
+def _(ANGLE_PM, ANGLE_SYM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3, go, make_subplots, mo, np, x):
     # OPO / OPA tuning curves: the zero contour of dk over (angle, signal
     # frequency) and over (temperature, signal frequency) - one vectorised
     # evaluation each, every branch drawn, no root finder needed for a plot.
@@ -289,7 +290,7 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
 
         _fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12,
                              subplot_titles=(f"angle tuning at T = {T_C:g} °C",
-                                             f"temperature tuning at {ANGLE_KEY} = {np.degrees(ANGLE_PM):.3f}°"))
+                                             f"temperature tuning at {ANGLE_SYM} = {np.degrees(ANGLE_PM):.3f}°"))
         _idx = np.arange(_wl_s.size)
         for _col, _xs, _dk in ((1, _ang, _dk_ang), (2, _T, _dk_T)):
             _px, _pj = _zero_curve(_xs, _dk)
@@ -309,7 +310,7 @@ def _(ANGLE_KEY, ANGLE_PM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
                          row=1, col=2, showlegend=False, hovertemplate="current signal<extra></extra>")
         _fig.add_scatter(x=[T_C], y=[WL2 * 1e3], mode="markers", marker=dict(color="#d62728", size=8),
                          row=1, col=2, showlegend=False, hovertemplate="current idler<extra></extra>")
-        _fig.update_xaxes(title_text=f"{ANGLE_KEY} (deg)", range=[0, 90], row=1, col=1)
+        _fig.update_xaxes(title_text=f"{ANGLE_SYM} (deg)", range=[0, 90], row=1, col=1)
         _fig.update_xaxes(title_text="T (°C)", range=[-50, 300], row=1, col=2)
         _fig.update_yaxes(title_text="wavelength (nm)", range=[WL3 * 1e3, _wl_i_max * 1e3], row=1, col=1)
         _fig.update_yaxes(range=[WL3 * 1e3, _wl_i_max * 1e3], row=1, col=2)
