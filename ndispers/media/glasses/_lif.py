@@ -1,4 +1,4 @@
-import sympy
+from ndispers._sym import sympy
 from ndispers._baseclass import Medium, wl, T
 from ndispers.helper import vars2
 

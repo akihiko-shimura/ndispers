@@ -1,4 +1,4 @@
-import sympy
+from ndispers._sym import sympy
 from ndispers._baseclass import wl, phi, theta, T, pi
 from ndispers.groups import Biax_mm2
 from ndispers.helper import vars2
@@ -50,9 +50,8 @@ class LBO(Biax_mm2):
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",
-                 "_G_x", "_H_x", "_R_x",
-                 "_G_y", "_H_y", "_R_y",
-                 "_G_z", "_H_z", "_R_z"]
+                 "_G_x", "_H_x", "_H_y",
+                 "_G_z"]
 
     # mm2 tensor in the crystallographic frame (a, b, c) with c polar; the
     # dielectric axes are x // a, y // -c, z // b
@@ -88,14 +87,9 @@ class LBO(Biax_mm2):
         self._E_z = 91
         # dn/dT
         self._G_x = -127.70167e-6
-        self._G_y = (372.170 - 2.199e-1 * T + 1.1748e-3 * T**2 - 2.05077e-6 * T**3)*1e-6
         self._G_z = -446.95031e-6
         self._H_x = 122.13435e-6
         self._H_y = -415.10435e-6
-        self._H_z = (410.66123 + 1.667e-1 * T - 5.1887e-4 * T**2 + 5.56251e-7 * T**3)*1e-6
-        self._R_x = wl**2/(wl**2 - 0.0530**2)
-        self._R_y = wl**2/(wl**2 - 0.0327**2)
-        self._R_z = wl**2/(wl**2 - 0.0435**2)
 
 
     def _n_T20_x_expr(self):
@@ -118,6 +112,36 @@ class LBO(Biax_mm2):
 
     def dndT_z_expr(self):
         return (self._G_z * self._R_z + self._H_z * self._R_z**2) / (2*self._n_T20_z_expr())
+
+    @property
+    def _G_y(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return (372.170 - 2.199e-1 * T + 1.1748e-3 * T**2 - 2.05077e-6 * T**3)*1e-6
+
+    @property
+    def _H_z(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return (410.66123 + 1.667e-1 * T - 5.1887e-4 * T**2 + 5.56251e-7 * T**3)*1e-6
+
+    @property
+    def _R_x(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return wl**2/(wl**2 - 0.0530**2)
+
+    @property
+    def _R_y(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return wl**2/(wl**2 - 0.0327**2)
+
+    @property
+    def _R_z(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return wl**2/(wl**2 - 0.0435**2)
 
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """

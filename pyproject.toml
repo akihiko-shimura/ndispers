@@ -35,13 +35,16 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "mpmath",
     "numpy",
-    "sympy",
 ]
 
+[project.optional-dependencies]
+# symbolic access to the dispersion formulas (n_expr and friends), and
+# evaluating a medium that has no pre-generated module (a user subclass)
+sym = ["sympy"]
+
 [dependency-groups]
-dev = ["pytest"]
+dev = ["pytest", "sympy"]
 # for running examples/basic_usage.ipynb and exploring interactively;
 # kept out of dev so CI's uv sync stays lean
 notebook = ["matplotlib", "plotly", "ipython", "jupyterlab", "marimo"]

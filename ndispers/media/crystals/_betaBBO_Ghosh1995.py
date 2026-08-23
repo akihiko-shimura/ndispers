@@ -1,4 +1,4 @@
-import sympy
+from ndispers._sym import sympy
 from ndispers._baseclass import wl, phi, theta, T
 from ndispers.groups import Uniax_3m
 from ndispers.helper import vars2
@@ -38,8 +38,8 @@ class BetaBBO(Uniax_3m):
     """
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E_e",
-                 "_G_o", "_H_o", "_R_o",
-                 "_G_e", "_H_e", "_R_e"]
+                 "_G_o", "_H_o",
+                 "_G_e", "_H_e"]
 
     # Second-order nonlinear coefficients, pm/V, at the (wl1, wl2) of their
     # measurement; scaled to other wavelengths by Miller's rule (see groups).
@@ -75,8 +75,6 @@ class BetaBBO(Uniax_3m):
         self._G_e = -141.421e-6
         self._H_o = -34.9683e-6
         self._H_e = 110.8630e-6
-        self._R_o = wl**2/(wl**2 - 0.0652**2)
-        self._R_e = wl**2/(wl**2 - 0.0730**2)
 
 
     def _n_T20_o_expr(self):
@@ -92,6 +90,18 @@ class BetaBBO(Uniax_3m):
 
     def dndT_e_expr(self):
         return (self._G_e * self._R_e + self._H_e * self._R_e**2) / (2*self._n_T20_e_expr())
+
+    @property
+    def _R_o(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return wl**2/(wl**2 - 0.0652**2)
+
+    @property
+    def _R_e(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return wl**2/(wl**2 - 0.0730**2)
 
     def n_o_expr(self):
         return self._n_T20_o_expr() + self.dndT_o_expr() * (T - 20)

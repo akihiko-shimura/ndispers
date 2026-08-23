@@ -1,13 +1,7 @@
 """
 base class for medium object - _baseclass.py
 """
-import sympy
-from sympy.utilities import lambdify
-
-wl = sympy.Symbol('lambda')
-phi = sympy.Symbol('phi')
-theta = sympy.Symbol('theta')
-T = sympy.Symbol('T')
+from ._sym import sympy, wl, phi, theta, T
 
 from math import pi
 
@@ -18,6 +12,25 @@ import numpy as np
 
 
 from .helper import returnShape, vars2, brentq
+
+
+def _compiled_module(cls):
+    """The pre-generated module for a medium class, or None."""
+    import importlib
+    try:
+        mod = importlib.import_module(f"ndispers._compiled.{cls.__name__}")
+    except ImportError:
+        return None
+    # a user subclass that happens to share a name must not pick up the
+    # original's functions
+    if mod.CLASS != f"{cls.__module__}.{cls.__qualname__}":
+        return None
+    return mod
+
+
+def _compiled_func(cls, expr_name, pol):
+    mod = _compiled_module(cls)
+    return None if mod is None else mod.FUNCS.get((expr_name, pol))
 
 
 class Medium:
@@ -82,6 +95,18 @@ class Medium:
 
     def n_expr(self, pol):
         return 1.0
+
+    def n_latex(self, pol=None):
+        """LaTeX of the refractive-index formula for one polarization, as a string.
+
+        Read from the pre-generated module when there is one, so that it does
+        not need sympy; otherwise rendered from ``n_expr``."""
+        if pol is None:
+            pol = self._default_pol
+        mod = _compiled_module(type(self))
+        if mod is not None and pol in mod.LATEX:
+            return mod.LATEX[pol]
+        return sympy.latex(self.n_expr(pol))
 
     """ Derivative expressions """
     def dn_wl_expr(self, pol):
@@ -160,7 +185,12 @@ class Medium:
         key = (type(self), expr.__name__, pol)
         func = Medium._lambdified.get(key)
         if func is None:
-            func = lambdify(self.symbols, expr(pol), 'numpy')
+            func = _compiled_func(type(self), expr.__name__, pol)
+            if func is None:
+                # no pre-generated module for this class (a user subclass,
+                # or the generator was not run): build it with sympy
+                func = sympy.lambdify([s._sympy_() for s in self.symbols],
+                                      expr(pol), 'numpy')
             Medium._lambdified[key] = func
         out = np.resize(func(*args), returnShape(*array_args))
         # scalar in, scalar out - not a 0-d ndarray

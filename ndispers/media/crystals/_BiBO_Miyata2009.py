@@ -1,4 +1,4 @@
-import sympy
+from ndispers._sym import sympy
 from ndispers._baseclass import wl, phi, theta, T, pi
 from ndispers.groups import Biax_2
 from ndispers.helper import vars2

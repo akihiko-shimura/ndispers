@@ -1,4 +1,4 @@
-import sympy
+from ndispers._sym import sympy
 from ndispers._baseclass import wl, phi, theta, T, pi
 from ndispers.groups import Biax_mm2
 from ndispers.helper import vars2
@@ -49,8 +49,7 @@ class KTP(Biax_mm2):
 
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
-                 "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",
-                 "_dndT_x", "_dndT_y", "_dndT_z"]
+                 "_A_z", "_B_z", "_C_z", "_D_z", "_E_z"]
 
     # mm2 tensor in the crystallographic frame (a, b, c) with c polar;
     # dielectric x // a, y // b, z // c
@@ -87,10 +86,25 @@ class KTP(Biax_mm2):
         self._D_z = 110.80672
         self._E_z = 86.12171
         #dn/dT
-        self._dndT_x = (0.1717/wl**3 - 0.5353/wl**2 + 0.8416/wl + 0.1627)*1e-5 #1/K
-        self._dndT_y = (0.1997/wl**3 - 0.4063/wl**2 + 0.5154/wl + 0.5425)*1e-5 #1/K
-        self._dndT_z = (0.9221/wl**3 - 2.9220/wl**2 + 3.6677/wl - 0.1897)*1e-5 #1/K
 
+
+    @property
+    def _dndT_x(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return (0.1717/wl**3 - 0.5353/wl**2 + 0.8416/wl + 0.1627)*1e-5  # 1/K
+
+    @property
+    def _dndT_y(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return (0.1997/wl**3 - 0.4063/wl**2 + 0.5154/wl + 0.5425)*1e-5  # 1/K
+
+    @property
+    def _dndT_z(self):
+        # a sympy expression, built on demand so that constructing
+        # the medium does not need sympy
+        return (0.9221/wl**3 - 2.9220/wl**2 + 3.6677/wl - 0.1897)*1e-5  # 1/K
 
     def n_x_expr(self):
         """ sympy expresssion, dispersion formula of x-axis (principal dielectric axis) """
