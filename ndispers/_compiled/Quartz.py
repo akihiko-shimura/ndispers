@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._quartz.Quartz'
-SOURCE_HASH = '1aa3ef6e2141d26ca0af279ad0ea92e9ec2b2bad2a6b3a62212bdec255a908d4'
+SOURCE_HASH = '1a18882918e9067d374fdac79b1dfe52648f5752fb282c5856ecfc083dc413d9'
 LATEX = {'o': '\\sqrt{\\frac{0.663044 \\lambda^{2}}{\\lambda^{2} - 0.0036} + \\frac{0.517852 \\lambda^{2}}{\\lambda^{2} - 0.011236} + \\frac{0.175912 \\lambda^{2}}{\\lambda^{2} - 0.014161} + \\frac{0.56538 \\lambda^{2}}{\\lambda^{2} - 78.216336} + \\frac{1.675299 \\lambda^{2}}{\\lambda^{2} - 430.230564} + 1}', 'e': '\\frac{\\sqrt{\\frac{0.665721 \\lambda^{2}}{\\lambda^{2} - 0.0036} + \\frac{0.503511 \\lambda^{2}}{\\lambda^{2} - 0.011236} + \\frac{0.214792 \\lambda^{2}}{\\lambda^{2} - 0.014161} + \\frac{0.539173 \\lambda^{2}}{\\lambda^{2} - 77.299264} + \\frac{1.807613 \\lambda^{2}}{\\lambda^{2} - 39085.29} + 1}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(\\frac{0.665721 \\lambda^{2}}{\\lambda^{2} - 0.0036} + \\frac{0.503511 \\lambda^{2}}{\\lambda^{2} - 0.011236} + \\frac{0.214792 \\lambda^{2}}{\\lambda^{2} - 0.014161} + \\frac{0.539173 \\lambda^{2}}{\\lambda^{2} - 77.299264} + \\frac{1.807613 \\lambda^{2}}{\\lambda^{2} - 39085.29} + 1\\right) \\cos^{2}{\\left(\\theta \\right)}}{\\frac{0.663044 \\lambda^{2}}{\\lambda^{2} - 0.0036} + \\frac{0.517852 \\lambda^{2}}{\\lambda^{2} - 0.011236} + \\frac{0.175912 \\lambda^{2}}{\\lambda^{2} - 0.014161} + \\frac{0.56538 \\lambda^{2}}{\\lambda^{2} - 78.216336} + \\frac{1.675299 \\lambda^{2}}{\\lambda^{2} - 430.230564} + 1}}}'}
 
 def _f0(wl, theta, phi, T):

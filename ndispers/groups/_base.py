@@ -200,6 +200,23 @@ class NonlinearGroup(Medium):
         return out.item() if np.ndim(out) == 0 else out
 
 
+    # DFG / OPA / OPO: the same tensor contraction. Under Kleinman symmetry d is
+    # invariant to permuting the three waves, and Miller's chi(w3) chi(w1) chi(w2)
+    # is symmetric too, so d_eff for the parametric process equals the SFG one
+    # evaluated at (signal, idler). Indices (1, 2, 3) = (signal, idler, pump).
+
+    def d_dfg(self, il, wl_p, wl_s, T_degC):
+        """Tensor component d_il (pm/V) for DFG/OPA of pump wl_p and signal wl_s;
+        see ``d_sfg``. Equals ``d_sfg(il, wl_s, wl_i, T)``."""
+        return self.d_sfg(il, wl_s, self.wl_idler(wl_p, wl_s), T_degC)
+
+    def deff_dfg(self, wl_p, wl_s, theta_rad, phi_rad, T_degC, pol_s, pol_i, pol_p):
+        """Effective nonlinear coefficient d_eff (pm/V) for collinear DFG / OPA /
+        OPO; see ``deff_sfg``. Polarizations read (signal, idler, pump)."""
+        return self.deff_sfg(wl_s, self.wl_idler(wl_p, wl_s), theta_rad, phi_rad, T_degC,
+                             pol_s, pol_i, pol_p)
+
+
 class UniaxialGroup(NonlinearGroup):
     """Uniaxial: chi_xx = chi_yy from n_o, chi_zz from the principal n_e."""
     __slots__ = []

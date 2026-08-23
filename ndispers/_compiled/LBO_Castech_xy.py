@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals.LBO_Castech_xy'
-SOURCE_HASH = '1995b190603fabf6bcd8ca9a4e34b3c53d4751a3bf168e77d3a09f3252db7c49'
+SOURCE_HASH = 'f1077d3b19092175c131331580dfc6df043690ec3d0829879fe4842117603cf2'
 LATEX = {'o': '\\left(T - 20\\right) \\left(- 2.1 \\cdot 10^{-6} \\lambda - 6.3 \\cdot 10^{-6}\\right) + \\sqrt{- 0.000226 \\lambda^{4} - 0.017968 \\lambda^{2} + 2.586179 + \\frac{0.013099}{\\lambda^{2} - 0.011893}}', 'e': '\\frac{\\left(- 1.36 \\cdot 10^{-5} T + \\sqrt{0.0002 \\lambda^{4} - 0.01854 \\lambda^{2} + 2.53907 + \\frac{0.012711}{\\lambda^{2} - 0.012523}} + 0.000272\\right) \\left(- 9.3 \\cdot 10^{-6} T + \\sqrt{- 6.6 \\cdot 10^{-5} \\lambda^{4} - 0.01459 \\lambda^{2} + 2.45414 + \\frac{0.011249}{\\lambda^{2} - 0.01135}} + 0.000186\\right)}{\\sqrt{\\left(- 1.36 \\cdot 10^{-5} T + \\sqrt{0.0002 \\lambda^{4} - 0.01854 \\lambda^{2} + 2.53907 + \\frac{0.012711}{\\lambda^{2} - 0.012523}} + 0.000272\\right)^{2} \\sin^{2}{\\left(\\phi \\right)} + \\left(- 9.3 \\cdot 10^{-6} T + \\sqrt{- 6.6 \\cdot 10^{-5} \\lambda^{4} - 0.01459 \\lambda^{2} + 2.45414 + \\frac{0.011249}{\\lambda^{2} - 0.01135}} + 0.000186\\right)^{2} \\cos^{2}{\\left(\\phi \\right)}}}'}
 
 def _f0(wl, theta, phi, T):

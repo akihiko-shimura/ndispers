@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals.AGS_Kato1996'
-SOURCE_HASH = '1995b190603fabf6bcd8ca9a4e34b3c53d4751a3bf168e77d3a09f3252db7c49'
+SOURCE_HASH = '9e280d2022d122bd2ee938f5cd79388c7a42bcc634d5e34faff7712b9d7a4995'
 LATEX = {'o': '\\sqrt{- 9.7051 \\cdot 10^{-9} \\lambda^{6} + 3.1814 \\cdot 10^{-7} \\lambda^{4} - 0.0024534 \\lambda^{2} + 5.79419 + \\frac{0.23114}{\\lambda^{2} - 0.06882}}', 'e': '\\frac{\\sqrt{- 8.3605 \\cdot 10^{-9} \\lambda^{6} + 3.6214 \\cdot 10^{-7} \\lambda^{4} - 0.002524 \\lambda^{2} + 5.5412 + \\frac{0.22041}{\\lambda^{2} - 0.09824}}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(- 8.3605 \\cdot 10^{-9} \\lambda^{6} + 3.6214 \\cdot 10^{-7} \\lambda^{4} - 0.002524 \\lambda^{2} + 5.5412 + \\frac{0.22041}{\\lambda^{2} - 0.09824}\\right) \\cos^{2}{\\left(\\theta \\right)}}{- 9.7051 \\cdot 10^{-9} \\lambda^{6} + 3.1814 \\cdot 10^{-7} \\lambda^{4} - 0.0024534 \\lambda^{2} + 5.79419 + \\frac{0.23114}{\\lambda^{2} - 0.06882}}}}'}
 
 def _f0(wl, theta, phi, T):

@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals.BetaBBO_KK2010'
-SOURCE_HASH = '1995b190603fabf6bcd8ca9a4e34b3c53d4751a3bf168e77d3a09f3252db7c49'
+SOURCE_HASH = '9e280d2022d122bd2ee938f5cd79388c7a42bcc634d5e34faff7712b9d7a4995'
 LATEX = {'o': '\\left(T - 20\\right) \\left(-1.5287 \\cdot 10^{-5} - \\frac{1.334 \\cdot 10^{-6}}{\\lambda} + \\frac{6.07 \\cdot 10^{-7}}{\\lambda^{2}} - \\frac{1.37 \\cdot 10^{-7}}{\\lambda^{3}}\\right) + \\sqrt{3.63357 + \\frac{0.01878}{\\lambda^{2} - 0.01822} + \\frac{60.9129}{\\lambda^{2} - 67.8505}}', 'e': '\\frac{\\left(T - 20\\right) \\left(-1.2749 \\cdot 10^{-5} + \\frac{4.408 \\cdot 10^{-6}}{\\lambda} - \\frac{2.119 \\cdot 10^{-6}}{\\lambda^{2}} + \\frac{4.13 \\cdot 10^{-7}}{\\lambda^{3}}\\right) + \\sqrt{3.33469 + \\frac{0.01237}{\\lambda^{2} - 0.01647} + \\frac{79.0672}{\\lambda^{2} - 82.2919}}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(\\left(T - 20\\right) \\left(-1.2749 \\cdot 10^{-5} + \\frac{4.408 \\cdot 10^{-6}}{\\lambda} - \\frac{2.119 \\cdot 10^{-6}}{\\lambda^{2}} + \\frac{4.13 \\cdot 10^{-7}}{\\lambda^{3}}\\right) + \\sqrt{3.33469 + \\frac{0.01237}{\\lambda^{2} - 0.01647} + \\frac{79.0672}{\\lambda^{2} - 82.2919}}\\right)^{2} \\cos^{2}{\\left(\\theta \\right)}}{\\left(\\left(T - 20\\right) \\left(-1.5287 \\cdot 10^{-5} - \\frac{1.334 \\cdot 10^{-6}}{\\lambda} + \\frac{6.07 \\cdot 10^{-7}}{\\lambda^{2}} - \\frac{1.37 \\cdot 10^{-7}}{\\lambda^{3}}\\right) + \\sqrt{3.63357 + \\frac{0.01878}{\\lambda^{2} - 0.01822} + \\frac{60.9129}{\\lambda^{2} - 67.8505}}\\right)^{2}}}}'}
 
 def _f0(wl, theta, phi, T):

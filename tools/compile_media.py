@@ -33,16 +33,17 @@ from ndispers.groups._base import BiaxialGroup  # noqa: E402
 OUT = ROOT / "ndispers" / "_compiled"
 EXPRS = ["n", "dn_wl", "d2n_wl", "d3n_wl", "GD", "GV", "ng", "GVD", "TOD",
          "woa_theta", "woa_phi", "dndT", "dndT2"]
-FORMULA_FILES = [ROOT / "ndispers" / "_baseclass.py",
-                 ROOT / "ndispers" / "groups" / "_base.py"]
 
 
 def source_hash(cls):
     """Hash of everything the generated code depends on: the medium's own file
-    and the files that define the derivative expressions."""
-    h = hashlib.sha256()
-    for f in [Path(sys.modules[cls.__module__].__file__), *FORMULA_FILES]:
-        h.update(f.read_bytes())
+    and the source of every *_expr method it inherits (so an edit elsewhere in
+    _baseclass.py - a docstring, pmAngles - does not invalidate 60 modules)."""
+    h = hashlib.sha256(Path(sys.modules[cls.__module__].__file__).read_bytes())
+    for klass in cls.__mro__[1:]:
+        for name, obj in sorted(vars(klass).items()):
+            if name.endswith("_expr") or name == "_n_axis":
+                h.update(inspect.getsource(obj).encode())
     return h.hexdigest()
 
 

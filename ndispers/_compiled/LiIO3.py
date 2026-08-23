@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._LiIO3.LiIO3'
-SOURCE_HASH = '0c290ea9f7cb819d818813ec0038706ba69ff4518beaafb9abb214f49fa96f25'
+SOURCE_HASH = '0d30361baabd2d8f9c5d32c87f24f36e6bf72b6c0b915545c5f3dfc2d1c7b507'
 LATEX = {'o': '\\sqrt{\\frac{1.37623 \\lambda^{2}}{\\lambda^{2} - 0.0350823} + \\frac{1.06745 \\lambda^{2}}{\\lambda^{2} - 169.0} + 2.03132}', 'e': '\\frac{\\sqrt{\\frac{1.08807 \\lambda^{2}}{\\lambda^{2} - 0.031381} + \\frac{0.554582 \\lambda^{2}}{\\lambda^{2} - 158.76} + 1.83086}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(\\frac{1.08807 \\lambda^{2}}{\\lambda^{2} - 0.031381} + \\frac{0.554582 \\lambda^{2}}{\\lambda^{2} - 158.76} + 1.83086\\right) \\cos^{2}{\\left(\\theta \\right)}}{\\frac{1.37623 \\lambda^{2}}{\\lambda^{2} - 0.0350823} + \\frac{1.06745 \\lambda^{2}}{\\lambda^{2} - 169.0} + 2.03132}}}'}
 
 def _f0(wl, theta, phi, T):

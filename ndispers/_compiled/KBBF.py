@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._KBBF_Li2016.KBBF'
-SOURCE_HASH = '8e41a0d1d95694478952c7710cafd21845a77b7242c9e669bf9ec23acd41b167'
+SOURCE_HASH = '15948da7c3b9957d53c3a95ff547ec72b8a76899f8729f4068e2afc562783a87'
 LATEX = {'o': '\\sqrt{- 0.0113908 \\lambda^{2} + \\frac{0.9502782 \\lambda^{2}}{\\lambda^{2} - 0.00545450194116} + \\frac{0.1960298 \\lambda^{2}}{\\lambda^{2} - 0.01685806204996} + 1.024248}', 'e': '\\frac{\\sqrt{- 0.0044736 \\lambda^{2} + \\frac{0.8684699 \\lambda^{2}}{\\lambda^{2} - 0.00418550772025} + \\frac{0.1256642 \\lambda^{2}}{\\lambda^{2} - 0.01430930326225} + 0.9411543}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(- 0.0044736 \\lambda^{2} + \\frac{0.8684699 \\lambda^{2}}{\\lambda^{2} - 0.00418550772025} + \\frac{0.1256642 \\lambda^{2}}{\\lambda^{2} - 0.01430930326225} + 0.9411543\\right) \\cos^{2}{\\left(\\theta \\right)}}{- 0.0113908 \\lambda^{2} + \\frac{0.9502782 \\lambda^{2}}{\\lambda^{2} - 0.00545450194116} + \\frac{0.1960298 \\lambda^{2}}{\\lambda^{2} - 0.01685806204996} + 1.024248}}}'}
 
 def _f0(wl, theta, phi, T):

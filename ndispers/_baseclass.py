@@ -468,5 +468,131 @@ class Medium:
         L_um = L_mm * 1e3
         t = 0.5 * self.dk_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3) * L_um
         return (np.sin(t)/t)**2
+
+    # ------------------------------------------------------------------
+    # Difference-frequency generation / optical parametric amplification and
+    # oscillation.  The interaction is the same three-wave process as SFG -
+    # k_p = k_s + k_i with 1/wl_p = 1/wl_s + 1/wl_i - so every quantity is the
+    # SFG one evaluated at (wl_s, wl_i); what differs is which wavelengths are
+    # given.  Indices (1, 2, 3) = (signal, idler, pump), the order SNLO uses
+    # (red1, red2, blue), so 'ooe' is a Type I OPA (signal and idler
+    # ordinary, pump extraordinary) and 'oee' / 'eoe' are Type II.
+    # ------------------------------------------------------------------
+
+    def wl_idler(self, wl_p, wl_s):
+        """
+        Idler wavelength of DFG/OPA: 1/wl_i = 1/wl_p - 1/wl_s (µm).
+
+        Raises ValueError unless wl_s > wl_p everywhere - the signal must carry
+        less energy per photon than the pump for an idler to exist.
+        """
+        wl_p = np.asarray(wl_p, dtype=float)
+        wl_s = np.asarray(wl_s, dtype=float)
+        if np.any(wl_s <= wl_p):
+            raise ValueError("DFG/OPA needs wl_s > wl_p (the idler 1/(1/wl_p - 1/wl_s) "
+                             "must be positive and finite)")
+        out = 1. / (1. / wl_p - 1. / wl_s)
+        return out.item() if out.ndim == 0 else out
+
+    def dk_dfg(self, wl_p, wl_s, angle_rad, T_degC, pol_s, pol_i, pol_p):
+        """
+        Wavevector mismatch k_p - k_s - k_i (rad/µm) for DFG / OPA / OPO.
+
+        Identical to ``dk_sfg(wl_s, wl_i, ...)`` with wl_i = ``wl_idler``; see
+        that method for the arguments. Polarizations are given in the order
+        (signal, idler, pump).
+        """
+        return self.dk_sfg(wl_s, self.wl_idler(wl_p, wl_s), angle_rad, T_degC, pol_s, pol_i, pol_p)
+
+    def pmFactor_dfg(self, wl_p, wl_s, angle_rad, T_degC, pol_s, pol_i, pol_p, L_mm):
+        """sinc²(Δk L / 2) for DFG / OPA / OPO; see ``pmFactor_sfg``."""
+        return self.pmFactor_sfg(wl_s, self.wl_idler(wl_p, wl_s), angle_rad, T_degC,
+                                 pol_s, pol_i, pol_p, L_mm)
+
+    def qpm_period_dfg(self, wl_p, wl_s, angle_rad, T_degC, pol_s, pol_i, pol_p, order=1):
+        """Quasi-phase-matching period (µm) for DFG / OPA / OPO; see ``qpm_period_sfg``."""
+        return self.qpm_period_sfg(wl_s, self.wl_idler(wl_p, wl_s), angle_rad, T_degC,
+                                   pol_s, pol_i, pol_p, order)
+
+    def pmAngles_dfg(self, wl_p, wl_s, T_degC, tol_deg=0.001, deg=False):
+        """
+        Phase-matching angles for DFG / OPA / OPO at a given pump and signal.
+
+        The same dictionary as ``pmAngles_sfg(wl_s, wl_i, ...)`` with the key
+        'wl3' replaced by 'wl_i', the idler wavelength in µm. Polarization keys read
+        (signal, idler, pump): 'ooe' is Type I, 'oee' and 'eoe' Type II.
+        """
+        wl_i = self.wl_idler(wl_p, wl_s)
+        d = self.pmAngles_sfg(wl_s, wl_i, T_degC, tol_deg=tol_deg, deg=deg)
+        del d['wl3']
+        return {'wl_i': wl_i, **d}
+
+    def tuning_dfg(self, wl_p, angle_rad, T_degC, pol_s, pol_i, pol_p,
+                   wl_i_max=20.0, tol_um=1e-6, n_grid=2001):
+        """
+        Signal/idler pairs that phase-match at a fixed angle and temperature -
+        one point of an OPO/OPA tuning curve.
+
+        Solves Δk(wl_s) = 0 with 1/wl_i = 1/wl_p - 1/wl_s, for the signal on
+        the short-wavelength side of degeneracy (wl_s <= wl_i). The search runs
+        on an even grid in signal frequency from degeneracy (wl_s = 2 wl_p) to
+        the signal whose idler is ``wl_i_max``; each sign change is refined with
+        Brent's method, so every root is returned - a Type II branch or a
+        retracing angle-tuning curve can give more than one. Degeneracy itself,
+        where Δk touches zero without crossing, is reported when |Δk| there is
+        smaller than its change over the first grid step.
+
+        Parameters
+        ----------
+        wl_p : float
+            Pump wavelength in µm.
+        angle_rad : float
+            theta or phi angle in radians (see ``n``).
+        T_degC : float
+            Crystal temperature in degC.
+        pol_s, pol_i, pol_p : {'o', 'e'}
+            Polarizations of signal, idler and pump. The branch with signal
+            and idler polarizations exchanged is the triple with pol_s and
+            pol_i swapped.
+        wl_i_max : float, default 20
+            Longest idler wavelength searched, in µm. Sellmeier equations are
+            extrapolated up to it; check the medium's validity range.
+        tol_um : float, default 1e-6
+            Absolute tolerance of the returned signal wavelength, in µm.
+        n_grid : int, default 2001
+            Points of the coarse frequency grid.
+
+        Return
+        ------
+        list of (wl_s, wl_i) tuples, in µm, sorted by wl_s; empty if none.
+        """
+        if wl_i_max <= 2 * wl_p:
+            return []
+        nu_p = 1. / wl_p
+        nu_s = np.linspace(nu_p / 2, nu_p - 1. / wl_i_max, n_grid)   # even in frequency
+        wl_s_ar = 1. / nu_s
+        try:
+            with np.errstate(invalid='ignore', divide='ignore'):
+                dk_ar = np.asarray(self.dk_dfg(wl_p, wl_s_ar, angle_rad, T_degC,
+                                               pol_s, pol_i, pol_p), dtype=float)
+        except ValueError:
+            return []                         # no Sellmeier equation for a polarization
+        ok = np.isfinite(dk_ar)
+        dk = lambda w: float(self.dk_dfg(wl_p, w, angle_rad, T_degC, pol_s, pol_i, pol_p))
+        roots = []
+        sign = np.signbit(dk_ar)
+        for i in np.nonzero(np.diff(sign) & ok[:-1] & ok[1:])[0]:
+            # brentq works in wavelength; the bracket is one grid cell
+            a, b = wl_s_ar[i + 1], wl_s_ar[i]       # wl decreases along the grid
+            roots.append(brentq(dk, a, b, xtol=tol_um))
+        # degeneracy: Δk(nu_s) is stationary there for Type I (signal and
+        # idler are the same wave), so a root at 2 wl_p never shows as a sign
+        # change on the half-grid. Accept it when |Δk| is within one grid
+        # step's change of zero.
+        if ok[0] and ok[1] and not (roots and abs(roots[-1] - wl_s_ar[0]) <= tol_um):
+            if abs(dk_ar[0]) <= abs(dk_ar[1] - dk_ar[0]):
+                roots.append(float(wl_s_ar[0]))
+        roots.sort()
+        return [(w, float(self.wl_idler(wl_p, w))) for w in roots]
     
  

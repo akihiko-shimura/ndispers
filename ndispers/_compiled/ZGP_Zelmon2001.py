@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals.ZGP_Zelmon2001'
-SOURCE_HASH = '1995b190603fabf6bcd8ca9a4e34b3c53d4751a3bf168e77d3a09f3252db7c49'
+SOURCE_HASH = '9e280d2022d122bd2ee938f5cd79388c7a42bcc634d5e34faff7712b9d7a4995'
 LATEX = {'o': '\\sqrt{\\frac{1.68625 \\lambda^{2}}{\\lambda^{2} - 0.40824} + \\frac{1.288 \\lambda^{2}}{\\lambda^{2} - 611.05} + 8.0409}', 'e': '\\frac{\\sqrt{\\frac{1.8649 \\lambda^{2}}{\\lambda^{2} - 0.41468} + \\frac{0.84052 \\lambda^{2}}{\\lambda^{2} - 452.05} + 8.0929}}{\\sqrt{\\frac{\\left(\\frac{1.8649 \\lambda^{2}}{\\lambda^{2} - 0.41468} + \\frac{0.84052 \\lambda^{2}}{\\lambda^{2} - 452.05} + 8.0929\\right) \\cos^{2}{\\left(\\theta \\right)}}{\\frac{1.68625 \\lambda^{2}}{\\lambda^{2} - 0.40824} + \\frac{1.288 \\lambda^{2}}{\\lambda^{2} - 611.05} + 8.0409} + \\sin^{2}{\\left(\\theta \\right)}}}'}
 
 def _f0(wl, theta, phi, T):
