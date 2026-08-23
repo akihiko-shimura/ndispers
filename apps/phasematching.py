@@ -197,13 +197,26 @@ def _(ANGLE_KEY, ANGLE_SYM, IS_DFG, T_C, WAVES, WL1, WL2, WL3, mo, x):
 
 
 @app.cell(hide_code=True)
-def _(SOLUTIONS, mo):
+def _(SOLUTIONS, T_C, WL1, mo, x):
     pmtype = mo.ui.dropdown(
         options=list(SOLUTIONS) or ["ooe"],
         value=(list(SOLUTIONS) or ["ooe"])[0],
         label="Interaction to analyse",
     )
-    pmtype if SOLUTIONS else mo.md("*No phase-matching solution — change λ, T or crystal.*")
+    # a medium with an extraordinary-ray Sellmeier equation only (SLN) cannot
+    # birefringently phase-match at all: say that, rather than "change λ"
+    try:
+        x.n(WL1, 0.0, T_C, pol="o")
+        _has_o = True
+    except ValueError:
+        _has_o = False
+    _none = (
+        "*No birefringent phase matching: this medium has a Sellmeier equation for the "
+        "extraordinary ray only, and every birefringent interaction needs an ordinary wave. "
+        "It is meant for **quasi-phase matching** (all waves extraordinary, d33) — see the "
+        "QPM section below.*" if not _has_o else
+        "*No phase-matching solution — change λ, T or crystal.*")
+    pmtype if SOLUTIONS else mo.md(_none)
     return (pmtype,)
 
 
@@ -337,11 +350,11 @@ def _(ANGLE_PM, ANGLE_SYM, HAS_PM, IS_DFG, PLOT_LAYOUT, POLS, T_C, WL1, WL2, WL3
 
 
 @app.cell(hide_code=True)
-def _(IS_DFG, T_C, WL1, WL3, mo, np, x):
-    # the poling period that phase-matches the present signal - the default
-    # for the temperature-tuning panel, editable to "my crystal has Λ = 30 µm"
+def _(IS_DFG, T_C, WL1, WL2, WL3, mo, np, x):
+    # the poling period that phase-matches the present wavelengths - the
+    # default for the temperature-tuning panel, editable to "my crystal has Λ = 30 µm"
     try:
-        QPM_NOW = float(x.qpm_period_dfg(WL3, WL1, np.pi / 2, T_C, "e", "e", "e")) if IS_DFG else np.nan
+        QPM_NOW = float(x.qpm_period_sfg(WL1, WL2, np.pi / 2, T_C, "e", "e", "e"))
     except ValueError:
         QPM_NOW = np.nan
     qpm_period = mo.ui.number(
@@ -351,47 +364,62 @@ def _(IS_DFG, T_C, WL1, WL3, mo, np, x):
 
 
 @app.cell(hide_code=True)
-def _(IS_DFG, PLOT_LAYOUT, QPM_NOW, T_C, WL1, WL2, WL3, make_subplots, mo, np, qpm_period, x, zero_curve):
-    # Quasi-phase-matching: the poling period that phase-matches each signal
-    # for all waves extraordinary along a principal axis (d33 of LiNbO3, LiTaO3,
-    # KTP), and the signal/idler a fixed period selects as the temperature is
-    # tuned. Drawn for every crystal with an e-ray; meaningful for the ferroelectrics.
-    if IS_DFG and np.isfinite(QPM_NOW):
-        _nu_p = 1.0 / WL3
-        _nu_s = np.linspace(_nu_p / 2, _nu_p - 1.0 / min(5.5, 12 * WL3), 300)
-        _wl_s = 1.0 / _nu_s
-        _wl_i = 1.0 / (_nu_p - _nu_s)
+def _(IS_DFG, PLOT_LAYOUT, QPM_NOW, T_C, WL1, WL2, WL3, make_subplots, mo, np, qpm_period, shg, x, zero_curve):
+    # Quasi-phase-matching: the first-order poling period for all waves
+    # extraordinary along a principal axis (d33 of LiNbO3, LiTaO3, KTP), and
+    # what a fixed period selects as the temperature is tuned. Drawn for every
+    # crystal with an e-ray; meaningful for the ferroelectrics.
+    if np.isfinite(QPM_NOW):
         _T = np.linspace(-50.0, 300.0, 141)
         _Lam = qpm_period.value
         with np.errstate(all="ignore"):
-            _per = np.asarray(x.qpm_period_dfg(WL3, _wl_s, np.pi / 2, T_C, "e", "e", "e"), float)
-            # |dk| - 2π/Λ over (T, signal): its zero locus is the temperature tuning curve
-            _res = np.abs(np.asarray(x.dk_dfg(WL3, _wl_s[None, :], np.pi / 2, _T[:, None], "e", "e", "e"),
-                                     float)) - 2 * np.pi / _Lam
+            if IS_DFG:
+                # sweep the signal at fixed pump; the idler follows
+                _nu_p = 1.0 / WL3
+                _nu = np.linspace(_nu_p / 2, _nu_p - 1.0 / min(5.5, 12 * WL3), 300)
+                _wl_x = 1.0 / _nu
+                _wl_other = 1.0 / (_nu_p - _nu)
+                _per = np.asarray(x.qpm_period_dfg(WL3, _wl_x, np.pi / 2, T_C, "e", "e", "e"), float)
+                _res = np.abs(np.asarray(x.dk_dfg(WL3, _wl_x[None, :], np.pi / 2, _T[:, None], "e", "e", "e"),
+                                         float)) - 2 * np.pi / _Lam
+                _xlab, _curves = "signal (nm)", (("signal", _wl_x, "#1f77b4"), ("idler", _wl_other, "#d62728"))
+                _now = (WL1, WL2)
+            else:
+                # sweep λ₁ (for SHG λ₂ = λ₁ follows; otherwise λ₂ is held)
+                _wl_x = np.linspace(WL1 / 1.8, WL1 * 1.8, 300)
+                _wl_2 = _wl_x if shg.value else np.full_like(_wl_x, WL2)
+                _per = np.asarray(x.qpm_period_sfg(_wl_x, _wl_2, np.pi / 2, T_C, "e", "e", "e"), float)
+                _res = np.abs(np.asarray(x.dk_sfg(_wl_x[None, :], _wl_2[None, :], np.pi / 2, _T[:, None],
+                                                  "e", "e", "e"), float)) - 2 * np.pi / _Lam
+                _xlab = "λ₁ (nm)" + ("" if shg.value else f", λ₂ = {WL2 * 1e3:g} nm")
+                _curves = (("λ₁", _wl_x, "#1f77b4"),)
+                _now = (WL1,)
         _fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12,
-                             subplot_titles=(f"period for each signal, T = {T_C:g} °C",
+                             subplot_titles=(f"period for each wavelength, T = {T_C:g} °C",
                                              f"temperature tuning at Λ = {_Lam:g} µm"))
-        _fig.add_scatter(x=_wl_s * 1e3, y=_per, mode="lines", customdata=_wl_i * 1e3, row=1, col=1,
-                         line=dict(color="#1f77b4"), showlegend=False,
-                         hovertemplate="signal %{x:.1f} nm, idler %{customdata:.1f} nm<br>Λ = %{y:.2f} µm<extra></extra>")
+        _fig.add_scatter(x=_wl_x * 1e3, y=_per, mode="lines", row=1, col=1, line=dict(color="#1f77b4"),
+                         showlegend=False, hovertemplate="%{x:.1f} nm<br>Λ = %{y:.2f} µm<extra></extra>")
         _fig.add_scatter(x=[WL1 * 1e3], y=[QPM_NOW], mode="markers", marker=dict(size=8, color="#d62728"),
-                         row=1, col=1, showlegend=False, hovertemplate="current signal<extra></extra>")
+                         row=1, col=1, showlegend=False, hovertemplate="present wavelengths<extra></extra>")
         _px, _pj = zero_curve(_T, _res)
-        _idx = np.arange(_wl_s.size)
-        for _y, _name, _color in ((_wl_s * 1e3, "signal", "#1f77b4"), (_wl_i * 1e3, "idler", "#d62728")):
-            _fig.add_scatter(x=_px, y=np.interp(_pj, _idx, _y) if _px.size else [], mode="markers",
+        _idx = np.arange(_wl_x.size)
+        for _name, _y, _color in _curves:
+            _fig.add_scatter(x=_px, y=np.interp(_pj, _idx, _y * 1e3) if _px.size else [], mode="markers",
                              marker=dict(color=_color, size=3), row=1, col=2, name=_name,
                              hovertemplate=f"%{{x:.1f}} °C<br>{_name} %{{y:.1f}} nm<extra></extra>")
         if abs(_Lam - QPM_NOW) < 0.005 + 1e-9:
-            _fig.add_scatter(x=[T_C, T_C], y=[WL1 * 1e3, WL2 * 1e3], mode="markers",
-                             marker=dict(size=8, color=["#1f77b4", "#d62728"]), row=1, col=2,
-                             showlegend=False, hovertemplate="present operating point<extra></extra>")
-        _fig.update_xaxes(title_text="signal (nm)", row=1, col=1)
+            _fig.add_scatter(x=[T_C] * len(_now), y=[w * 1e3 for w in _now], mode="markers",
+                             marker=dict(size=8, color=[c for _, _, c in _curves][:len(_now)]),
+                             row=1, col=2, showlegend=False, hovertemplate="present operating point<extra></extra>")
+        _fig.update_xaxes(title_text=_xlab, row=1, col=1)
         _fig.update_yaxes(title_text="poling period Λ (µm)", row=1, col=1)
         _fig.update_xaxes(title_text="T (°C)", range=[-50, 300], row=1, col=2)
-        _fig.update_yaxes(title_text="wavelength (nm)", range=[WL3 * 1e3, _wl_i.max() * 1e3], row=1, col=2)
+        _ymax = max(w.max() for _, w, _ in _curves) * 1e3
+        _ymin = (WL3 if IS_DFG else _wl_x.min()) * 1e3
+        _fig.update_yaxes(title_text="wavelength (nm)", range=[_ymin, _ymax], row=1, col=2)
         _fig.update_layout(**{**PLOT_LAYOUT, "showlegend": True, "width": 760}, height=320,
-                           title_text=f"QPM, e+e→e along the axis, pump {WL3 * 1e3:.2f} nm",
+                           title_text="QPM, e+e→e along the axis"
+                           + (f", pump {WL3 * 1e3:.2f} nm" if IS_DFG else ""),
                            legend=dict(x=0.52, y=0.99, bgcolor="rgba(255,255,255,0.6)"))
         _fig.update_annotations(font_size=11)
         _flat = float(np.ptp(_res, axis=0).max()) < 1e-12
@@ -399,9 +427,10 @@ def _(IS_DFG, PLOT_LAYOUT, QPM_NOW, T_C, WL1, WL2, WL3, make_subplots, mo, np, q
             "## Quasi-phase-matching\n\n"
             "First-order poling period for all three waves extraordinary, propagating along "
             "a principal axis (the PPLN / PPSLT / PPKTP geometry, using d33): "
-            f"**Λ = {QPM_NOW:.2f} µm** for the present signal. The right panel is the signal "
-            "and idler that a crystal of the period entered below selects as it is heated — the "
-            "temperature-tuning curve of a PPLN OPO."
+            f"**Λ = {QPM_NOW:.2f} µm** for the present wavelengths. The right panel is what a "
+            "crystal of the period entered below phase-matches as it is heated — "
+            + ("the temperature-tuning curve of a PPLN OPO." if IS_DFG else
+               "the fundamental a PPLN doubler (or SFG mixer, λ₂ held) accepts at each temperature.")
             + (" **Flat here: Δk does not change with temperature for this medium — either its "
                "Sellmeier equation has no temperature term, or its dn/dT is the same for all "
                "wavelengths and cancels between the three waves. SLN and SLT carry a "
