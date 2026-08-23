@@ -72,7 +72,8 @@ chosen wavelengths.
 ## What the apps list
 
 Every medium in the package except parameterisations kept only to reproduce
-earlier calculations: the LBO sets other than `LBO_KK2018_*` are hidden
+earlier calculations: the LBO sets other than `LBO_KK2018_*` and the
+deprecated `AGS_Takaoka1999` are hidden
 (`_HIDDEN` at the top of each app; the reasons are in the validation page's
 *Module status* table).
 

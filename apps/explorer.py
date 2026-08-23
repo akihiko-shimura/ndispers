@@ -30,9 +30,10 @@ def _():
     import ndispers.media.glasses as _G
 
     # Parameterisations kept in the package only to reproduce earlier
-    # calculations are not offered in the apps: every LBO set except KK2018
-    # (see docs/validation.md, "Module status").
-    _HIDDEN = lambda name: name.startswith("LBO_") and not name.startswith("LBO_KK2018")
+    # calculations are not offered in the apps: every LBO set except KK2018,
+    # and the deprecated AGS_Takaoka1999 (see docs/validation.md, "Module status").
+    _HIDDEN = lambda name: ((name.startswith("LBO_") and not name.startswith("LBO_KK2018"))
+                            or name == "AGS_Takaoka1999")
     MEDIA = {}
     for _mod in (_C, _G):
         for _name in sorted(n for n in dir(_mod) if not n.startswith("_")):
