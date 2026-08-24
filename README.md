@@ -36,7 +36,7 @@ The crystals also have nonlinear-optics methods:
 
 ## Installation
 
-Requires Python 3.9 or later.
+Requires Python 3.10 or later.
 
 ```
 pip install ndispers

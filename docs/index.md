@@ -7,7 +7,7 @@ reported in literature.
 
 ## Installation
 
-*ndispers* works on Python 3.9 or higher:
+*ndispers* works on Python 3.10 or higher:
 
 ```
 pip install ndispers

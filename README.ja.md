@@ -36,7 +36,7 @@
 
 ## インストール
 
-Python 3.9 以降が必要です。
+Python 3.10 以降が必要です。
 
 ```
 pip install ndispers
