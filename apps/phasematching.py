@@ -779,9 +779,9 @@ def _(
             _f = lambda q, _wl=_wl, _p=_p: float(getattr(x, q)(_wl, ANGLE_PM, T_C, pol=_p))
             _waves.append((_lbl, _wl, _p, _f("n"), _f("ng"), _f("GV"), _f("GVD"), _f("TOD"),
                            _f("woa_theta") * 1e3, _f("dndT")))
-        _gvm = 1 / _waves[2][5] - 1 / _waves[0][5]          # fs/um, 3 vs 1
-        _gvm_si = 1 / _waves[0][5] - 1 / _waves[1][5]       # 1 vs 2
-        _gvm_pi = 1 / _waves[2][5] - 1 / _waves[1][5]       # 3 vs 2
+        _gvm_21 = 1 / _waves[1][5] - 1 / _waves[0][5]       # fs/um, delay of 2 rel. to 1
+        _gvm_31 = 1 / _waves[2][5] - 1 / _waves[0][5]       # delay of 3 rel. to 1
+        _gvm_32 = 1 / _waves[2][5] - 1 / _waves[1][5]       # delay of 3 rel. to 2
         _L_um = L.value * 1e3
 
         # "- Point group : 3m (C3v)" in the docstring; the group mixin's name otherwise
@@ -831,13 +831,14 @@ def _(
             _lines.append(f"  {_w[0]:<6s}{_w[1] * 1e3:9.2f}   {_w[2]}   {_w[3]:8.5f} {_w[4]:8.5f}   "
                           f"{_w[5]:9.6f}   {_w[6]:11.2f}   {_w[7]:11.1f}   {_w[8]:12.3f}    {_w[9]:10.3e}")
         _n1, _n2, _n3 = _wn
-        _lines.append(f"  group-velocity mismatch  1/v_g({_n3}) - 1/v_g({_n1}) = {_gvm:+.4f} fs/um   "
-                      f"(over L: {_gvm * _L_um:+.0f} fs)")
-        _lines.append(f"                           1/v_g({_n3}) - 1/v_g({_n2}) = {_gvm_pi:+.4f} fs/um   "
-                      f"(over L: {_gvm_pi * _L_um:+.0f} fs)")
-        _lines.append(f"                           1/v_g({_n1}) - 1/v_g({_n2}) = {_gvm_si:+.4f} fs/um   "
-                      f"(over L: {_gvm_si * _L_um:+.0f} fs)"
+        _lines.append(f"  group-velocity mismatch  (delay of the first wave relative to the second, over L)")
+        _lines.append(f"    {_n2} vs {_n1}:  1/v_g({_n2}) - 1/v_g({_n1}) = {_gvm_21:+.4f} fs/um   "
+                      f"({_gvm_21 * _L_um:+.0f} fs)"
                       + ("   <- sets the parametric gain bandwidth" if IS_DFG else ""))
+        _lines.append(f"    {_n3} vs {_n1}:  1/v_g({_n3}) - 1/v_g({_n1}) = {_gvm_31:+.4f} fs/um   "
+                      f"({_gvm_31 * _L_um:+.0f} fs)")
+        _lines.append(f"    {_n3} vs {_n2}:  1/v_g({_n3}) - 1/v_g({_n2}) = {_gvm_32:+.4f} fs/um   "
+                      f"({_gvm_32 * _L_um:+.0f} fs)")
         _lines += ["", f"ACCEPTANCE  (full width at {threshold.value:.2f} of sinc^2(dk L/2);  L = {L.value:g} mm)"]
         _tag = {"λ₁ only, λ₂ fixed": "wl1 only, wl2 fixed  <- what SNLO and tables report",
                 "λ₁ and λ₂ tuned together": "wl1 = wl2 tuned together   (broadband SHG)",
