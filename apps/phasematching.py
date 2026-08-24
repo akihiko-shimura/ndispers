@@ -779,9 +779,12 @@ def _(
             _f = lambda q, _wl=_wl, _p=_p: float(getattr(x, q)(_wl, ANGLE_PM, T_C, pol=_p))
             _waves.append((_lbl, _wl, _p, _f("n"), _f("ng"), _f("GV"), _f("GVD"), _f("TOD"),
                            _f("woa_theta") * 1e3, _f("dndT")))
-        _gvm_21 = 1 / _waves[1][5] - 1 / _waves[0][5]       # fs/um, delay of 2 rel. to 1
-        _gvm_31 = 1 / _waves[2][5] - 1 / _waves[0][5]       # delay of 3 rel. to 1
-        _gvm_32 = 1 / _waves[2][5] - 1 / _waves[1][5]       # delay of 3 rel. to 2
+        # delays are quoted against the wave that comes in: wl1 for SFG, the pump
+        # for DFG. 1/v_g(a) - 1/v_g(ref) > 0 means a falls behind the reference.
+        _ref = 2 if IS_DFG else 0                           # pump for DFG, wl1 for SFG
+        _oth = [i for i in (0, 1, 2) if i != _ref]
+        _gvm = lambda a, b: 1 / _waves[a][5] - 1 / _waves[b][5]   # fs/um
+        _GVMS = [(_oth[0], _ref), (_oth[1], _ref), (_oth[1], _oth[0])]
         _L_um = L.value * 1e3
 
         # "- Point group : 3m (C3v)" in the docstring; the group mixin's name otherwise
@@ -830,15 +833,17 @@ def _(
         for _w in _waves:
             _lines.append(f"  {_w[0]:<6s}{_w[1] * 1e3:9.2f}   {_w[2]}   {_w[3]:8.5f} {_w[4]:8.5f}   "
                           f"{_w[5]:9.6f}   {_w[6]:11.2f}   {_w[7]:11.1f}   {_w[8]:12.3f}    {_w[9]:10.3e}")
-        _n1, _n2, _n3 = _wn
-        _lines.append(f"  group-velocity mismatch  (delay of the first wave relative to the second, over L)")
-        _lines.append(f"    {_n2} vs {_n1}:  1/v_g({_n2}) - 1/v_g({_n1}) = {_gvm_21:+.4f} fs/um   "
-                      f"({_gvm_21 * _L_um:+.0f} fs)"
-                      + ("   <- sets the parametric gain bandwidth" if IS_DFG else ""))
-        _lines.append(f"    {_n3} vs {_n1}:  1/v_g({_n3}) - 1/v_g({_n1}) = {_gvm_31:+.4f} fs/um   "
-                      f"({_gvm_31 * _L_um:+.0f} fs)")
-        _lines.append(f"    {_n3} vs {_n2}:  1/v_g({_n3}) - 1/v_g({_n2}) = {_gvm_32:+.4f} fs/um   "
-                      f"({_gvm_32 * _L_um:+.0f} fs)")
+        _lines.append("  group-velocity mismatch  (positive = the left wave falls behind the right "
+                      f"one; over L in parentheses.  The first two are relative to "
+                      f"{'the pump' if IS_DFG else _wn[0]}, the wave that comes in.)")
+        _w1 = max(len(_wn[i]) for i in (0, 1, 2))
+        for _a, _b in _GVMS:
+            _v = _gvm(_a, _b)
+            _lines.append(f"    {_wn[_a]:<{_w1}s} vs {_wn[_b]:<{_w1}s}  "
+                          f"1/v_g({_wn[_a]}) - 1/v_g({_wn[_b]}) = {_v:+.4f} fs/um   "
+                          f"({_v * _L_um:+.0f} fs)"
+                          + ("   <- sets the parametric gain bandwidth"
+                             if IS_DFG and {_a, _b} == {0, 1} else ""))
         _lines += ["", f"ACCEPTANCE  (full width at {threshold.value:.2f} of sinc^2(dk L/2);  L = {L.value:g} mm)"]
         _tag = {"λ₁ only, λ₂ fixed": "wl1 only, wl2 fixed  <- what SNLO and tables report",
                 "λ₁ and λ₂ tuned together": "wl1 = wl2 tuned together   (broadband SHG)",
