@@ -833,15 +833,13 @@ def _(
         for _w in _waves:
             _lines.append(f"  {_w[0]:<6s}{_w[1] * 1e3:9.2f}   {_w[2]}   {_w[3]:8.5f} {_w[4]:8.5f}   "
                           f"{_w[5]:9.6f}   {_w[6]:11.2f}   {_w[7]:11.1f}   {_w[8]:12.3f}    {_w[9]:10.3e}")
-        _lines.append("  group-velocity mismatch  (positive = the left wave falls behind the right "
-                      f"one; over L in parentheses.  The first two are relative to "
-                      f"{'the pump' if IS_DFG else _wn[0]}, the wave that comes in.)")
+        _lines.append("  group-velocity mismatch")
         _w1 = max(len(_wn[i]) for i in (0, 1, 2))
         for _a, _b in _GVMS:
             _v = _gvm(_a, _b)
-            _lines.append(f"    {_wn[_a]:<{_w1}s} vs {_wn[_b]:<{_w1}s}  "
-                          f"1/v_g({_wn[_a]}) - 1/v_g({_wn[_b]}) = {_v:+.4f} fs/um   "
-                          f"({_v * _L_um:+.0f} fs)"
+            _expr = f"1/v_g({_wn[_a]}) - 1/v_g({_wn[_b]})"
+            _lines.append(f"    {_expr:<{2 * _w1 + 16}s} = {_v:+.4f} fs/um   "
+                          f"({_v * _L_um:+.0f} fs over L)"
                           + ("   <- sets the parametric gain bandwidth"
                              if IS_DFG and {_a, _b} == {0, 1} else ""))
         _lines += ["", f"ACCEPTANCE  (full width at {threshold.value:.2f} of sinc^2(dk L/2);  L = {L.value:g} mm)"]
