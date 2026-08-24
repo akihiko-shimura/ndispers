@@ -51,3 +51,8 @@ notebook = ["matplotlib", "plotly", "ipython", "jupyterlab", "marimo"]
 
 [project.urls]
 Homepage = "https://github.com/akihiko-shimura/ndispers"
+
+[tool.uv.dependency-groups]
+# the interactive stack only needs to resolve on non-EOL Pythons; keeps
+# EOL-only vulnerable versions (marimo, pillow, ...) out of uv.lock
+notebook = { requires-python = ">=3.10" }
