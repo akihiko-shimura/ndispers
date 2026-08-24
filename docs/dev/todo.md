@@ -36,3 +36,24 @@ Yb:KGW/KYW, OP-GaAs/GaP, **LBGO**（Oxide 社ラインナップで唯一追加�
 - 媒質・`*_expr` を触ったら `uv run python tools/compile_media.py`（テストが止める）。
 - ~~apps の `marimo check` 警告~~ → `__generated_with` を付けて解消。
 - ~~Pages の CDN キャッシュ~~ → `apps/README.md` に確認手順を記載。
+
+## 未解決: アプリの初回起動失敗（2026-08-24 報告）
+
+Explorer を最初に開くと失敗し、Phase-matching を開いた後なら Explorer も開ける、という報告。
+再現できていない:
+
+- Pages 配信版 / ローカル export とも、warm でも cold（localhost と 127.0.0.1 で
+  キャッシュ区画を分けて先に開いた方を変える）でも両アプリとも正常起動。
+- 両 export はアセットのハッシュまで同一（`index-C5WESBbZ.js`）。IndexedDB `/marimo` を
+  消しても Explorer は単独で起動する（両アプリ共有だが中身は 2 KB でホイールは入らない）。
+- 初回起動は外部に 4 系統依存: cdn.jsdelivr.net（pyodide）、wasm.marimo.app（lock）、
+  pypi.org / files.pythonhosted.org（ndispers・plotly のホイール）。
+  どれか 1 つでも遅い・落ちると起動失敗する。2 番目のアプリが動くのはこの取得が
+  HTTP キャッシュに載るから、という説明が症状と整合する（index.html の先頭カードが
+  Explorer なので「最初に開くのは常に Explorer」になる）。
+- 次に必要なのはエラー文字列そのものと DevTools コンソールの出力。
+  "Failed to load Pyodide" 系なら CDN、"Failed to install packages" 系なら PyPI、
+  ブラウザのエラーページなら Pages のデプロイ中アクセス（当日 4 回デプロイした）。
+
+対応済みの緩和策: `pages.yml` の marimo をピン留め（0.24.0）、index.html に
+「初回で止まったら再読み込み」を明記。

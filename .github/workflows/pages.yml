@@ -24,11 +24,15 @@ jobs:
       - uses: astral-sh/setup-uv@v10.0.1
 
       - name: Export the apps to WASM
+        # marimo is pinned so a deploy is reproducible and a bad marimo release
+        # can be rolled back here; keep it in step with apps/*.py __generated_with
+        env:
+          MARIMO: "0.24.0"
         run: |
           mkdir -p site
           cp apps/index.html site/
           for app in explorer phasematching; do
-            uv run --with marimo marimo export html-wasm "apps/$app.py" \
+            uv run --with "marimo==$MARIMO" marimo export html-wasm "apps/$app.py" \
               -o "site/$app" --mode run
           done
           test -f site/explorer/index.html
