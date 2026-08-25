@@ -30,7 +30,7 @@ jobs:
           MARIMO: "0.24.0"
         run: |
           mkdir -p site
-          cp apps/index.html site/
+          cp apps/index.html docs/assets/logo.svg site/
           for app in explorer phasematching; do
             uv run --with "marimo==$MARIMO" marimo export html-wasm "apps/$app.py" \
               -o "site/$app" --mode run
