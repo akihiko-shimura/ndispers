@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-labelledby="ndispers-logo-title">
+  <title id="ndispers-logo-title">ndispers</title>
+  <!-- The refractive-index dispersion curve n(lambda): steep at short wavelengths
+       (the tail), flattening out towards the infrared (the back). -->
+  <g fill="none" stroke="#D9603C" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.9 75.7 C 40.3 84.4, 48.9 118.9, 81.3 129.7 S 161.3 142.7, 219.6 144.8"
+          stroke-width="9.7"/>
+    <path d="M139.7 140.5 L139.7 162.1 M178.5 142.7 L178.5 164.3" stroke-width="7.6"/>
+  </g>
+  <circle cx="200.1" cy="144.3" r="3.7" fill="#7E2F1E"/>
+</svg>

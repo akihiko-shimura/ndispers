@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/akihiko-shimura/ndispers/main/docs/assets/logo.svg" alt="" width="132" align="right">
+
 # ndispers
 
 [English](https://github.com/akihiko-shimura/ndispers/blob/main/README.md) | **日本語**
