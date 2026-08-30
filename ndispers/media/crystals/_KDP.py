@@ -44,6 +44,8 @@ class KDP(Uniax_42m):
     Nonlinear optical coefficient:
       Eckardt, R. C., Masuda, H., Fan, Y. X., & Byer, R. L. (1990). Absolute and relative nonlinear optical coefficients of KDP, KD*P, BaB2O4, LiIO3, MgO:LiNbO3, and KTP measured by phase-matched second-harmonic generation. IEEE Journal of Quantum Electronics, 26(5), 922-933. https://doi.org/10.1109/3.55534
     """
+    _wl_range = (0.2, 1.5)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E",
                  "_G_o", "_H_o", "_L_o", "_wlg_o", "_wll_o",

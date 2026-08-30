@@ -30,6 +30,8 @@ class LiF(Medium):
     Underlying measurements:
       Li, H. H. (1976). Refractive index of alkali halides and its wavelength and temperature derivatives. Journal of Physical and Chemical Reference Data, 5(2), 329-528. https://doi.org/10.1063/1.555536
     """
+    _wl_range = (0.1, 10)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1", "_B1", "_A2", "_B2"]
 
     def __init__(self):

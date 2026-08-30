@@ -37,6 +37,8 @@ class YVO4(Medium):
     Sellmeier equation:
       Shi, H. S., Zhang, G., & Shen, H. Y. (2001). Measurement of principal refractive indices and the thermal refractive index coefficients of yttrium vanadate. Journal of Synthetic Crystals, 30(1), 85-88 (not registered with Crossref).
     """
+    _wl_range = (0.48, 1.34)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e"]
 

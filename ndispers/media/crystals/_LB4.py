@@ -34,6 +34,8 @@ class LB4(Uniax_4mm):
       Komatsu, R., Sugawara, T., Sassa, K., et al. (1997). Growth and ultraviolet application of Li2B4O7 crystals: Generation of the fourth and fifth harmonics of Nd:Y3Al5O12 lasers. Applied Physics Letters, 70(26), 3492-3494. https://doi.org/10.1063/1.119210
       Petrov, V., Rotermund, F., Noack, F., Komatsu, R., Sugawara, T., & Uda, S. (1998). Vacuum ultraviolet application of Li2B4O7 crystals: Generation of 100 fs pulses down to 170 nm. Journal of Applied Physics, 84(11), 5887-5892. https://doi.org/10.1063/1.368904
     """
+    _wl_range = (0.18, 2.3)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e",
                  "_At_o", "_Bt_o", "_Ct_o", "_Dt_o", "_Et_o",

@@ -31,6 +31,8 @@ class Ge(Medium):
     Underlying measurements:
       Barnes, N. P., & Piltch, M. S. (1979). Temperature-dependent Sellmeier coefficients and nonlinear optics average power limit for germanium. JOSA, 69(1), 178-180. https://doi.org/10.1364/josa.69.000178
     """
+    _wl_range = (2, 12)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A", "_B", "_C", "_D", "_E"]
 
     def __init__(self):

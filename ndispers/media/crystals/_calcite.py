@@ -32,6 +32,8 @@ class Calcite(Medium):
     ---
     Tropf, W. J., Thomas, M. E., & Harris, T. J. (1995). Properties of crystals and glasses. In M. Bass (Ed.), Handbook of Optics, Vol. II, Chapter 33. McGraw-Hill.
     """
+    _wl_range = (0.2, 3.3)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o",
                  "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e"]
 

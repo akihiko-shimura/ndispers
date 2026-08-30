@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._YVO4.YVO4'
-SOURCE_HASH = '0a49507e1a0bc91d1e0fba119b679f613e9f60b1c043484f191f3d4c7a22f717'
+SOURCE_HASH = 'd0af6c0840c95d1641d3b649ec67b4ccdaee6c7b6568a6964fcb6b5beb19c07e'
 LATEX = {'o': '\\sqrt{- 0.009701 \\lambda^{2} + 3.77879 + \\frac{0.070479}{\\lambda^{2} - 0.045731}}', 'e': '\\frac{\\sqrt{- 0.014305 \\lambda^{2} + 4.6072 + \\frac{0.108087}{\\lambda^{2} - 0.052495}}}{\\sqrt{\\frac{\\left(- 0.014305 \\lambda^{2} + 4.6072 + \\frac{0.108087}{\\lambda^{2} - 0.052495}\\right) \\cos^{2}{\\left(\\theta \\right)}}{- 0.009701 \\lambda^{2} + 3.77879 + \\frac{0.070479}{\\lambda^{2} - 0.045731}} + \\sin^{2}{\\left(\\theta \\right)}}}'}
 
 def _f0(wl, theta, phi, T):

@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._calcite.Calcite'
-SOURCE_HASH = '819a8639a27b0a9ad22d048190eabea207b0c7600ab0ce3a69f3a67f40d4ac85'
+SOURCE_HASH = 'ea8d9f891699be7f7d1d62a54d603b022ba6a6ef296e4f58d732cfd8145d5ad8'
 LATEX = {'o': '\\sqrt{\\frac{0.8559 \\lambda^{2}}{\\lambda^{2} - 0.00345744} + \\frac{0.8391 \\lambda^{2}}{\\lambda^{2} - 0.019881} + \\frac{0.0009 \\lambda^{2}}{\\lambda^{2} - 0.038809} + \\frac{0.6845 \\lambda^{2}}{\\lambda^{2} - 49.070025} + 1}', 'e': '\\frac{\\sqrt{\\frac{1.0856 \\lambda^{2}}{\\lambda^{2} - 0.0062362609} + \\frac{0.0988 \\lambda^{2}}{\\lambda^{2} - 0.020164} + \\frac{0.317 \\lambda^{2}}{\\lambda^{2} - 131.515024} + 1}}{\\sqrt{\\frac{\\left(\\frac{1.0856 \\lambda^{2}}{\\lambda^{2} - 0.0062362609} + \\frac{0.0988 \\lambda^{2}}{\\lambda^{2} - 0.020164} + \\frac{0.317 \\lambda^{2}}{\\lambda^{2} - 131.515024} + 1\\right) \\cos^{2}{\\left(\\theta \\right)}}{\\frac{0.8559 \\lambda^{2}}{\\lambda^{2} - 0.00345744} + \\frac{0.8391 \\lambda^{2}}{\\lambda^{2} - 0.019881} + \\frac{0.0009 \\lambda^{2}}{\\lambda^{2} - 0.038809} + \\frac{0.6845 \\lambda^{2}}{\\lambda^{2} - 49.070025} + 1} + \\sin^{2}{\\left(\\theta \\right)}}}'}
 
 def _f0(wl, theta, phi, T):

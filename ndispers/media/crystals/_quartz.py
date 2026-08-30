@@ -44,6 +44,8 @@ class Quartz(Uniax_32):
     Nonlinear optical coefficient:
       Shoji, I., Kondo, T., Kitamoto, A., Shirane, M., & Ito, R. (1997). Absolute scale of second-order nonlinear-optical coefficients. JOSA B, 14(9), 2268-2294. https://doi.org/10.1364/josab.14.002268
     """
+    _wl_range = (0.18, 0.71)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o", "_A4_o", "_B4_o", "_A5_o", "_B5_o",
                  "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e", "_A4_e", "_B4_e", "_A5_e", "_B5_e"]
 

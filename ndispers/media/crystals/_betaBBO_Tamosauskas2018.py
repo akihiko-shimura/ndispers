@@ -32,6 +32,8 @@ class BetaBBO(Uniax_3m):
     Nonlinear optical coefficients:
       Shoji, I., Kondo, T., & Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620
     """
+    _wl_range = (0.188, 5.2)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_B1_o", "_C1_o", "_B2_o", "_C2_o", "_B3_o", "_C3_o",
                  "_B1_e", "_C1_e", "_B2_e", "_C2_e", "_B3_e", "_C3_e",
                  "_dndT_o", "_dndT_e"]

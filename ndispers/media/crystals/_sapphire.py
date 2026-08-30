@@ -35,6 +35,8 @@ class Sapphire(Medium):
       Malitson, I. H. (1962). Refraction and dispersion of synthetic sapphire. JOSA, 52(12), 1377-1379. https://doi.org/10.1364/josa.52.001377
       Malitson, I. H., & Dodge, M. J. (1972). Refractive index and birefringence of synthetic sapphire. JOSA, 62, 1405A (abstract; not registered with Crossref).
     """
+    _wl_range = (0.2, 5.5)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1_o", "_B1_o", "_A2_o", "_B2_o", "_A3_o", "_B3_o",
                  "_A1_e", "_B1_e", "_A2_e", "_B2_e", "_A3_e", "_B3_e"]
 

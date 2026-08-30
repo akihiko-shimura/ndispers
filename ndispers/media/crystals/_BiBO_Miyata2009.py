@@ -81,6 +81,8 @@ class BiBO(Biax_2):
       Tzankov, P., & Petrov, V. (2005). Effective second-order nonlinearity in acentric optical crystals with low symmetry. Applied Optics, 44(32), 6971-6985. https://doi.org/10.1364/ao.44.006971
     """
 
+    _wl_range = (0.326, 3.083)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x",
                  "_A_y", "_B_y", "_C_y", "_D_y",
                  "_A_z", "_B_z", "_C_z", "_D_z"]

@@ -13,6 +13,22 @@ import numpy as np
 
 from .helper import returnShape, vars2, brentq
 
+import warnings
+
+
+class TemperatureWarning(UserWarning):
+    """This medium's thermo-optic coefficients are zero (none reported in the
+    literature, or the source states none): T_degC is accepted but has no
+    effect. Sweeping temperature returns constant results by design."""
+
+
+class ValidityWarning(UserWarning):
+    """A wavelength lies outside the medium's Sellmeier validity range.
+
+    The returned value is an extrapolation of the fit, not a measured-range
+    interpolation. Silence with warnings.simplefilter('ignore', ValidityWarning)
+    if the extrapolation is deliberate."""
+
 
 def _compiled_module(cls):
     """The pre-generated module for a medium class, or None."""
@@ -48,6 +64,11 @@ class Medium:
     # what pol means when the caller does not say; SLN overrides with 'e'
     # because its Sellmeier equation exists only for the extraordinary ray
     _default_pol = 'o'
+
+    # (min, max) wavelength in µm of the Sellmeier validity, transcribed from
+    # the class docstring (which stays authoritative - see it for per-pol
+    # ranges and caveats). None = not stated in the source; no range check.
+    _wl_range = None
 
     def __init__(self):
         self._plane = 'arb'
@@ -91,7 +112,19 @@ class Medium:
                 if k not in ("_plane", "_theta_rad", "_phi_rad")}
 
     def __repr__(self):
-        return f"{self.__class__}\n  plane: {self.plane}\n  theta_rad: {self.theta_rad}\n  phi_rad: {self.phi_rad}"
+        # One informative line: agents and users print media constantly.
+        cls = type(self).__name__
+        doc = (type(self).__doc__ or '').strip().splitlines()
+        desc = doc[0].strip() if doc else ''
+        bits = [desc] if desc else []
+        if self.plane != 'arb':
+            bits.append(f"{self.plane} plane")
+        for name, val in (("theta", self.theta_rad), ("phi", self.phi_rad)):
+            if val == 'var':
+                bits.append(f"angle arg: {name}")
+        if self._wl_range:
+            bits.append(f"{self._wl_range[0]:g}-{self._wl_range[1]:g} um")
+        return f"{cls}({', '.join(bits)})"
 
     def n_expr(self, pol):
         return 1.0
@@ -177,10 +210,71 @@ class Medium:
             return (args[0], self.theta_rad, args[1]) + tuple(args[2:])
         return args
 
+    def _check_wl(self, wl_um):
+        rng = self._wl_range
+        if rng is None:
+            return
+        w = np.asarray(wl_um)
+        # 1% grace band: the fit does not fail at the stated boundary, and
+        # e.g. 1.064 um sits 0.4% above BetaBBO_Eimerl1987's 1.06 um limit -
+        # warning on the most common use of BBO would be noise. The target
+        # here is unit mistakes and gross extrapolation.
+        if np.any((w < 0.99 * rng[0]) | (w > 1.01 * rng[1])):
+            hint = (" Arguments are in um - did you pass nanometers?"
+                    if np.any(w > 50) else "")
+            warnings.warn(
+                f"{type(self).__name__}: wavelength outside the Sellmeier "
+                f"validity range {rng[0]:g}-{rng[1]:g} um; the result is an "
+                f"extrapolation.{hint}", ValidityWarning, stacklevel=4)
+
+    # classes already probed for a temperature term (once per process)
+    _T_checked = set()
+
+    def _warn_if_T_ignored(self):
+        cls = type(self)
+        if cls in Medium._T_checked:
+            return
+        Medium._T_checked.add(cls)      # before the probe: dndT re-enters _func
+        lo, hi = self._wl_range or (0.5, 2.0)
+        wls = np.linspace(lo * 1.01, hi * 0.99, 3)
+        args = (wls, 25.0) if len(self.symbols) == 2 else (wls, 0.5, 25.0)
+        try:
+            if np.all(np.asarray(self.dndT(*args)) == 0):
+                warnings.warn(
+                    f"{cls.__name__}: thermo-optic coefficients are zero (none "
+                    f"implemented - see docstring); T_degC is accepted but has "
+                    f"no effect, so temperature sweeps return constant results.",
+                    TemperatureWarning, stacklevel=5)
+        except Exception:
+            pass    # a probe must never break a computation
+
+    def _signature(self):
+        """The call signature of this medium's dispersion methods, for errors."""
+        cls = type(self).__name__
+        if len(self.symbols) == 2:
+            return f"{cls} is isotropic: methods take (wl_um, T_degC) - no angle"
+        which = 'phi_rad' if self.phi_rad == 'var' else 'theta_rad'
+        return f"{cls} methods take (wl_um, {which}, T_degC)"
+
     def _func(self, expr, *args, pol=None):
         if pol is None:
             pol = self._default_pol
+        if any(isinstance(a, str) for a in args):
+            raise TypeError(
+                "pol is keyword-only: write pol='o' or pol='e', not a "
+                "positional argument. " + self._signature())
+        # lists/tuples would crash inside the numpy formulas; convert here
+        args = tuple(np.asarray(a, dtype=float) if isinstance(a, (list, tuple))
+                     else a for a in args)
+        if args:
+            self._check_wl(args[0])
+        self._warn_if_T_ignored()
+        n_given = len(args)
         args = self._full_args(args)
+        if len(args) != len(self.symbols):
+            raise TypeError(
+                f"{self._signature()}; got {n_given} positional arguments "
+                f"(pol is keyword-only)")
         array_args = map(np.asarray, args)
         key = (type(self), expr.__name__, pol)
         func = Medium._lambdified.get(key)
@@ -229,32 +323,71 @@ class Medium:
         ``GVD``, ``TOD``, ``woa_theta``, ``woa_phi``, ``dndT`` and ``dndT2`` -
         take the same arguments and differ only in what they return. Glasses
         take ``(wl_um, T_degC)`` and no polarization.
+
+        Examples
+        --------
+        >>> import ndispers as nd
+        >>> bbo = nd.media.crystals.BetaBBO_Eimerl1987()
+        >>> bbo.n(0.532, 0, 25, pol='o')
+        1.674884049110459
+        >>> bbo.n(1.064, 0.3994, 25, pol='e')
+        1.63644345403142
+        >>> print(round(bbo.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']['theta'][0], 6))
+        22.884169
         """
         return self._func(self.n_expr, *args, pol=pol)
     
     def dn_wl(self, *args, pol=None):
+        """dn/dλ (1/µm). Same arguments as ``n``."""
         return self._func(self.dn_wl_expr, *args, pol=pol)
     
     def d2n_wl(self, *args, pol=None):
+        """d²n/dλ² (1/µm²). Same arguments as ``n``."""
         return self._func(self.d2n_wl_expr, *args, pol=pol)
 
     def d3n_wl(self, *args, pol=None):
+        """d³n/dλ³ (1/µm³). Same arguments as ``n``."""
         return self._func(self.d3n_wl_expr, *args, pol=pol)
 
     def GD(self, *args, pol=None):
+        """Group delay per unit length, fs/mm. Same arguments as ``n``."""
         return self._func(self.GD_expr, *args, pol=pol)
     
     def GV(self, *args, pol=None):
+        """Group velocity, µm/fs. Same arguments as ``n``."""
         return self._func(self.GV_expr, *args, pol=pol)
     
     def ng(self, *args, pol=None):
+        """Group index (dimensionless). Same arguments as ``n``."""
         return self._func(self.ng_expr, *args, pol=pol)
     
     def GVD(self, *args, pol=None):
+        """Group-velocity dispersion, fs²/mm. Positive = normal dispersion. Same arguments as ``n``."""
         return self._func(self.GVD_expr, *args, pol=pol)
     
     def TOD(self, *args, pol=None):
+        """Third-order dispersion, fs³/mm. Same arguments as ``n``."""
         return self._func(self.TOD_expr, *args, pol=pol)
+
+    def GVM(self, wl1, wl2, angle_rad, T_degC, pol1='o', pol2='o'):
+        """
+        Group-velocity mismatch between two waves, GD(wl1) - GD(wl2), in fs/mm.
+
+        Positive means the wl1 wave is the slower one (arrives later). This is
+        the walk-off per unit length that sets e.g. an OPA gain bandwidth
+        (signal vs pump) or the temporal smearing of SFG (wl1 vs wl2). For a glass pass
+        ``None`` as angle_rad (it is ignored).
+
+        Examples
+        --------
+        >>> import ndispers as nd
+        >>> bbo = nd.media.crystals.BetaBBO_Eimerl1987()
+        >>> print(round(bbo.GVM(0.532, 1.064, 0.3994, 25, pol1='e', pol2='o'), 4))
+        79.0863
+        """
+        args1, args2 = ((wl1, T_degC), (wl2, T_degC)) if len(self.symbols) == 2 \
+            else ((wl1, angle_rad, T_degC), (wl2, angle_rad, T_degC))
+        return self.GD(*args1, pol=pol1) - self.GD(*args2, pol=pol2)
 
     def woa_theta(self, *args, pol='e'):
         """ Polar walk-off angle (rad) """
@@ -414,8 +547,8 @@ class Medium:
                 if slope > 0 and abs(dk_edge) <= slope * tol_rad:
                     angle_pm.append(edge)
             angle_pm.sort()
-            if deg:
-                angle_pm = [a * 180/pi for a in angle_pm]
+            # plain floats: np.float64 in a printed result is noise
+            angle_pm = [float(a) * (180/pi if deg else 1) for a in angle_pm]
             pm_angles = dict()
             if self.theta_rad == 'var':
                 pm_angles['theta'] = angle_pm
@@ -439,7 +572,7 @@ class Medium:
 
     def pmFactor_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm):
         """
-        Phase-matching factor, sin^2((0.5*dk*L)/(0.5*dk*L)), for sum-frequency generation (SFG).
+        Phase-matching factor sinc²(Δk·L/2) = sin²(x)/x² with x = 0.5·Δk·L, for sum-frequency generation (SFG).
 
         Parameters
         ----------
@@ -478,6 +611,85 @@ class Medium:
     # (red1, red2, blue), so 'ooe' is a Type I OPA (signal and idler
     # ordinary, pump extraordinary) and 'oee' / 'eoe' are Type II.
     # ------------------------------------------------------------------
+
+    def acceptance_sfg(self, wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3,
+                       L_mm, param):
+        """
+        Acceptance width (FWHM of sinc²(Δk·L/2)) of SFG along one variable.
+
+        The full width over which the phase-matching factor stays >= 0.5,
+        holding every other variable fixed at the given values. Evaluate at a
+        phase-matched point (from ``pmAngles_sfg``) for the usual meaning.
+
+        Parameters
+        ----------
+        param : {'wl', 'wl1', 'wl2', 'theta', 'T'}
+            The variable to widen. 'wl1'/'wl2': that input wave alone
+            (mix acceptance; the sum wavelength follows energy conservation).
+            'wl': the degenerate-SHG spectral acceptance - wl1 and wl2 (equal)
+            are swept together as the fundamental. 'theta': the angle argument
+            (internal). 'T': temperature.
+        L_mm : float
+            Crystal length in mm.
+
+        Returns
+        -------
+        float
+            FWHM in the variable's own unit: µm for wavelengths, rad for
+            'theta', K for 'T'. Returns numpy.inf if the factor never falls
+            below 0.5 within a wide search (noncritical direction).
+
+        Examples
+        --------
+        >>> import ndispers as nd
+        >>> from math import radians
+        >>> bbo = nd.media.crystals.BetaBBO_Tamosauskas2018()
+        >>> th = radians(bbo.pmAngles_sfg(0.8, 0.8, 25, deg=True)['ooe']['theta'][0])
+        >>> dl = bbo.acceptance_sfg(0.8, 0.8, th, 25, 'o', 'o', 'e', 1.0, 'wl')
+        >>> print(round(dl * 1e3, 2))   # µm -> nm; ~5 nm: why fs SHG needs thin BBO
+        4.91
+        """
+        if param == 'wl' and not np.isclose(wl1, wl2):
+            raise ValueError("param='wl' sweeps the degenerate-SHG fundamental "
+                             "and needs wl1 == wl2; use 'wl1' or 'wl2'")
+        L_um = L_mm * 1e3
+        base = {'wl1': wl1, 'wl2': wl2, 'wl': wl1, 'theta': angle_rad, 'T': T_degC}
+        try:
+            x0 = base[param]
+        except KeyError:
+            raise ValueError(f"param must be one of {sorted(base)}, got {param!r}")
+
+        def s2(x):
+            v = {'wl1': (x, wl2), 'wl2': (wl1, x), 'wl': (x, x)}.get(param, (wl1, wl2))
+            ang = x if param == 'theta' else angle_rad
+            T = x if param == 'T' else T_degC
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', ValidityWarning)
+                dk = self.dk_sfg(v[0], v[1], ang, T, pol1, pol2, pol3)
+            u = 0.5 * dk * L_um
+            return float(np.sinc(u / pi) ** 2)
+
+        s0 = s2(x0)
+        if s0 < 0.5:
+            raise ValueError(
+                f"sinc2 = {s0:.3g} < 0.5 at the given point - it is not "
+                f"phase-matched, so no FWHM contains it. Evaluate at an angle "
+                f"from pmAngles_sfg (in radians).")
+
+        # initial step ~ the variable's natural fine scale
+        step0 = {'wl1': 1e-5, 'wl2': 1e-5, 'wl': 1e-5, 'theta': 1e-5, 'T': 1e-2}[param]
+
+        def half_point(sign):
+            # expand until sinc² < 0.5, then bisect the crossing
+            a, step = x0, step0
+            for _ in range(64):
+                b = a + sign * step
+                if s2(b) < 0.5:
+                    return brentq(lambda x: s2(x) - 0.5, *sorted((a, b)))
+                a, step = b, step * 2
+            return np.inf
+        lo, hi = half_point(-1), half_point(+1)
+        return np.inf if np.isinf(lo) or np.isinf(hi) else float(hi - lo)
 
     def wl_idler(self, wl_p, wl_s):
         """
@@ -528,7 +740,7 @@ class Medium:
         return {'wl_i': wl_i, **d}
 
     def tuning_dfg(self, wl_p, angle_rad, T_degC, pol_s, pol_i, pol_p,
-                   wl_i_max=20.0, tol_um=1e-6, n_grid=2001, qpm_period=None, qpm_order=1):
+                   wl_i_max=None, tol_um=1e-6, n_grid=2001, qpm_period=None, qpm_order=1):
         """
         Signal/idler pairs that phase-match at a fixed angle and temperature -
         one point of an OPO/OPA tuning curve.
@@ -556,9 +768,11 @@ class Medium:
             Polarizations of signal, idler and pump. The branch with signal
             and idler polarizations exchanged is the triple with pol_s and
             pol_i swapped.
-        wl_i_max : float, default 20
-            Longest idler wavelength searched, in µm. Sellmeier equations are
-            extrapolated up to it; check the medium's validity range.
+        wl_i_max : float, optional
+            Longest idler wavelength searched, in µm. Default: the medium's
+            Sellmeier validity edge (at most 20), so spurious far-extrapolation
+            roots are excluded. Pass a value explicitly to extrapolate beyond
+            the validity range on purpose.
         tol_um : float, default 1e-6
             Absolute tolerance of the returned signal wavelength, in µm.
         n_grid : int, default 2001
@@ -575,6 +789,11 @@ class Medium:
         ------
         list of (wl_s, wl_i) tuples, in µm, sorted by wl_s; empty if none.
         """
+        if wl_i_max is None:
+            # default search stops at the Sellmeier validity edge: roots from
+            # far extrapolation are spurious. Pass wl_i_max explicitly to
+            # search further on purpose.
+            wl_i_max = min(20.0, self._wl_range[1]) if self._wl_range else 20.0
         if wl_i_max <= 2 * wl_p:
             return []
         nu_p = 1. / wl_p
@@ -584,7 +803,11 @@ class Medium:
         k_g = 0.0 if qpm_period is None else 2 * pi * qpm_order / qpm_period
 
         def resid(w):
-            d = self.dk_dfg(wl_p, w, angle_rad, T_degC, pol_s, pol_i, pol_p)
+            # this method extrapolates up to wl_i_max by design (see
+            # docstring); per-point ValidityWarnings would only be noise
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', ValidityWarning)
+                d = self.dk_dfg(wl_p, w, angle_rad, T_degC, pol_s, pol_i, pol_p)
             return d if qpm_period is None else np.abs(d) - k_g
         try:
             with np.errstate(invalid='ignore', divide='ignore'):

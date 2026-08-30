@@ -52,6 +52,8 @@ class LBO(Biax_mm2):
       Kato, K., Grechin, S. G., & Umemura, N. (2018). New thermo-optic dispersion formula for LiB3O5. Laser Physics, 28(9), 095403. https://doi.org/10.1088/1555-6611/aac9df
     """
 
+    _wl_range = (0.16, 2.6)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y", "_F_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z", "_F_z",

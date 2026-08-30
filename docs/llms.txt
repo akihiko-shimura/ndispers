@@ -1,0 +1,133 @@
+# ndispers
+
+> Python library computing refractive-index dispersion, phase matching and
+> effective nonlinearity (d_eff) of crystals and glasses for nonlinear /
+> ultrafast optics, from literature Sellmeier equations and thermo-optic
+> coefficients. Plain numpy in, numpy out — made to be driven from code,
+> including by AI agents. MIT license.
+
+Install: `pip install ndispers` (Python >= 3.10, depends only on numpy).
+If `nd.catalog` is missing (AttributeError), the installed version predates
+v0.19 — upgrade; this file describes v0.19+.
+
+## Core usage
+
+```python
+import ndispers as nd
+from math import pi, radians
+bbo = nd.media.crystals.BetaBBO_Eimerl1987()
+bbo.n(0.532, 0.38, 25, pol='e')        # -> float
+
+# biaxial worked example: Type-I SHG of 1030 nm in LBO, xy plane, 40 degC
+lbo = nd.media.crystals.LBO_KK2018_xy()          # xy plane: angle arg is phi
+phi = lbo.pmAngles_sfg(1.030, 1.030, 40, deg=True)['ooe']['phi'][0]  # degrees
+wo  = lbo.woa_phi(0.515, radians(phi), 40, pol='e')   # walk-off, rad
+d   = lbo.deff_sfg(1.030, 1.030, None, radians(phi), 40, 'o', 'o', 'e')
+# deff_sfg: pass None for the angle the plane fixes (theta here), pm/V
+```
+
+Every dispersion method of a crystal takes the same four arguments
+`(wl_um, angle_rad, T_degC, pol)`:
+
+- wavelength in **µm** (vacuum), angle in **rad**, temperature in **°C**,
+  `pol='o'` or `'e'`.
+- Any argument may be a numpy array; arrays broadcast together and return an
+  array (lists are converted). Scalars return float.
+- Media in `nd.media.glasses` are isotropic: methods take only `(wl_um, T_degC)`.
+
+Methods (per unit length where applicable): `n`, `dn_wl` (dn/dλ), `GD` (fs/mm),
+`GV` (µm/fs), `ng`, `GVD` (fs²/mm), `TOD` (fs³/mm), `woa_theta`/`woa_phi`
+(walk-off, rad), `dndT` (1/K), `dndT2`.
+
+Phase matching (crystals): `dk_sfg` (Δk, rad/µm), `pmAngles_sfg(wl1, wl2,
+T_degC, deg=False)` (all solutions, keys 'ooe','eeo','oee','eoe','eoo','oeo' =
+pol of (wave1, wave2, sum); 'ooe'/'eeo' are Type I, the rest Type II —
+'ooe'-types occur in negative uniaxial/biaxial crystals, 'eeo'-types in
+positive), `pmFactor_sfg` (sinc²(ΔkL/2)), `qpm_period_sfg` (Λ in µm).
+`pmAngles_sfg` returns `{'ooe': {'theta': [angles...], 'phi': None}, ...}` —
+the varying angle holds a list (empty = no phase matching), the fixed one
+None. DFG/OPA/OPO mirrors: `wl_idler`, `dk_dfg`, `pmAngles_dfg`,
+`qpm_period_dfg`, `tuning_dfg` (list of (wl_s, wl_i) tuples; searches up to
+the validity edge by default, pass `wl_i_max=` to extrapolate further;
+supports `qpm_period=` for PPLN-style temperature tuning); polarization order
+is (signal, idler, pump), same as SNLO's (red1, red2, blue).
+`GVM(wl1, wl2, angle_rad, T_degC, pol1, pol2)` — group-velocity mismatch
+GD(wl1)−GD(wl2) in fs/mm (positive: wl1 arrives later).
+Full signatures (note L is in **mm** while wavelengths are µm; pol1..pol3 are
+positional here, unlike the keyword-only `pol` of dispersion methods):
+`pmFactor_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm)`;
+`acceptance_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm, param)`
+— FWHM of sinc²(ΔkL/2) along one variable, param = 'wl' (degenerate-SHG
+fundamental) | 'wl1' | 'wl2' (mix) | 'theta' | 'T'; returns µm / rad / K.
+Evaluate at a pmAngles_sfg angle (radians) or it raises.
+
+Nonlinearity (non-centrosymmetric crystals): `d_sfg("d31", wl1, wl2, T)` —
+tensor component in pm/V, wavelength-scaled by Miller's rule from one
+literature reference; `deff_sfg(wl1, wl2, theta_rad, phi_rad, T, pol1, pol2,
+pol3)` — effective coefficient with walk-off included. `_d_note` on each class
+states how well Miller scaling is validated for it.
+
+## Self-discovery
+
+- `help(obj)` or `obj?` — Sellmeier equation, validity range, literature
+  reference of any medium. Read this before trusting a number.
+- `obj.constants` — the coefficient values.
+- `dir(nd.media.crystals)` / `dir(nd.media.glasses)` — all media.
+- `nd.catalog()` — list of dicts (name, kind, point_group, plane, wl_range,
+  d_components) for programmatic filtering, e.g. media usable at 3 µm.
+- `repr(obj)` states the plane, the angle argument and the validity range.
+- Media are picklable; safe for multiprocessing/joblib.
+
+## Media
+
+Crystals (class name states the Sellmeier source; several sources per
+crystal are separate classes — when unsure pick the most recent source
+(LBO: KK2018; β-BBO: Tamosauskas2018 for broadband/IR and fs work, KK2010
+for UV phase matching — for SHG spanning both, either works: cross-check)
+and compare a second source; the spread between sources is often the real
+uncertainty. Each docstring's Ref section cites Sellmeier, thermo-optic and
+d coefficients **separately** — they usually come from different papers: AGS_Kato1996, AGS_Takaoka1999, AGSe_Kato2021,
+AlphaBBO, BetaBBO_{Eimerl1987, Ghosh1995, KK2010, Tamosauskas2018},
+BiBO_Miyata2009_{xy,yz,zx}, CLBO, Calcite, DKDP, KBBF, KDP, KTP_{xy,yz,zx},
+LB4, LBO_{Castech, Ghosh1995, KK1994, KK2018, Newlight}_{xy,yz,zx}, LiIO3,
+MgF2, MgOLN_Zelmon1997 (5%MgO:LiNbO3), Quartz, RBBF, SLN (1%MgO:LiNbO3
+stoichiometric), SLT (0.5%MgO:LiTaO3), Sapphire, YVO4, ZGP_Das2003,
+ZGP_Zelmon2001.
+
+Glasses / isotropic: BaF2, CaF2, Diamond, FusedSilica, Ge, LiF, NBK7, SF10,
+SF11, SF57, Si, YAG, ZnS, ZnSe.
+
+## Gotchas
+
+- Biaxial crystals (KTP, LBO, BiBO) are one class per principal plane
+  (`_xy`, `_yz`, `_zx`); the plane fixes one angle and the method argument is
+  the other (φ for `_xy`, θ for `_yz`/`_zx`). `obj.theta_rad` / `obj.phi_rad`
+  say which: a number (fixed), 'var' (the argument), or 'arb' (irrelevant).
+- Angles are radians unless a method takes `deg=True` for output.
+- Sellmeier validity ranges differ per class — check the docstring. A
+  wavelength >1% outside the range triggers `ndispers.ValidityWarning` but
+  still returns the extrapolated value; heed it.
+- Not every coefficient exists in the literature: KBBF has no reported dn/dT
+  (implemented as 0); α-BBO and Calcite have no temperature term. If T matters,
+  verify `obj.dndT(...) != 0`.
+- `pol` defaults to 'o', except walk-off methods ('e') and every method of
+  SLN ('e' — its Sellmeier exists only for the e-ray). `pol` is keyword-only.
+- 29 of the 60 media have no temperature term at all (e.g. MgOLN_Zelmon1997,
+  fit at 21 °C only): the first call emits `TemperatureWarning` and any T
+  sweep returns constant results. For temperature-tuned PPLN work use SLN or
+  SLT. `_d_note` (public despite the underscore) states per crystal how well
+  Miller d-scaling is validated.
+- `catalog()`'s wl_range is Sellmeier validity, NOT the transparency range: a
+  crystal can pass a wavelength filter yet absorb there (β-BBO beyond
+  ~3.5 µm). Check absorption physics separately.
+- Inside `tuning_dfg` the ValidityWarning is suppressed (extrapolation is its
+  documented mode); elsewhere it fires.
+- `pmAngles_sfg` returning an empty list means no phase matching exists there.
+
+## Docs
+
+- Full agent reference (this file + all conventions + machine catalog): https://ndispers.readthedocs.io/en/latest/llms-full.txt
+- Conventions (units, signs, angle meanings): https://ndispers.readthedocs.io/en/latest/conventions/
+- Media catalog (every class, coefficients, references): https://ndispers.readthedocs.io/en/latest/api/crystals/
+- Tutorial notebook: https://github.com/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb
+- Source: https://github.com/akihiko-shimura/ndispers

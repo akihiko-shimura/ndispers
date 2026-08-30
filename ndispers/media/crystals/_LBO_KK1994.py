@@ -52,6 +52,8 @@ class LBO(Biax_mm2):
     Kato, K. (1994). Temperature-tuned 90° phase-matching properties of LiB3O5. IEEE Journal of Quantum Electronics, 30(12), 2950-2952. https://doi.org/10.1109/3.362711
     """
 
+    _wl_range = (0.16, 2.6)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x", "_F_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y", "_F_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z", "_F_z",

@@ -30,6 +30,8 @@ class ZnSe(Medium):
     Underlying measurements:
       Feldman, A., Horowitz, D., Waxler, R. M., & Dodge, M. J. (1978). Optical materials characterization: final technical report, February 1, 1978 - September 30, 1978. NBS Technical Note 993, February 1979 (not registered with Crossref).
     """
+    _wl_range = (0.55, 18)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1", "_B1", "_A2", "_B2", "_A3", "_B3"]
 
     def __init__(self):

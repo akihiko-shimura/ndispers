@@ -41,6 +41,8 @@ class LiIO3(Uniax_6):
       Choy, M. M., & Byer, R. L. (1976). Accurate second-order susceptibility measurements of visible and infrared nonlinear crystals. Physical Review B, 14(4), 1693-1706. https://doi.org/10.1103/physrevb.14.1693
       Roberts, D. A. (1992). Simplified characterization of uniaxial and biaxial nonlinear optical crystals: a plea for standardization of nomenclature and conventions. IEEE Journal of Quantum Electronics, 28(10), 2057-2074. https://doi.org/10.1109/3.159516
     """
+    _wl_range = (0.5, 5)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", "_E_o",
                  "_A_e", "_B_e", "_C_e", "_D_e", "_E_e"]
 

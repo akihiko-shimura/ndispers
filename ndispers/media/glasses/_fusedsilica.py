@@ -27,6 +27,8 @@ class FusedSilica(Medium):
     Thermo-optic coefficient:
       Rocha, A. C. P., Silva, J. R., Lima, S. M., et al. (2016). Measurements of refractive indices and thermo-optical coefficients using a white-light Michelson interferometer. Applied Optics, 55(24), 6639-6643. https://doi.org/10.1364/ao.55.006639
     """
+    _wl_range = (0.21, 3.71)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_B1", "_C1", "_B2", "_C2", "_B3", "_C3", "_dndT"]
 
     def __init__(self):

@@ -47,6 +47,8 @@ class LBO(Biax_mm2):
     Ghosh, G. (1995). Temperature dispersion of refractive indices in β-BaB2O4 and LiB3O5 crystals for nonlinear optical devices. Journal of Applied Physics, 78(11), 6752-6760. https://doi.org/10.1063/1.360499
     """
 
+    _wl_range = (0.16, 2.6)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z",

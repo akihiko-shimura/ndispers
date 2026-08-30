@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._MgF2.MgF2'
-SOURCE_HASH = 'e95fb62c7b3e63fbbf018a34af6b745ce3324ea79d0f63076ceb669c7a6440fb'
+SOURCE_HASH = 'a633ebae654e8ee1f7b3c79561c452fda498b394c120f77a4bad72f9ca7ef819'
 LATEX = {'o': '\\sqrt{\\frac{0.48755108 \\lambda^{2}}{\\lambda^{2} - 0.0018821783974464} + \\frac{0.39875031 \\lambda^{2}}{\\lambda^{2} - 0.0089518884719364} + \\frac{2.3120353 \\lambda^{2}}{\\lambda^{2} - 566.135591308816} + 1}', 'e': '\\frac{\\sqrt{\\frac{0.41344023 \\lambda^{2}}{\\lambda^{2} - 0.0013573786484644} + \\frac{0.50497499 \\lambda^{2}}{\\lambda^{2} - 0.0082376716650244} + \\frac{2.4904862 \\lambda^{2}}{\\lambda^{2} - 565.107746280025} + 1}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(\\frac{0.41344023 \\lambda^{2}}{\\lambda^{2} - 0.0013573786484644} + \\frac{0.50497499 \\lambda^{2}}{\\lambda^{2} - 0.0082376716650244} + \\frac{2.4904862 \\lambda^{2}}{\\lambda^{2} - 565.107746280025} + 1\\right) \\cos^{2}{\\left(\\theta \\right)}}{\\frac{0.48755108 \\lambda^{2}}{\\lambda^{2} - 0.0018821783974464} + \\frac{0.39875031 \\lambda^{2}}{\\lambda^{2} - 0.0089518884719364} + \\frac{2.3120353 \\lambda^{2}}{\\lambda^{2} - 566.135591308816} + 1}}}'}
 
 def _f0(wl, theta, phi, T):

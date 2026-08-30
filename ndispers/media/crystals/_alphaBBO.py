@@ -34,6 +34,8 @@ class AlphaBBO(Medium):
     Structure and transparency range:
       Fedorov, P. P., Kokh, A. E., & Kononova, N. G. (2002). Barium borate β-BaB2O4 as a material for nonlinear optics. Russian Chemical Reviews, 71(8), 651-671. https://doi.org/10.1070/rc2002v071n08abeh000716
     """
+    _wl_range = (0.19, 3.5)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o", 
                  "_A_e", "_B_e", "_C_e", "_D_e"]
 

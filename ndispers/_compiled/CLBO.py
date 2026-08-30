@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._CLBO.CLBO'
-SOURCE_HASH = '9c55148a256da97bb2a158176323f439a26f85d7500bd457b8d2058950626712'
+SOURCE_HASH = '3172e3baf8336b74c9cf54c44b6ae36969ff460c212b52960b6fe47186e25f62'
 LATEX = {'o': '\\left(-1.248 \\cdot 10^{-5} - \\frac{3.28 \\cdot 10^{-7}}{\\lambda}\\right) \\left(T - 20\\right) + \\sqrt{- 0.01258 \\lambda^{2} + 2.2104 + \\frac{0.01018}{\\lambda^{2} - 0.01424}}', 'e': '\\frac{\\left(T - 20\\right) \\left(-8.36 \\cdot 10^{-6} + \\frac{4.7 \\cdot 10^{-8}}{\\lambda} + \\frac{3.9 \\cdot 10^{-8}}{\\lambda^{2}} + \\frac{1.4 \\cdot 10^{-8}}{\\lambda^{3}}\\right) + \\sqrt{- 0.00607 \\lambda^{2} + 2.0588 + \\frac{0.00838}{\\lambda^{2} - 0.01363}}}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(\\left(T - 20\\right) \\left(-8.36 \\cdot 10^{-6} + \\frac{4.7 \\cdot 10^{-8}}{\\lambda} + \\frac{3.9 \\cdot 10^{-8}}{\\lambda^{2}} + \\frac{1.4 \\cdot 10^{-8}}{\\lambda^{3}}\\right) + \\sqrt{- 0.00607 \\lambda^{2} + 2.0588 + \\frac{0.00838}{\\lambda^{2} - 0.01363}}\\right)^{2} \\cos^{2}{\\left(\\theta \\right)}}{\\left(\\left(-1.248 \\cdot 10^{-5} - \\frac{3.28 \\cdot 10^{-7}}{\\lambda}\\right) \\left(T - 20\\right) + \\sqrt{- 0.01258 \\lambda^{2} + 2.2104 + \\frac{0.01018}{\\lambda^{2} - 0.01424}}\\right)^{2}}}}'}
 
 def _f0(wl, theta, phi, T):

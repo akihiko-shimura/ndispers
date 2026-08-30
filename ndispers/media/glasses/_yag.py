@@ -32,6 +32,8 @@ class YAG(Medium):
     Sellmeier equation:
       Zelmon, D. E., Small, D. L., & Page, R. (1998). Refractive-index measurements of undoped yttrium aluminum garnet from 0.4 to 5.0 µm. Applied Optics, 37(21), 4933-4935. https://doi.org/10.1364/ao.37.004933
     """
+    _wl_range = (0.4, 5.0)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A", "_B", "_C", "_D"]
 
     def __init__(self):

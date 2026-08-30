@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._RBBF_Chen2009.RBBF'
-SOURCE_HASH = 'e8d96337d189a3f1159ad0ca3f857d173af4280946751fb82d63474dd1aa7034'
+SOURCE_HASH = 'e92c04cc1ced5b5299ccdce29f5beb1d1d8f52e1891d6e720fe9a00006d7af4e'
 LATEX = {'o': '\\left(T - 24\\right) \\left(-1.3260115 \\cdot 10^{-5} + \\frac{1.454609 \\cdot 10^{-6}}{\\lambda} - \\frac{5.53474 \\cdot 10^{-7}}{\\lambda^{2}} + \\frac{9.9911 \\cdot 10^{-8}}{\\lambda^{3}}\\right) + \\sqrt{- 0.0091 \\lambda^{2} + \\frac{1.18675 \\lambda^{2}}{\\lambda^{2} - 0.0075} + 1}', 'e': '\\frac{\\left(T - 24\\right) \\left(-1.6153736 \\cdot 10^{-5} + \\frac{6.916728 \\cdot 10^{-6}}{\\lambda} - \\frac{2.482927 \\cdot 10^{-6}}{\\lambda^{2}} + \\frac{2.85633 \\cdot 10^{-7}}{\\lambda^{3}}\\right) + \\sqrt{- 0.00145 \\lambda^{2} + \\frac{0.9753 \\lambda^{2}}{\\lambda^{2} - 0.00665} + 1}}{\\sqrt{\\frac{\\left(\\left(T - 24\\right) \\left(-1.6153736 \\cdot 10^{-5} + \\frac{6.916728 \\cdot 10^{-6}}{\\lambda} - \\frac{2.482927 \\cdot 10^{-6}}{\\lambda^{2}} + \\frac{2.85633 \\cdot 10^{-7}}{\\lambda^{3}}\\right) + \\sqrt{- 0.00145 \\lambda^{2} + \\frac{0.9753 \\lambda^{2}}{\\lambda^{2} - 0.00665} + 1}\\right)^{2} \\cos^{2}{\\left(\\theta \\right)}}{\\left(\\left(T - 24\\right) \\left(-1.3260115 \\cdot 10^{-5} + \\frac{1.454609 \\cdot 10^{-6}}{\\lambda} - \\frac{5.53474 \\cdot 10^{-7}}{\\lambda^{2}} + \\frac{9.9911 \\cdot 10^{-8}}{\\lambda^{3}}\\right) + \\sqrt{- 0.0091 \\lambda^{2} + \\frac{1.18675 \\lambda^{2}}{\\lambda^{2} - 0.0075} + 1}\\right)^{2}} + \\sin^{2}{\\left(\\theta \\right)}}}'}
 
 def _f0(wl, theta, phi, T):

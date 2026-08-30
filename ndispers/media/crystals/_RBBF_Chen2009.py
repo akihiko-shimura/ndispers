@@ -46,6 +46,8 @@ class RBBF(Uniax_32):
     Thermo-optic coefficients:
       Zhai, N., Wang, L., Liu, L., et al. (2013). Measurement of thermal refractive index coefficients of nonlinear optical crystal RbBe2BO3F2. Optical Materials, 36(2), 333-336. https://doi.org/10.1016/j.optmat.2013.09.017
     """
+    _wl_range = (0.16, 3.55)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_B_o", "_C_o", "_D_o",
                  "_B_e", "_C_e", "_D_e",
                  "_dndT_o_A", "_dndT_o_B", "_dndT_o_C", "_dndT_o_D",

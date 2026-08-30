@@ -47,6 +47,8 @@ class KTP(Biax_mm2):
     Kato, K., & Takaoka, E. (2002). Sellmeier and thermo-optic dispersion formulas for KTP. Applied Optics, 41(24), 5040-5044. https://doi.org/10.1364/ao.41.005040
     """
 
+    _wl_range = (0.35, 4.5)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_x", "_B_x", "_C_x", "_D_x", "_E_x",
                  "_A_y", "_B_y", "_C_y", "_D_y", "_E_y",
                  "_A_z", "_B_z", "_C_z", "_D_z", "_E_z"]

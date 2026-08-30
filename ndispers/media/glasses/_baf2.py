@@ -30,6 +30,8 @@ class BaF2(Medium):
     Underlying measurements:
       Malitson, I. H. (1964). Refractive properties of barium fluoride. JOSA, 54(5), 628-632. https://doi.org/10.1364/josa.54.000628
     """
+    _wl_range = (0.27, 10.3)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1", "_B1", "_A2", "_B2", "_A3", "_B3"]
 
     def __init__(self):

@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.glasses._sf10.SF10'
-SOURCE_HASH = '04af219e1cbd4ef29026b972275e9ce5e1fe39c70ccbb41933350b105194ce64'
+SOURCE_HASH = 'df46b2d76c0351f36d89ca635aa467a41b15ed0a2537d0bc71c4f13ef3060f12'
 LATEX = {'o': '\\sqrt{\\frac{1.61625977 \\lambda^{2}}{\\lambda^{2} - 0.0127534559} + \\frac{0.259229334 \\lambda^{2}}{\\lambda^{2} - 0.0581983954} + \\frac{1.07762317 \\lambda^{2}}{\\lambda^{2} - 116.60768} + 1}', 'e': '\\sqrt{\\frac{1.61625977 \\lambda^{2}}{\\lambda^{2} - 0.0127534559} + \\frac{0.259229334 \\lambda^{2}}{\\lambda^{2} - 0.0581983954} + \\frac{1.07762317 \\lambda^{2}}{\\lambda^{2} - 116.60768} + 1}'}
 
 def _f0(wl, T):

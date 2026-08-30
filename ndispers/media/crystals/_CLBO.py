@@ -35,6 +35,8 @@ class CLBO(Uniax_42m):
     Nonlinear optical coefficient:
       Mori, Y., Kuroda, I., Nakajima, S., Sasaki, T., & Nakai, S. (1995). Nonlinear optical properties of cesium lithium borate. Japanese Journal of Applied Physics, 34(Part 2, No. 3A), L296-L298. https://doi.org/10.1143/JJAP.34.L296
     """
+    _wl_range = (0.1914, 2.09)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A_o", "_B_o", "_C_o", "_D_o",
                  "_A_e", "_B_e", "_C_e", "_D_e",
                  "_At_o", "_Bt_o",

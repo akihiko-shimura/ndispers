@@ -29,6 +29,8 @@ class SF11(Medium):
     Sellmeier equation:
       SCHOTT SF11 (vendor data, Zemax catalog 2017-01-20b, accessed 2026-08-23 via refractiveindex.info specs/schott/optical/SF11). https://www.schott.com/en-us/products/optical-glass-p1000267/downloads/
     """
+    _wl_range = (0.39, 2.5)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_B1", "_C1", "_B2", "_C2", "_B3", "_C3"]
 
     def __init__(self):

@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._sapphire.Sapphire'
-SOURCE_HASH = '3a88203e35f589b22f4619bfc177a8099ca6ecc2514ba94d3378e96c2f45ad7b'
+SOURCE_HASH = 'b965c262a65ee5a06e2b2c6c07d44522bd5c941446bc6d4ad8a07aa0c94a6afa'
 LATEX = {'o': '\\sqrt{\\frac{1.4313493 \\lambda^{2}}{\\lambda^{2} - 0.00527992610161} + \\frac{0.65054713 \\lambda^{2}}{\\lambda^{2} - 0.01423826470564} + \\frac{5.3414021 \\lambda^{2}}{\\lambda^{2} - 325.017834119001} + 1}', 'e': '\\frac{\\sqrt{\\frac{1.5039759 \\lambda^{2}}{\\lambda^{2} - 0.00548026322944} + \\frac{0.55069141 \\lambda^{2}}{\\lambda^{2} - 0.01479942807841} + \\frac{6.5927379 \\lambda^{2}}{\\lambda^{2} - 402.895139773504} + 1}}{\\sqrt{\\frac{\\left(\\frac{1.5039759 \\lambda^{2}}{\\lambda^{2} - 0.00548026322944} + \\frac{0.55069141 \\lambda^{2}}{\\lambda^{2} - 0.01479942807841} + \\frac{6.5927379 \\lambda^{2}}{\\lambda^{2} - 402.895139773504} + 1\\right) \\cos^{2}{\\left(\\theta \\right)}}{\\frac{1.4313493 \\lambda^{2}}{\\lambda^{2} - 0.00527992610161} + \\frac{0.65054713 \\lambda^{2}}{\\lambda^{2} - 0.01423826470564} + \\frac{5.3414021 \\lambda^{2}}{\\lambda^{2} - 325.017834119001} + 1} + \\sin^{2}{\\left(\\theta \\right)}}}'}
 
 def _f0(wl, theta, phi, T):

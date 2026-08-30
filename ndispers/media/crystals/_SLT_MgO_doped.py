@@ -37,6 +37,8 @@ class SLT(Uniax_3m):
     Nonlinear optical coefficients d33, d31:
       Shoji, I., Kondo, T., Kitamoto, A., et al. (1997). Absolute scale of second-order nonlinear-optical coefficients. JOSA B, 14(9), 2268-2294. https://doi.org/10.1364/josab.14.002268
     """
+    _wl_range = (0.35, 6)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_a1_o", "_a2_o", "_a3_o", "_a4_o",  "_a5_o", "_a6_o",
                  "_a1_e", "_a2_e", "_a3_e", "_a4_e",  "_a5_e", "_a6_e",
                  "_b1_o", "_b2_o", "_b3_o", "_b4_o", "_b5_o",

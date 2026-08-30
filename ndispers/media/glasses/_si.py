@@ -30,6 +30,8 @@ class Si(Medium):
     Underlying fit:
       Tatian, B. (1984). Fitting refractive-index data with the Sellmeier dispersion formula. Applied Optics, 23(24), 4477-4485. https://doi.org/10.1364/ao.23.004477
     """
+    _wl_range = (1.36, 11)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A1", "_B1", "_A2", "_B2", "_A3", "_B3"]
 
     def __init__(self):

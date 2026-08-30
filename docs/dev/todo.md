@@ -16,6 +16,15 @@
 - `pmAngles_*` は 0–90° のみ。単斜晶 BiBO の 90–180° 側は d_eff セルが別扱いしているが、
   `pmAngles` の返り値には含まれない。
 
+- **catalog() に透過域フィールド**（案）— 現状の wl_range は Sellmeier 有効域で、
+  フィルタが吸収帯の結晶（例: β-BBO の 3.5 µm 超）を候補に挙げてしまう
+  （エージェント実測で確認）。docstring の Transparency range を全媒質から
+  転写する 1 スイープ。llms.txt には注意書きで暫定対応済み。
+- **MCP サーバー**（案・不急）— `n` / `pmAngles_sfg` / `tuning_dfg` / `catalog` を
+  MCP ツールとして薄く包み、Python 実行環境を持たないチャットアプリのエージェントからも
+  直接呼べるようにする。llms.txt 経由のコード実行で現状は足りているので、需要が
+  見えてから。保守（スキーマ・依存・配布）が増える点に注意。
+
 ## 検証（docs/validation.md に行を足す）
 
 - OPO チューニング曲線の文献照合: BBO 355 nm Type I（Cheng/Bosenberg/Tang 1988 または Dmitriev）、

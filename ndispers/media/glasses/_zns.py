@@ -28,6 +28,8 @@ class ZnS(Medium):
     Sellmeier equation:
       Debenham, M. (1984). Refractive indices of zinc sulfide in the 0.405-13-µm wavelength range. Applied Optics, 23(14), 2238-2239. https://doi.org/10.1364/ao.23.002238
     """
+    _wl_range = (0.405, 13)  # um, Sellmeier validity (see docstring)
+
     __slots__ = ["_A", "_B", "_C", "_D", "_E"]
 
     def __init__(self):
