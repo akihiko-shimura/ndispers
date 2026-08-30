@@ -64,74 +64,51 @@ directly to `multiprocessing` or `joblib` workers.
 
 ## Why ndispers
 
-Several tools already exist for this kind of calculation. The best-known and
-most extensive is *SNLO* by Arlee V. Smith
-([as-photonics.com](https://as-photonics.com/products/snlo/), a Windows GUI).
-There are also web apps for refractive indices
-([refractiveindex.info](https://refractiveindex.info/)) and phase matching
-([toolbox.lightcon.com](http://toolbox.lightcon.com/)), and the iOS app
-[iPhasematch](https://apps.apple.com/app/iphasematch/id492370060). Calculators
-exist for desktop, web and mobile — but none of them can become a component of
-*your* program.
+Existing tools for these calculations are applications: SNLO
+([as-photonics.com](https://as-photonics.com/products/snlo/), Windows),
+[refractiveindex.info](https://refractiveindex.info/) and
+[toolbox.lightcon.com](http://toolbox.lightcon.com/) (web), and
+[iPhasematch](https://apps.apple.com/app/iphasematch/id492370060) (iOS). An
+application answers the query typed into it; it cannot be called from a
+program.
 
-*ndispers* provides the core of SNLO-style calculation — refractive index,
-dispersion, phase matching and d_eff — **as a Python library**. Every method is
-a plain function that takes and returns numpy arrays, so you can sweep
-wavelength, angle and temperature at once and build the results directly into
-your own numerical simulations (pulse propagation, OPO design, thermal
-analysis) or Jupyter notebooks. And every coefficient is published with its
-source: type `bbo?` and you see which table of which paper the numbers come
-from, so a single class name in your Methods section makes the calculation
-reproducible.
+ndispers is a Python library. It computes the quantities SNLO's Qmix function
+reports — refractive indices, group velocities and dispersion, walk-off,
+phase-matching conditions, acceptance widths, effective nonlinearity — as
+functions that accept and return numpy arrays, so they can be evaluated over
+wavelength, angle and temperature grids inside a larger calculation. Every
+coefficient is traceable: each class docstring cites the paper, the validity
+range, and separate sources for the Sellmeier equation, the thermo-optic
+coefficients and the d tensor. Naming the class and the package version
+specifies a calculation completely.
 
-Being an ordinary, introspectable Python library has one more consequence:
-**ndispers is agent-ready**. Everything an AI assistant needs is
-self-describing — media enumerate with `dir()`, every docstring carries its
-literature source and validity range, and
-[llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt) condenses the
-whole API, units and pitfalls into a single page. Hand that link to your
-assistant and ask in plain language — *"find the phase-matching angle for
-1064 nm type-I SHG in BBO and plot its temperature dependence"* — and it can
-install, compute and plot without you writing a line of code. A GUI or web
-calculator cannot be driven this way.
+Because the library is introspectable and its data sources are stated, an AI
+assistant can operate it: media are enumerable with `dir()` or `catalog()`,
+docstrings carry the required metadata, and
+[llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt) states the API
+on one page.
 
-Nor is it limited to nonlinear crystals. Under the same interface it also
-covers linear birefringent crystals that SNLO does not treat (α-BBO, calcite,
-quartz, YVO₄, …) and optical glasses (fused silica, CaF₂, SF10, …), aiming to
-handle ultrafast-optics calculations — waveplates, polarizers and dispersion
-management included — in one package.
+The scope is wider than SNLO's: linear birefringent crystals (α-BBO, calcite,
+quartz, MgF₂, YVO₄, sapphire) and isotropic media (glasses, CaF₂, Si, Ge, …)
+are included under the same interface.
 
-**Strengths at a glance**
+**Features**
 
-- **Embeddable** — a library, not a GUI. All methods accept numpy arrays and
-  run as pre-compiled numpy functions, so the only runtime dependency is numpy
-  (no sympy, no first-call code-generation pause). Medium objects are
-  picklable and can be passed straight to `multiprocessing` / `joblib`.
-- **Agent-ready** — everything a GUI hides is exposed as introspectable
-  Python, and [llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt)
-  hands an AI assistant the whole API in one page: give it the link and ask in
-  plain language. The calculator becomes conversational.
-- **Transparent sourcing** — each medium's docstring states the Sellmeier
-  reference and its wavelength/temperature validity range, and the `constants`
-  property returns the coefficient values themselves. You can always trace
-  where a number came from.
-- **Multiple Sellmeier equations per crystal** — e.g. LBO ships Kato 1994,
-  Kato–Kuroda 2018, Ghosh 1995 and manufacturer fits (Castech, Newlight) as
-  separate classes, so you can compare disagreeing literature yourself.
-- **Materials beyond SNLO** — linear birefringent crystals (α-BBO, calcite,
-  quartz, sapphire, MgF₂, YVO₄) and isotropic media (fused silica, CaF₂,
-  BaF₂, YAG, N-BK7, SF glasses, Si, Ge, …) with the same API.
-- **Analytic temperature derivatives** — dn/dT and d²n/dT² are computed from
-  differentiated expressions, not finite differences; useful for temperature
-  tuning and thermal-lens analysis.
-- **Nonlinear-optics toolkit** — phase mismatch Δk, direct phase-matching-angle
-  solutions, the sinc² phase-matching factor, and d_eff wavelength-scaled by
-  Miller's rule for every non-centrosymmetric crystal.
-- **Easy to extend** — subclass the point-group base class and write one file
-  of Sellmeier and d coefficients to add a crystal. Requests and contributions
-  are welcome on [GitHub](https://github.com/akihiko-shimura/ndispers/issues).
-- **Cross-platform** — `pip install ndispers` on Linux, macOS or Windows; runs
-  on clusters and Colab alike.
-- **Verified transcription** — coefficients are cross-checked against the
-  literature by independent re-extraction and pinned by regression tests, so
-  copy errors are caught by machinery, not luck.
+- All methods accept numpy arrays and broadcast over them; the evaluated
+  functions are pre-generated, so numpy is the only runtime dependency.
+  Medium objects are picklable and work with `multiprocessing`.
+- Temperature derivatives dn/dT and d²n/dT² are obtained by differentiating
+  the symbolic index expressions, not by finite differences.
+- Phase matching: Δk, phase-matching angles, sinc² factor, acceptance widths,
+  QPM period, OPO tuning curves; d_eff with Miller wavelength scaling for
+  every non-centrosymmetric crystal.
+- Several parameterizations of the same crystal are separate classes (LBO has
+  five); disagreement between sources is visible rather than hidden behind
+  one default.
+- Coefficients are transcribed from the cited papers and cross-checked by
+  independent re-extraction; regression tests pin the computed values
+  ([validation record](https://ndispers.readthedocs.io/en/latest/validation/)).
+- A new crystal is one file: a point-group base class plus Sellmeier and d
+  coefficients ([AGENTS.md](https://github.com/akihiko-shimura/ndispers/blob/main/AGENTS.md)). Requests and contributions:
+  [GitHub](https://github.com/akihiko-shimura/ndispers/issues).
+- Installation is `pip install ndispers` on any platform, Python ≥ 3.10.
