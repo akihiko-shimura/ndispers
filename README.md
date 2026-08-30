@@ -7,6 +7,7 @@
 [![PyPI](https://img.shields.io/pypi/v/ndispers)](https://pypi.org/project/ndispers/)
 [![test](https://github.com/akihiko-shimura/ndispers/actions/workflows/test.yml/badge.svg)](https://github.com/akihiko-shimura/ndispers/actions/workflows/test.yml)
 [![apps](https://github.com/akihiko-shimura/ndispers/actions/workflows/pages.yml/badge.svg)](https://akihiko-shimura.github.io/ndispers/)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)
 
 *ndispers* is a Python package for refractive-index dispersion of crystals and
 glasses used in nonlinear and ultrafast optics. It implements Sellmeier
@@ -100,8 +101,10 @@ install sympy with `pip install ndispers[sym]`.
 ## Quick start
 
 The [tutorial notebook](examples/basic_usage.ipynb) covers the workflow from
-inspecting a Sellmeier equation to phase-matching curves, with plots. The
-essentials:
+inspecting a Sellmeier equation to phase-matching curves, with plots; it runs
+in the browser on
+[Colab](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb),
+no installation needed. The essentials:
 
 ```python
 >>> import ndispers as nd

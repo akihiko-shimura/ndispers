@@ -1,0 +1,46 @@
+# conda-forge recipe draft for ndispers.
+# Submission: fork https://github.com/conda-forge/staged-recipes, copy this
+# file to recipes/ndispers/meta.yaml, update the sha256 for the release
+# being packaged (`curl -sL <pypi sdist url> | shasum -a 256`), open a PR.
+# After it merges, the feedstock auto-updates on future PyPI releases.
+{% set name = "ndispers" %}
+{% set version = "0.19.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/n/ndispers/ndispers-{{ version }}.tar.gz
+  sha256: 16c9c6329219fc66a391363ff2a9f7ec7182be14c70772ae08daa172bc4031bd
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python {{ python_min }}
+    - hatchling
+    - pip
+  run:
+    - python >={{ python_min }}
+    - numpy
+
+test:
+  imports:
+    - ndispers
+  commands:
+    - python -c "import ndispers as nd; assert abs(nd.media.crystals.BetaBBO_Eimerl1987().n(0.532, 0, 25, pol='o') - 1.674884) < 1e-5"
+
+about:
+  home: https://github.com/akihiko-shimura/ndispers
+  summary: Refractive-index dispersion and phase matching of nonlinear/ultrafast-optics crystals and glasses
+  license: MIT
+  license_file: LICENSE
+  doc_url: https://ndispers.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - akihiko-shimura

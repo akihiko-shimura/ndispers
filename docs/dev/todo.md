@@ -20,6 +20,14 @@
   フィルタが吸収帯の結晶（例: β-BBO の 3.5 µm 超）を候補に挙げてしまう
   （エージェント実測で確認）。docstring の Transparency range を全媒質から
   転写する 1 スイープ。llms.txt には注意書きで暫定対応済み。
+- **広報の残タスク**（2026-08-30 の計画から。手元で完了: PyPI メタデータ、
+  Colab バッジ、JOSS 草稿 `paper/`、conda レシピ草稿 `docs/dev/conda-forge/`）
+    - Zenodo 連携を有効化して DOI を CITATION.cff に追記（要 Web ログイン）
+    - JOSS 投稿: `paper/paper.md` の ORCID・所属を実物に差し替えてから
+      <https://joss.theoj.org/papers/new>
+    - conda-forge: レシピを staged-recipes に PR（手順はレシピ冒頭のコメント）
+    - RP Photonics のソフト一覧・awesome-photonics 系リストへの掲載依頼
+    - StackExchange / Qiita の実例記事
 - **MCP サーバー**（案・不急）— `n` / `pmAngles_sfg` / `tuning_dfg` / `catalog` を
   MCP ツールとして薄く包み、Python 実行環境を持たないチャットアプリのエージェントからも
   直接呼べるようにする。llms.txt 経由のコード実行で現状は足りているので、需要が

@@ -17,15 +17,23 @@ packages = ["ndispers"]
 [project]
 name = "ndispers"
 dynamic = ["version"]
-description = "Python package for calculating refractive index dispersion of various materials"
+description = "Refractive-index dispersion and phase matching of nonlinear/ultrafast-optics crystals and glasses, from literature Sellmeier equations"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"
 authors = [
     { name = "Akihiko Shimura", email = "akhksh@gmail.com" },
 ]
+keywords = [
+    "optics", "nonlinear optics", "ultrafast optics", "refractive index",
+    "dispersion", "Sellmeier equation", "phase matching", "birefringence",
+    "quasi-phase-matching", "OPO", "SHG", "SNLO", "BBO", "LBO", "KTP",
+    "lithium niobate",
+]
 classifiers = [
     "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -50,3 +58,6 @@ notebook = ["matplotlib", "plotly", "ipython", "jupyterlab", "marimo"]
 
 [project.urls]
 Homepage = "https://github.com/akihiko-shimura/ndispers"
+Documentation = "https://ndispers.readthedocs.io"
+Changelog = "https://github.com/akihiko-shimura/ndispers/releases"
+Apps = "https://akihiko-shimura.github.io/ndispers/"

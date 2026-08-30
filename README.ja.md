@@ -7,6 +7,7 @@
 [![PyPI](https://img.shields.io/pypi/v/ndispers)](https://pypi.org/project/ndispers/)
 [![test](https://github.com/akihiko-shimura/ndispers/actions/workflows/test.yml/badge.svg)](https://github.com/akihiko-shimura/ndispers/actions/workflows/test.yml)
 [![apps](https://github.com/akihiko-shimura/ndispers/actions/workflows/pages.yml/badge.svg)](https://akihiko-shimura.github.io/ndispers/)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)
 
 *ndispers* は、非線形光学・超高速光学で用いられる結晶とガラスの屈折率分散を
 計算する Python パッケージです。文献で報告された Sellmeier 方程式と
@@ -93,7 +94,9 @@ Python 3.10 以降。依存は numpy のみです。分散式は sympy の式と
 ## クイックスタート
 
 [チュートリアルノートブック](examples/basic_usage.ipynb)が、Sellmeier 方程式の
-確認から位相整合曲線までの手順をプロットつきで示しています。要点:
+確認から位相整合曲線までの手順をプロットつきで示しています。
+[Colab](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)
+ならインストール不要でブラウザから実行できます。要点:
 
 ```python
 >>> import ndispers as nd
