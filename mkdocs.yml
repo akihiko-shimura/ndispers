@@ -3,7 +3,7 @@ site_description: Refractive index dispersion of crystals and glasses for nonlin
 site_url: https://ndispers.readthedocs.io/
 repo_url: https://github.com/akihiko-shimura/ndispers
 repo_name: akihiko-shimura/ndispers
-copyright: Copyright &copy; 2021 Akihiko Shimura
+copyright: Copyright &copy; 2021–2026 Akihiko Shimura
 
 docs_dir: docs
 
