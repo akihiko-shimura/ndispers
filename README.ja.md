@@ -36,6 +36,72 @@
 - 位相整合因子 sinc²(Δk·L/2)
 - 実効非線形係数 d_eff（テンソル成分は Miller 則で使用波長にスケーリング。パッケージ内の非中心対称結晶すべてで利用可）
 
+## なぜ ndispers か
+
+この種の計算のツールは既にいくつかあります。最も有名で網羅的なのは
+Arlee V. Smith による *SNLO*
+（[as-photonics.com](https://as-photonics.com/products/snlo/)、Windows 用 GUI）です。
+ほかにも屈折率の Web アプリ（[refractiveindex.info](https://refractiveindex.info/)）、
+位相整合計算の Web アプリ（[toolbox.lightcon.com](http://toolbox.lightcon.com/)）、
+iOS アプリ（[iPhasematch](https://apps.apple.com/jp/app/iphasematch/id492370060)）が
+あります。デスクトップ・Web・モバイルと「電卓」は揃っていますが、いずれも
+**あなたのプログラムの部品にはなりません**。
+
+*ndispers* は、SNLO 型計算の中核 — 屈折率・分散・位相整合・d_eff — を
+**Python ライブラリとして**提供します。すべてのメソッドは numpy 配列を受けて
+配列を返す普通の関数なので、波長・角度・温度を一度に掃引して、自作の
+数値シミュレーション（パルス伝搬、OPO 設計、熱解析）や Jupyter ノートブックに
+そのまま組み込めます。そして全係数が出典つきで公開されています。`bbo?` と
+打てば「どの論文のどの表の値か」まで確認でき、論文の Methods にクラス名を
+1 行書けば計算が再現可能になります。
+
+普通の、内省可能な Python ライブラリであることには、もう 1 つの帰結があります。
+**ndispers はエージェント対応です**。AI アシスタントが必要とするものはすべて
+自己記述的になっています — 媒質は `dir()` で列挙でき、各 docstring は出典と
+有効範囲を持ち、[llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt)
+が API 全体・単位・落とし穴を 1 ページに凝縮しています。このリンクを
+アシスタントに渡して、日本語で頼むだけ —「BBO の 1064 nm タイプ I SHG の
+位相整合角を求めて、温度依存性をプロットして」— あなたは 1 行もコードを
+書かずに、インストールから計算・プロットまで代行させられます。GUI や Web の
+電卓をこの方法で駆動することはできません。
+
+対象は非線形結晶だけではありません。SNLO が扱わない線形の複屈折結晶
+（α-BBO、方解石、水晶、YVO₄ など）や光学ガラス（溶融石英、CaF₂、SF10 など）も
+同じインターフェースで揃えており、波長板・偏光子・分散管理まで含めた
+超高速光学の計算を 1 つのパッケージで完結させることを目指しています。
+
+**特長の一覧**
+
+- **組み込み可能** — GUI ではなくライブラリ。全メソッドが numpy 配列を受け、
+  事前コンパイル済みの numpy 関数として動くため、実行時依存は numpy のみ
+  （sympy 不要、初回のコード生成待ちなし）。medium オブジェクトは picklable で、
+  `multiprocessing` / `joblib` にそのまま渡せます。
+- **エージェント対応** — GUI が隠すものすべてが内省可能な Python として
+  露出しており、[llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt)
+  が AI アシスタントに API 全体を 1 ページで渡します。リンクを渡して自然言語で
+  頼むだけ。電卓が対話型になります。
+- **出典の透明性** — 各媒質の docstring に Sellmeier の出典と波長・温度の
+  有効範囲を明記。`constants` プロパティで係数値そのものも見られます。
+  値の出所が追えない、ということがありません。
+- **同一結晶の複数 Sellmeier** — 例えば LBO は Kato 1994 / Kato–Kuroda 2018 /
+  Ghosh 1995 / メーカー値（Castech, Newlight）を別クラスとして併載。
+  文献間の食い違いを自分で比較・評価できます。
+- **SNLO にない材料** — 線形複屈折結晶（α-BBO、方解石、水晶、サファイア、
+  MgF₂、YVO₄）と等方媒質（溶融石英、CaF₂、BaF₂、YAG、N-BK7、SF ガラス、
+  Si、Ge など）を同一 API で提供。
+- **温度微分は解析的** — dn/dT・d²n/dT² を数値差分ではなく式の微分から計算。
+  温度チューニングや熱レンズ解析に。
+- **非線形光学の道具立て** — 位相不整合 Δk、位相整合角の直接解、
+  sinc² 位相整合因子、Miller 則で使用波長にスケールした d_eff
+  （全非中心対称結晶）。
+- **拡張が容易** — 点群ごとの基底クラスを継承し、Sellmeier と d 係数を
+  1 ファイル書けば新しい結晶を追加できます。追加リクエストや貢献は
+  [GitHub](https://github.com/akihiko-shimura/ndispers/issues) へ。
+- **クロスプラットフォーム** — `pip install ndispers` だけで
+  Linux / macOS / Windows、クラスタでも Colab でも動きます。
+- **転写の検証つき** — 係数は文献からの独立再抽出で照合し、回帰テストで固定。
+  写し間違いは運ではなく仕組みで防いでいます。
+
 ## インストール
 
 Python 3.10 以降が必要です。
