@@ -35,10 +35,20 @@ remove.
    uv run python tools/compile_media.py
    ```
 
-   (`test_compiled_modules_are_current` fails until this is done.)
-2. Update `__version__` in `ndispers/__init__.py`. Follow the project's
-   practice: bump the minor version when computed results change, even if the
-   change is a bug fix, so the change cannot reach a pinned install silently.
+   (`test_compiled_modules_are_current` fails until this is done.) If media,
+   `docs/llms.txt` or `docs/conventions.md` changed, also regenerate the agent
+   reference: `uv run python tools/gen_llms_full.py`
+   (`test_llms_full_txt_is_current` fails until you do).
+2. Stamp the new version everywhere at once — `ndispers/__init__.py` and
+   `CITATION.cff` (version and release date). Never edit these by hand:
+
+   ```
+   uv run python tools/set_version.py 1.2.3
+   ```
+
+   Follow the project's practice: bump the minor version when computed results
+   change, even if the change is a bug fix, so the change cannot reach a
+   pinned install silently.
 3. Commit and push to `main`.
 4. Tag and push:
 
@@ -47,7 +57,8 @@ remove.
    git push origin v1.2.3
    ```
 
-5. The workflow then verifies that the tag matches `ndispers.__version__`, runs
+5. The workflow then verifies that the tag matches `ndispers.__version__` and
+   the `version:` in `CITATION.cff`, runs
    the test suite and the docs build, builds the sdist and wheel, checks them
    with `twine check`, and uploads. If the `pypi` environment requires a
    reviewer, approve the run in the Actions tab.

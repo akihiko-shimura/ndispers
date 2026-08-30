@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use ndispers in your research, please cite it as below."
+title: "ndispers: refractive index dispersion of media for nonlinear/ultrafast optics"
+type: software
+authors:
+  - family-names: "Shimura"
+    given-names: "Akihiko"
+repository-code: "https://github.com/akihiko-shimura/ndispers"
+url: "https://ndispers.readthedocs.io"
+license: MIT
+version: 0.18.0
+date-released: "2026-08-26"
+keywords:
+  - nonlinear optics
+  - ultrafast optics
+  - refractive index
+  - dispersion
+  - Sellmeier equation
+  - phase matching
+  - birefringent crystals
