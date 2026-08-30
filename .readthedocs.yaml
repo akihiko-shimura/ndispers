@@ -8,6 +8,7 @@ build:
   tools:
     python: "3.12"
   commands:
-    # mkdocstrings imports ndispers, so install the package itself
-    - pip install . -r docs/requirements.txt
+    # mkdocstrings inspects ndispers at runtime; the [sym] extra (sympy) is
+    # required for that inspection, not only for users of n_expr
+    - pip install .[sym] -r docs/requirements.txt
     - mkdocs build --strict --site-dir $READTHEDOCS_OUTPUT/html
