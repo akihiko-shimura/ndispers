@@ -8,8 +8,8 @@ authors:
 repository-code: "https://github.com/akihiko-shimura/ndispers"
 url: "https://ndispers.readthedocs.io"
 license: MIT
-version: 0.18.0
-date-released: "2026-08-26"
+version: 0.19.0
+date-released: "2026-08-30"
 keywords:
   - nonlinear optics
   - ultrafast optics
