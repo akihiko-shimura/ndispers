@@ -100,11 +100,10 @@ install sympy with `pip install ndispers[sym]`.
 
 ## Quick start
 
-The [tutorial notebook](examples/basic_usage.ipynb) covers the workflow from
-inspecting a Sellmeier equation to phase-matching curves, with plots; it runs
-in the browser on
-[Colab](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb),
-no installation needed. The essentials:
+The [tutorial notebook](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)
+covers the workflow from inspecting a Sellmeier equation to phase-matching
+curves, with plots; it opens on Colab and runs in the browser, no
+installation needed. The essentials:
 
 ```python
 >>> import ndispers as nd
@@ -131,7 +130,7 @@ references.
 
 Worked examples — dispersion sweeps, phase-matching angles, OPO tuning,
 d<sub>eff</sub> — are in the [documentation](https://ndispers.readthedocs.io/en/latest/)
-and the [tutorial notebook](examples/basic_usage.ipynb).
+and the [tutorial notebook](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb).
 
 ## Available media
 
@@ -150,7 +149,7 @@ lists every class with its Sellmeier equation, validity range and references;
 ## Documentation
 
 - [Browser apps](https://akihiko-shimura.github.io/ndispers/) — a refractive-index explorer and a phase-matching calculator, running client-side.
-- [Tutorial notebook](examples/basic_usage.ipynb) — the basic workflow, viewable on GitHub.
+- [Tutorial notebook](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb) — the basic workflow; opens on Colab ([source](examples/basic_usage.ipynb)).
 - [Validation](https://ndispers.readthedocs.io/en/latest/validation/) — comparisons against the literature, with numbers, sources and caveats.
 - [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — conventions (units, angles, signs) and the [media catalog](https://ndispers.readthedocs.io/en/latest/api/crystals/).
 - [llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt) / [llms-full.txt](https://ndispers.readthedocs.io/en/latest/llms-full.txt) — the API reference for AI assistants.

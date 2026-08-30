@@ -93,10 +93,10 @@ Python 3.10 以降。依存は numpy のみです。分散式は sympy の式と
 
 ## クイックスタート
 
-[チュートリアルノートブック](examples/basic_usage.ipynb)が、Sellmeier 方程式の
-確認から位相整合曲線までの手順をプロットつきで示しています。
-[Colab](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)
-ならインストール不要でブラウザから実行できます。要点:
+[チュートリアルノートブック](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)が、
+Sellmeier 方程式の確認から位相整合曲線までの手順をプロットつきで示して
+います。Colab で開くのでインストール不要、ブラウザからそのまま実行できます。
+要点:
 
 ```python
 >>> import ndispers as nd
@@ -122,7 +122,7 @@ Python 3.10 以降。依存は numpy のみです。分散式は sympy の式と
 
 分散の掃引、位相整合角、OPO チューニング、d<sub>eff</sub> などの実例は
 [ドキュメント](https://ndispers.readthedocs.io/en/latest/)と
-[チュートリアルノートブック](examples/basic_usage.ipynb)にあります。
+[チュートリアルノートブック](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)にあります。
 
 ## 収録媒質
 
@@ -141,7 +141,7 @@ SF10/11/57, ZnSe, ZnS, Si, Ge, ダイヤモンド。
 ## ドキュメント
 
 - [ブラウザアプリ](https://akihiko-shimura.github.io/ndispers/) — 屈折率エクスプローラーと位相整合計算機。クライアントサイドで動作します。
-- [チュートリアルノートブック](examples/basic_usage.ipynb) — 基本の作業手順。GitHub 上で閲覧できます。
+- [チュートリアルノートブック](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb) — 基本の作業手順。Colab で開きます（[ソース](examples/basic_usage.ipynb)）。
 - [検証](https://ndispers.readthedocs.io/en/latest/validation/) — 文献との比較。数値、出典、注意点。
 - [ndispers.readthedocs.io](https://ndispers.readthedocs.io/en/latest/) — 規約（単位・角度・符号）と[媒質カタログ](https://ndispers.readthedocs.io/en/latest/api/crystals/)。
 - [llms.txt](https://ndispers.readthedocs.io/en/latest/llms.txt) / [llms-full.txt](https://ndispers.readthedocs.io/en/latest/llms-full.txt) — AI アシスタント向けの API リファレンス。

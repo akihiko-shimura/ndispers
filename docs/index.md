@@ -66,7 +66,7 @@ pip install ndispers
 ## Quick start
 
 For a guided tour with plots, see the
-[tutorial notebook](https://github.com/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb),
+[tutorial notebook](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb),
 readable directly on GitHub. The essentials:
 
 ```python
@@ -248,6 +248,6 @@ many instances of the same crystal is cheap.
   medium, reference temperatures, and the phase-matching sign conventions.
 - **[Media catalog](api/crystals.md)** — every crystal and glass with its Sellmeier
   equation, validity range and references.
-- **[Tutorial notebook](https://github.com/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)**
+- **[Tutorial notebook](https://colab.research.google.com/github/akihiko-shimura/ndispers/blob/main/examples/basic_usage.ipynb)**
   — worked examples with plots.
 
