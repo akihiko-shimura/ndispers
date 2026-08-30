@@ -1,0 +1,346 @@
+\documentclass[aps,pra,preprint,amsmath,amssymb,nofootinbib,superscriptaddress]{revtex4-2}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+
+\newcommand{\deff}{d_{\mathrm{eff}}}
+\newcommand{\sn}{\operatorname{sn}}
+\newcommand{\ndispers}{\textsc{ndispers}}
+\newcommand{\flag}[1]{\textcolor{red!70!black}{\textbf{#1}}}
+
+\begin{document}
+
+\title{Semi-analytical conversion efficiency of pulsed and cw sum-frequency
+generation:\\ theoretical notes for the \ndispers\ \texttt{eta\_sfg} /
+\texttt{eta\_shg} methods}
+
+\author{A.~Shimura}
+\date{\today}
+
+\begin{abstract}
+These notes derive, from the coupled-wave equations, the semi-analytical
+conversion efficiency implemented (to be implemented) in \ndispers: the
+Armstrong Jacobi-elliptic solution for collinear three-wave mixing with pump
+depletion and phase mismatch, averaged over Gaussian spatial and temporal
+profiles. The pulsed two-beam SFG case reproduces
+Guha \& Gonzalez, Eq.~(4.118); the cw case is obtained by dropping the
+temporal average; type-I SHG is derived separately with its degeneracy
+factor made explicit. One discrepancy against the 2021 prototype script is identified and
+settled (\S\ref{sec:flag}): the pairing of the wavelength ratios $d$,
+$d_1$ with the two beams is transposed in the prototype --- invisible in
+the degenerate $\lambda_1\simeq\lambda_2$ case it was used for --- as
+decided by Armstrong's original Eqs.~(6.6)/(6.10), consulted directly. The SHG normalization is
+pinned against Boyd's $\Delta k=0$ solution (4th ed., \S2.7, consulted
+directly). Validity conditions
+of the neglected effects (walk-off, GVM, diffraction, GVD) are collected for
+the self-diagnosis warnings.
+\end{abstract}
+
+\maketitle
+
+\section{Assumptions and conventions}\label{sec:conv}
+
+Collinear three-wave mixing $\omega_3=\omega_1+\omega_2$ in a lossless
+crystal of length $L$. Neglected: spatial walk-off, group-velocity mismatch,
+diffraction, group-velocity dispersion, and linear absorption
+(\S\ref{sec:validity} quantifies when this is justified). The two inputs are
+mutually incoherent in the sense that only intensities matter; each is
+Gaussian in space and (for pulses) in time, with no chirp.
+
+Fields are written
+\begin{equation}
+E_j(z,t) = \tfrac12 A_j(z)\, e^{i(k_j z-\omega_j t)} + \mathrm{c.c.},
+\qquad
+I_j = \tfrac12 c\varepsilon_0 n_j |A_j|^2 ,
+\label{eq:fieldconv}
+\end{equation}
+(Boyd \S2.7 uses the convention \emph{without} the $\tfrac12$,
+$\tilde E=Ee^{-i\omega t}+\mathrm{c.c.}$, $I=2n\varepsilon_0c|A|^2$; formulas
+must not be mixed across the two conventions)
+and the nonlinear polarization uses the standard contracted-$d$ convention
+in which, for three distinct frequencies,
+$P(\omega_3)=2\varepsilon_0\deff A_1A_2$,
+$P(\omega_1)=2\varepsilon_0\deff A_3A_2^*$,
+$P(\omega_2)=2\varepsilon_0\deff A_3A_1^*$, while for SHG from a single
+field $P(2\omega)=\varepsilon_0\deff A_1^{\,2}$
+(the degeneracy factor; the 2:1 ratio is convention-independent and appears
+explicitly in Boyd Eqs.~(2.7.8)--(2.7.9); see \S\ref{sec:shg}). SVEA gives
+\begin{align}
+\frac{dA_1}{dz} &= \frac{i\omega_1 \deff}{n_1 c} A_3 A_2^*\, e^{-i\Delta k z},&
+\frac{dA_2}{dz} &= \frac{i\omega_2 \deff}{n_2 c} A_3 A_1^*\, e^{-i\Delta k z},&
+\frac{dA_3}{dz} &= \frac{i\omega_3 \deff}{n_3 c} A_1 A_2\, e^{+i\Delta k z},
+\label{eq:coupled}
+\end{align}
+with $\Delta k=k_3-k_1-k_2$. Dimensionless propagation $\zeta=z/L$ and
+mismatch $\sigma=\Delta k\,L$.
+
+Following the prototype and Guha \& Gonzalez, define the
+\emph{characteristic intensity}
+\begin{equation}
+I_a=\frac{P_a}{L^{2}},\qquad
+P_a=\frac{c\,\varepsilon_0\, n_1 n_2 n_3\, \lambda_1\lambda_2}
+         {8\pi^{2}\deff^{2}},
+\label{eq:Ia}
+\end{equation}
+and the normalized input intensities and ratios
+\begin{equation}
+K_1=\frac{I_{10}}{I_a},\qquad
+p_1=\frac{I_{20}}{I_{10}},\qquad
+d=\frac{\lambda_1}{\lambda_3},\qquad
+d_1=\frac{d}{d-1}=\frac{\lambda_2}{\lambda_3},\qquad
+d_2=d\,d_1=\frac{\lambda_1\lambda_2}{\lambda_3^{2}} .
+\label{eq:ratios}
+\end{equation}
+Note $d+ d_1 = d_2$ and, since
+$1/\lambda_3=1/\lambda_1+1/\lambda_2$, both $d,d_1>1$. In the degenerate
+case $\lambda_1=\lambda_2$: $d=d_1=2$, $d_2=4$.
+
+\section{Plane-wave solution with depletion and mismatch}\label{sec:pw}
+
+Photon fluxes $\phi_j = I_j/\hbar\omega_j \propto I_j\lambda_j$ obey
+Manley--Rowe: $d\phi_3/dz=-d\phi_1/dz=-d\phi_2/dz$, i.e.
+\begin{equation}
+I_1(\zeta)=I_{10}-\frac{\lambda_3}{\lambda_1}I_3(\zeta),\qquad
+I_2(\zeta)=I_{20}-\frac{\lambda_3}{\lambda_2}I_3(\zeta).
+\label{eq:MR}
+\end{equation}
+Define the normalized SF intensity $y(\zeta)=I_3(\zeta)/I_a$. From
+Eqs.~(\ref{eq:coupled}) with Armstrong's reduction [consulted directly:
+their Eqs.~(6.4)--(6.10); the phase equation integrates to the invariant
+$\cos\theta=(\Gamma+\tfrac12\Delta S\,u_3^2)/u_1u_2u_3$, their (6.7), with
+$\Gamma=0$ for $u_3(0)=0$], one obtains a single closed equation,
+\begin{equation}
+\Big(\frac{dy}{d\zeta}\Big)^{2}
+   = 4\,y\,\big(\alpha-y\big)\big(\beta-y\big)-\sigma^{2}y^{2},
+\qquad
+\alpha = d\,K_1 G_1,\qquad
+\beta  = d_1\,p_1 K_1 G_2 ,
+\label{eq:cubic}
+\end{equation}
+where $G_1,G_2\in(0,1]$ are the local intensity envelope factors of beams 1
+and 2 (unity on axis at pulse center; \S\ref{sec:avg}), so $K_1G_1=I_1/I_a$
+and $p_1K_1G_2=I_2/I_a$ locally. The roots $\alpha,\beta$ are exactly the
+Manley--Rowe depletion caps of Eq.~(\ref{eq:MR}) expressed in $y$: full
+conversion of the wave-1 photons gives
+$I_3^{\max}=(\lambda_1/\lambda_3)I_1=d\,I_1$, i.e. $y\le\alpha$, and
+likewise $y\le\beta$ for wave 2. \emph{This fixes the pairing: $d$ (built
+from $\lambda_1$) multiplies the beam-1 intensity, $d_1$ (built from
+$\lambda_2$) the beam-2 intensity.} This is Armstrong's structure
+verbatim: with $u_3(0)=0$ their cubic (6.10) factors to
+$y^2-(m_1+m_2+\tfrac14\Delta S^2)y+m_1m_2$ whose roots are the
+Manley--Rowe constants $m_1=u_2^2(0)$, $m_2=u_1^2(0)$ of their (6.6) ---
+the initial photon fractions of the two input waves --- and their general
+solution (6.13),
+$u_3^2 = u_{3b}^2\,\sn^2[(u_{3c}^2)^{1/2}(\zeta+\zeta_0);\,
+u_{3b}^2/u_{3c}^2]$,
+is Eq.~(\ref{eq:sn}) term for term.
+
+Collecting the quadratic and cubic coefficients of
+Eq.~(\ref{eq:cubic}),
+\begin{equation}
+\Big(\frac{dy}{d\zeta}\Big)^{2}=4y\big(y^2-a_1y+a_2\big),\qquad
+a_1=\alpha+\beta+\frac{\sigma^{2}}{4},\qquad
+a_2=\alpha\beta=d_2\,p_1K_1^{2}\,G_1G_2 ,
+\label{eq:a1a2}
+\end{equation}
+with roots $b_{1,2}=\tfrac12\big(a_1\mp\sqrt{a_1^{2}-4a_2}\big)$,
+$0\le b_1\le b_2$. The solution with $y(0)=0$ is the Jacobi elliptic
+function
+\begin{equation}
+y(\zeta)=b_1\,\sn^{2}\!\big(\sqrt{b_2}\,\zeta;\;m\big),
+\qquad m=\frac{b_1}{b_2},
+\label{eq:sn}
+\end{equation}
+verified by direct differentiation using
+$\sn'=\mathrm{cn}\,\mathrm{dn}$, $\mathrm{cn}^2=1-\sn^2$,
+$\mathrm{dn}^2=1-m\,\sn^2$. Limits:
+(i) \emph{undepleted}, $K_1\to0$ at fixed $\sigma$:
+$a_1\to\sigma^{2}/4$, and Eq.~(\ref{eq:cubic}) linearizes to
+$y(1)=a_2\,\mathrm{sinc}^{2}(\sigma/2)$, the textbook formula
+$I_3=8\pi^2\deff^2L^2I_1I_2/(c\varepsilon_0 n_1n_2n_3\lambda_3^{2})
+\,\mathrm{sinc}^{2}(\Delta kL/2)$
+[the factor $d_2$ of Eq.~(\ref{eq:ratios}) converts
+$\lambda_1\lambda_2\to\lambda_3^2$];
+(ii) \emph{matched, balanced}, $\sigma=0$, $\alpha=\beta$: $m=1$,
+$\sn\to\tanh$, $y=\alpha\tanh^{2}(\sqrt{\alpha}\,\zeta)$ --- full
+asymptotic depletion.
+
+\subsection{Discrepancy against the 2021 prototype}\label{sec:flag}
+
+The prototype script builds
+$a_1 = d_1 K_1 G_1 + d\,p_1 K_1 G_2 + \sigma^2/4$: the ratios $d_1$ and $d$
+are attached to the \emph{opposite} beams relative to
+Eq.~(\ref{eq:cubic}). The product $a_2$ is symmetric, so the two forms
+coincide when $\lambda_1=\lambda_2$ (then $d=d_1$) --- precisely the
+degenerate $532+532\,$nm case the script was written for, where the error
+is invisible. For nondegenerate SFG the transposition misplaces the
+Manley--Rowe caps and the depletion behaviour.
+\flag{Resolved (2026-08-30):} Armstrong's original, consulted directly,
+decides the question: the roots of their cubic (6.10) are the Manley--Rowe
+constants of their (6.6), i.e.\ the initial photon fractions of the
+\emph{respective} waves, which maps to Eq.~(\ref{eq:cubic}) and not to the
+prototype's pairing. Implement Eq.~(\ref{eq:cubic}); keep the
+wave-exchange symmetry test of \S\ref{sec:tests} as the regression guard.
+(A cross-reading of Guha \& Gonzalez Eq.~(4.118) is now optional.)
+
+\section{Gaussian averaging: pulsed SFG}\label{sec:avg}
+
+Beams are collinear Gaussians with $1/e$-intensity radii $r_{0j}$ and, for
+pulses, $1/e$-intensity half-durations $t_{0j}$:
+\begin{equation}
+I_j(r,t)=I_{j0}\,e^{-r^{2}/r_{0j}^{2}}\,e^{-t^{2}/t_{0j}^{2}},
+\qquad
+E_j=\pi r_{0j}^{2}\,\sqrt{\pi}\,t_{0j}\,I_{j0}.
+\label{eq:gauss}
+\end{equation}
+Laboratory specifications convert as $r_0=w/\sqrt2$ ($w$: $1/e^{2}$
+intensity radius) and $t_0=t_{\mathrm{FWHM}}/(2\sqrt{\ln 2})$. In the
+normalized coordinates $r_1=r/r_{01}$, $t_1=t/t_{01}$ and with
+$\rho=r_{01}/r_{02}$, $\tau=t_{01}/t_{02}$,
+\begin{equation}
+G_1=e^{-r_1^{2}}e^{-t_1^{2}},\qquad
+G_2=e^{-\rho^{2}r_1^{2}}e^{-\tau^{2}t_1^{2}} .
+\end{equation}
+Because propagation effects on the envelopes are neglected, each point
+$(r_1,t_1)$ converts independently with the plane-wave solution
+(\ref{eq:sn}). The output pulse energy and the efficiency
+$\eta_e = E_3/(E_1+E_2)$ follow by integration; using
+$E_1+E_2=\pi r_{01}^2\sqrt{\pi}\,t_{01} I_{10}\,
+\big(1+p_1/(\rho^{2}\tau)\big)$,
+\begin{equation}
+\boxed{\;
+\eta_e=\frac{4}{\sqrt{\pi}\,K_1\big(1+\frac{p_1}{\rho^{2}\tau}\big)}
+\int_0^{\infty}\!\!\int_0^{\infty}
+r_1\,b_1\,\sn^{2}\!\big(\sqrt{b_2};\,b_1/b_2\big)\,dr_1\,dt_1 \; }
+\label{eq:etae}
+\end{equation}
+with $b_{1,2}=b_{1,2}(r_1,t_1)$ through $G_1,G_2$, and $\sn$ evaluated at
+$\zeta=1$. This is Guha \& Gonzalez Eq.~(4.118); the prototype's prefactor
+$\tfrac{2}{\sqrt\pi K_1(1+p_1/\rho^2\tau)}\times 2$ agrees (its inner
+factor 2 restores the full time axis from the half-axis integral).
+
+\section{The cw case}\label{sec:cw}
+
+Nothing in the propagation solution (\ref{eq:sn}) is time-dependent: for cw
+beams the temporal envelope factors are unity ($G_j=e^{-\cdots r^2}$ only)
+and the average is over the transverse plane alone. With powers
+$P_j=\pi r_{0j}^{2} I_{j0}$ and $\eta_P=P_3/(P_1+P_2)$,
+\begin{equation}
+\boxed{\;
+\eta_P=\frac{2}{K_1\big(1+\frac{p_1}{\rho^{2}}\big)}
+\int_0^{\infty} r_1\, b_1\,\sn^{2}\!\big(\sqrt{b_2};\,b_1/b_2\big)\,
+dr_1 \;}
+\label{eq:etacw}
+\end{equation}
+with $G_1=e^{-r_1^2}$, $G_2=e^{-\rho^2 r_1^2}$ in $b_{1,2}$, and $K_1$ now
+built from the cw axial intensity $I_{10}=P_1/(\pi r_{01}^{2})$. The
+$\sqrt{\pi}$ and the $\tau$ of Eq.~(\ref{eq:etae}) disappear with the
+temporal integral; the implementation shares all code below the envelope
+definition.
+
+\section{Type-I second-harmonic generation}\label{sec:shg}
+
+For a single fundamental field the driving polarization is
+$P(2\omega)=\varepsilon_0\deff A_1^{2}$ --- \emph{half} the coefficient of
+the distinct-frequency case (\S\ref{sec:conv}) --- while
+$P(\omega)=2\varepsilon_0\deff A_3A_1^{*}$ keeps its factor. Carrying these
+through the SVEA pair and the same reduction as \S\ref{sec:pw}, with
+$y=I_3/I_a^{\mathrm{shg}}$ and
+\begin{equation}
+I_a^{\mathrm{shg}}
+=\frac{c\,\varepsilon_0\, n_1^{2} n_3\, \lambda_1^{2}}
+      {8\pi^{2}\deff^{2}\,L^{2}},
+\label{eq:Iashg}
+\end{equation}
+--- the SFG normalization (\ref{eq:Ia}) under the degenerate substitution
+$\lambda_2\to\lambda_1$, $n_2\to n_1$, with \emph{no} additional numerical
+factor --- one obtains the single-input cubic
+\begin{equation}
+\Big(\frac{dy}{d\zeta}\Big)^{2}=4y\,(K-y)^{2}-\sigma^{2}y^{2},
+\qquad K = I_{1}/I_a^{\mathrm{shg}},
+\label{eq:shgcubic}
+\end{equation}
+whose roots give $a_1=2K+\sigma^{2}/4$, $a_2=K^{2}$ and again
+$y=b_1\sn^{2}(\sqrt{b_2}\,\zeta;\,b_1/b_2)$. This matches Armstrong \S V.B
+[consulted directly]: their mismatch invariant
+$vu^2\cos\theta+\tfrac12\Delta s\,v^2=\Gamma_{\Delta s}$ (5.15) vanishes
+for $v(0)=0$, reducing their (5.17)--(5.18) to
+$(1-v^2)^2=\tfrac14\Delta s^2 v^2$ at the turning points --- our cubic in
+their $K=1$ normalization --- with the explicit root (5.21) available as a
+test pin, and the matched limit $v=\tanh(\zeta+\zeta_0)$ their (5.12). At $\sigma=0$: $b_1=b_2=K$,
+$y=K\tanh^{2}(\sqrt K\,\zeta)$, the classic Armstrong result with full
+asymptotic conversion. The Gaussian average of $\eta=E_3/E_1$ (or
+$P_3/P_1$) proceeds as in \S\S\ref{sec:avg}--\ref{sec:cw} with a single
+envelope.
+
+The normalization (\ref{eq:Iashg}) is pinned by Boyd's $\Delta k=0$
+solution: his characteristic length [Boyd Eqs.~(2.7.19), (2.7.38)],
+$l=(n_1^2 n_3\varepsilon_0 c^3/2I_1)^{1/2}/(\omega_1\deff)$ with
+$u_2=\tanh(z/l)$ [Eq.~(2.7.36)], gives
+$K=L^2/l^2=8\pi^2\deff^2 I_1 L^2/(n_1^2 n_3\varepsilon_0 c\lambda_1^2)
+=I_1/I_a^{\mathrm{shg}}$, in exact agreement with
+Eqs.~(\ref{eq:shgcubic})--(\ref{eq:Iashg}) at $\sigma=0$. A residual
+numerical cross-check against near-degenerate type-II \texttt{eta\_sfg}
+remains in the test plan (\S\ref{sec:tests}). Type-II SHG itself is exactly degenerate SFG of the
+o- and e-projections of one beam and is served by \texttt{eta\_sfg}
+directly; \texttt{eta\_shg} implements only the type-I solution above.
+
+\section{Validity conditions}\label{sec:validity}
+
+The neglected effects are justified when the following ratios are small
+(all computable by \ndispers\ itself; the implementation warns above
+$\approx0.3$):
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+effect & ratio & from \\
+\midrule
+spatial walk-off & $\rho_{\mathrm{wo}}L/w$ & \texttt{woa\_theta} \\
+temporal walk-off & $|\mathrm{GVM}|\,L/t_{\mathrm{FWHM}}$ & \texttt{GVM} \\
+diffraction & $L/z_R=\lambda L/(\pi n w^{2})$ & $n$ \\
+pulse spreading & $|\mathrm{GVD}|\,L/t_{\mathrm{FWHM}}^{2}$ & \texttt{GVD} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Numerical notes and tests}\label{sec:tests}
+
+$m=b_1/b_2\to1$ at strong matched conversion: clip $m\le1$ against
+round-off ($\sn\to\tanh$ there, handled by \texttt{scipy.special.ellipj}).
+Integrals on $[0,\,5]$ in $r_1,t_1$ (Gaussian tails $<10^{-10}$), Simpson,
+default grid to be fixed by convergence study. Tests, in implementation
+order: (1) reproduce the prototype's degenerate benchmark --- insensitive
+to \S\ref{sec:flag} by degeneracy (done during development; the parameters
+are internal and the comparison is not retained in the repository);
+(2) undepleted $\mathrm{sinc}^2$ limit against the closed formula, and
+the strong-pump upconversion limit $u_3^2\propto\sin^2(\pi z/l)$
+[Armstrong (6.15)];
+(3) Manley--Rowe: $\eta$ never exceeds the photon caps, random parameters;
+(4) \emph{wave-exchange symmetry}: swapping beams 1 and 2 (and
+$p_1\to1/p_1$, $\rho\to1/\rho$, $\tau\to1/\tau$) leaves $\eta_e$ invariant
+--- this test fails on the prototype's $a_1$ and passes on
+Eq.~(\ref{eq:cubic}); (5) type-I SHG $\tanh^2$ plane-wave limit against Boyd
+Eqs.~(2.7.36)/(2.7.38) [$K=L^2/l^2$]; (6) cw
+vs.\ pulsed consistency: $\tau$-long flat-top limit.
+
+\begin{thebibliography}{9}
+\bibitem{Armstrong1962} J.~A. Armstrong, N.~Bloembergen, J.~Ducuing, and
+P.~S. Pershan, Phys.\ Rev.\ \textbf{127}, 1918 (1962). Consulted directly:
+\S V (SHG exact solution; mismatch invariant (5.15), roots (5.21), matched
+$\tanh$ (5.12)) and \S VI (three coupled waves; substitutions (6.3),
+Manley--Rowe constants (6.6), invariant (6.7), cubic (6.10), general sn
+solution (6.13), strong-pump limit (6.15)).
+\bibitem{Guha2014} S.~Guha and L.~P. Gonzalez, \emph{Laser Beam Propagation
+in Nonlinear Optical Media} (CRC Press, 2014), Ch.~4.
+\bibitem{Boyd} R.~W. Boyd, \emph{Nonlinear Optics}, 4th ed. (Academic
+Press, 2020), \S2.6--2.7. Consulted directly: \S2.6 solves SFG only in the
+undepleted-pump limit [Eqs.~(2.6.24)--(2.6.25)] and defers the depleted
+elliptic solution to Armstrong et al.; \S2.7 gives the SHG degeneracy
+factors [Eqs.~(2.7.8)--(2.7.9)] and the matched depleted solution
+$u_2=\tanh\zeta$ [Eqs.~(2.7.36), (2.7.38)]; the mismatched depleted SHG is
+presented only graphically [Fig.~2.7.4], again after Armstrong et al.
+\end{thebibliography}
+
+\end{document}
