@@ -285,7 +285,10 @@ For sum-frequency generation with input wavelengths λ₁, λ₂ and
 ```
 
 so Δk = 0 is phase matching. Second-harmonic generation is the special
-case λ₁ = λ₂.
+case λ₁ = λ₂. The conventions are stated here for SFG; the parametric
+processes below mirror them.
+
+### Sum-frequency generation and SHG
 
 - The three-letter keys of `pmAngles_sfg` give the polarizations of
   (wave 1, wave 2, sum wave): `'ooe'` and `'eeo'` are Type I,
@@ -321,12 +324,12 @@ polarization arguments read (signal, idler, pump)** — the order SNLO uses
 - `pmAngles_dfg(wl_p, wl_s, T_degC)` returns the `pmAngles_sfg` dictionary
   with `'wl_i'` in place of `'wl3'`; `dk_dfg`, `pmFactor_dfg`,
   `qpm_period_dfg`, `d_dfg`, `deff_dfg` mirror their SFG counterparts.
-- `tuning_dfg(wl_p, angle_rad, T_degC, pol_s, pol_i, pol_p, wl_i_max=20)`
+- `tuning_dfg(wl_p, angle_rad, T_degC, pol_s, pol_i, pol_p)`
   solves Δk(λ_s) = 0 at a fixed angle and temperature and returns every
   (λ_s, λ_i) pair with λ_s ≤ λ_i — one point of an OPO tuning curve. The
   Type II branch with the other wave as signal is the triple with pol_s
-  and pol_i exchanged. Sellmeier equations are extrapolated up to
-  `wl_i_max`; mind the medium's validity range. With `qpm_period=Λ` (and
+  and pol_i exchanged. The search stops at the medium's Sellmeier validity
+  edge by default; pass `wl_i_max=` to extrapolate further on purpose. With `qpm_period=Λ` (and
   `qpm_order`) it solves |Δk| = 2πm/Λ instead — the temperature tuning of a
   periodically poled crystal: `SLN().tuning_dfg(1.064, pi/2, T, 'e', 'e', 'e',
   qpm_period=30.85)` moves the signal from 1550 nm at 25 °C to 1640 nm at 200 °C.
