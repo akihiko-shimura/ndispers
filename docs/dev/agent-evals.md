@@ -30,6 +30,15 @@ v0.19 の改善はすべてこの方法の 3 試行から出た。
    正答: θ = 29.22°（Tamosauskas2018）, Δλ = 4.91 nm, Δθ = 3.14 mrad,
    ΔT = 174 K。`acceptance_sfg` を使えば数行、使わず自作しても正答可。
 
+4. **BBO fs SHG の変換効率**（v0.20 以降）: β-BBO (Tamosauskas2018),
+   Type-I SHG of 800 nm, 25 °C, L = 1.0 mm, 5 µJ / 100 fs FWHM /
+   w = 1000 µm (1/e²)。
+   正答: η = 29.3 %（ただし ModelValidityWarning が GVM 比 ~1.9 で発火）。
+   加点: 警告に言及し「190 fs/mm の群速度不整合がパルス幅を超えるため
+   過大評価 — fs SHG に 0.1–0.3 mm の薄い結晶を使う理由」と述べること。
+   PulsedBeam の構築と単位（1/e² 半径, FWHM）の取り違えを friction log で
+   観察する。
+
 ## 判定
 
 - 数値は上記に対し 1 % 以内（Sellmeier 出典が異なる場合はその旨の言及があれば可）
