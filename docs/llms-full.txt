@@ -356,13 +356,13 @@ _d_ref = {"d22": (2.2, 1.064, 1.064)}     # pm/V, for SFG of wl1 and wl2 in µm
   single-parameter estimate: good for BBO, KDP and LiNbO₃, rough for KTP,
   untested for several others — each crystal's `_d_note` says what is known.
 - `deff_sfg(wl1, wl2, theta_rad, phi_rad, T_degC, pol1, pol2, pol3)` is
-  the effective coefficient, d_eff = ê₃·d:(ê₁ê₂), contracted with the
+  the effective coefficient, d<sub>eff</sub> = ê₃·d:(ê₁ê₂), contracted with the
   unit **E**-field vectors of the three waves. Walk-off is included (the
   e-wave field is perpendicular to the Poynting vector, not to k). The
   overall sign is a convention; compare magnitudes. For a principal plane of
   a biaxial crystal pass `None` for the angle the plane fixes.
 - Kleinman symmetry is assumed throughout (transparency range). Under it
-  d14 of class 32 vanishes, and type-II d_eff of class 4mm vanishes.
+  d14 of class 32 vanishes, and type-II d<sub>eff</sub> of class 4mm vanishes.
 - Component names (d31, d32, ...) follow each crystal's literature. For LBO
   the dielectric axes are x, y, z = a, −c, b, so the polar axis c is
   dielectric y and "d31" means d_{c a a}, not d_{z x x}; `Biax_mm2` handles

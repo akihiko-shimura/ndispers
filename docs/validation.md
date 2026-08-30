@@ -60,7 +60,7 @@ omission is more useful than a fabricated reference.
 | AgGaS₂ (Kato 1996) | ooe / eoe, 5.2955 µm SHG | 32.659° / 50.388° | 32.6° / 50.1° | same | ✓ ≤ 0.3° |
 | AgGaSe₂ | ooe, 10.6 µm SHG | 55.558° | 55.5° calculated | Ionin *et al.* arXiv:1710.09601 | ✓ (see caveat 5) |
 | ZnGeP₂ (Das 2003) | eeo, 10.6 µm SHG | 81.395° | — | see caveat 4 | ⚠ |
-| BiBO (yz plane) | eeo, 1064 nm SHG | 168.811°, d_eff 3.62 pm/V | ≈ 168.5°, ≈ 3.5 pm/V | Petrov *et al.* 2010 | ✓ (see caveat 3) |
+| BiBO (yz plane) | eeo, 1064 nm SHG | 168.811°, d<sub>eff</sub> 3.62 pm/V | ≈ 168.5°, ≈ 3.5 pm/V | Petrov *et al.* 2010 | ✓ (see caveat 3) |
 | LBO (yz, zx planes) | 1064 nm SHG | 20.35°, 32.26° | — | **not found in the available literature** | — |
 
 ## Noncritical phase matching
@@ -81,10 +81,10 @@ These sit exactly on the 0–90° endpoint and were reported as *no solution* be
 | Medium | Quantity | ndispers | Literature | Source | |
 |---|---|---|---|---|---|
 | β-BBO | walk-off of the 532 nm e-ray at 22.88° | 3.192° | ≈ 3.2° | standard value | ✓ |
-| β-BBO | d_eff, ooe, φ = 30° | 1.958 pm/V | ≈ 2.0 pm/V | Shoji *et al.* 1999 via Miller scaling | ✓ |
+| β-BBO | d<sub>eff</sub>, ooe, φ = 30° | 1.958 pm/V | ≈ 2.0 pm/V | Shoji *et al.* 1999 via Miller scaling | ✓ |
 | LiIO₃ | walk-off at the SHG angle | 4.260° | 4.26° | Eckardt *et al.* 1990, Table II | ✓ exact |
 | Li₂B₄O₇ | walk-off, 532 nm SHG | 1.660° | 1.66° | Sugawara 1998, §3.2 | ✓ exact |
-| KTP | d_eff, type II, xy | 3.456 pm/V | 3.2–3.5 pm/V | Shoji *et al.* 1997 via Miller scaling | ✓ |
+| KTP | d<sub>eff</sub>, type II, xy | 3.456 pm/V | 3.2–3.5 pm/V | Shoji *et al.* 1997 via Miller scaling | ✓ |
 | AgGaS₂ | d₃₆ Miller-scaled 1.064 → 10.6 µm | 11.09 pm/V | 11.2 pm/V measured at 10.6 µm | Roberts 1992, Table V | ✓ — an independent test of Miller's rule over a tenfold span |
 | 5% MgO:LiNbO₃ | first-order QPM period, 1064 nm SHG | 6.995 µm | 6.9–7.0 µm | standard PPLN value | ✓ |
 | Fused silica | GVD at 800 nm / 1550 nm | +36.16 / −27.95 fs²/mm | ≈ +36 / ≈ −27 | standard values | ✓ |
@@ -116,7 +116,7 @@ better than others. This table says which to reach for.
 | `AGS_Takaoka1999` | **deprecated** | deviates up to 1.35° on the same table, and the thermo-optic formula that is the paper's actual contribution is not implemented here, so nothing is gained over `AGS_Kato1996`. Not listed in the apps; removal planned for 1.0 |
 | `ZGP_Das2003` | **recommended** | its type-I limit, 10.74 µm, matches Kato 1997's 10.78 µm, so it covers the CO₂ line |
 | `ZGP_Zelmon2001` | faithful | valid over its stated 2–9 µm; do not use it near 10.6 µm, where its limit falls 0.2 µm short |
-| `MgOLN_Zelmon1997` | **recommended** for birefringent phase matching | both rays, so ooe/oee d_eff can be evaluated |
+| `MgOLN_Zelmon1997` | **recommended** for birefringent phase matching | both rays, so ooe/oee d<sub>eff</sub> can be evaluated |
 | `SLN` | **recommended** for quasi-phase matching | *not* superseded by `MgOLN_Zelmon1997`: it is the only LiNbO₃ here with a temperature-dependent index, and the QPM period it gives moves from 7.03 µm at 25 °C to 6.74 µm at 200 °C, where `MgOLN_Zelmon1997` returns 6.995 µm at every temperature. Its *absolute* dn/dT is not physical (see caveat 10); the index *differences* that QPM depends on are what Gayer's coefficients were fitted to |
 | `BetaBBO_*` (four) | all usable | they agree to 0.1° on the 1064 nm SHG angle; `Tamosauskas2018` is closest at 800 nm |
 
@@ -158,12 +158,12 @@ sources, which is the point of having them.
 
 This package uses the dielectric frame with the two-fold axis along x, in which
 its `zx` plane is the x–z plane of Petrov *et al.* 2010. The cut usually quoted
-for 1064 nm SHG — "xz, θ = 168.5°, d_eff ≈ 3.5 pm/V" — is written in the other
+for 1064 nm SHG — "xz, θ = 168.5°, d<sub>eff</sub> ≈ 3.5 pm/V" — is written in the other
 convention (two-fold axis along y) and is this package's **`yz`** plane at
-θ = 168.8°, where d_eff comes out 3.62 pm/V.
+θ = 168.8°, where d<sub>eff</sub> comes out 3.62 pm/V.
 
 Separately, because point group 2 has no mirror plane through z, **θ and
-180° − θ phase-match identically but give different d_eff**: for 800 nm type-I
+180° − θ phase-match identically but give different d<sub>eff</sub>**: for 800 nm type-I
 SHG in the yz plane, 1.1 pm/V at 28.8° against 3.9 pm/V at 151.2°.
 `pmAngles_sfg` returns the 0–90° root, so evaluate `deff_sfg` at π − θ as well.
 
@@ -194,10 +194,10 @@ and most of the rest. Each crystal's `_d_note` says which case it is. The
 AgGaS₂ row in the table above is the one place where the rule could be tested
 here directly, and it held to 1 %.
 
-## 7. d_eff can vanish for an interaction that phase-matches
+## 7. d<sub>eff</sub> can vanish for an interaction that phase-matches
 
 KTP `zx` `eeo` and LBO `zx` `ooe` have real phase-matching solutions with
-d_eff identically zero: the tensor has no component coupling those
+d<sub>eff</sub> identically zero: the tensor has no component coupling those
 polarizations in that plane. This is correct physics, not a failure, and the
 phase-matching app now says so rather than printing a bare "0 pm/V".
 

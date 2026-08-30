@@ -42,7 +42,7 @@ are included under the same interface.
 - Temperature derivatives dn/dT and d²n/dT² are obtained by differentiating
   the symbolic index expressions, not by finite differences.
 - Phase matching: Δk, phase-matching angles, sinc² factor, acceptance widths,
-  QPM period, OPO tuning curves; d_eff with Miller wavelength scaling for
+  QPM period, OPO tuning curves; d<sub>eff</sub> with Miller wavelength scaling for
   every non-centrosymmetric crystal.
 - Several parameterizations of the same crystal are separate classes (LBO has
   five); disagreement between sources is visible rather than hidden behind
@@ -144,7 +144,7 @@ noncritical pair 1571/3298 nm.
 
 ### Effective nonlinear coefficient
 
-The d_eff at a phase-matching angle, for the φ = 90° cut:
+The d<sub>eff</sub> at a phase-matching angle, for the φ = 90° cut:
 
 ```python
 >>> bbo.deff_sfg(1.064, 1.064, np.radians(22.88), np.radians(90), 25, 'o', 'o', 'e')
@@ -169,7 +169,7 @@ parameterisations, each is a separate class named after its source.
 
 ### Nonlinear optical crystals
 
-Non-centrosymmetric; phase matching, acceptance widths and d_eff are available.
+Non-centrosymmetric; phase matching, acceptance widths and d<sub>eff</sub> are available.
 
 | Material | Abbreviation | Formula | Point group | Optical class |
 |---|---|---|---|---|

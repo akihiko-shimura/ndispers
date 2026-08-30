@@ -31,7 +31,7 @@ as functions of
 For non-centrosymmetric crystals it further computes phase mismatch Δk,
 phase-matching angles, the sinc²(Δk·L/2) factor, acceptance widths
 (spectral, angular, thermal), quasi-phase-matching periods, OPO tuning
-curves, and the effective nonlinear coefficient d_eff with tensor components
+curves, and the effective nonlinear coefficient d<sub>eff</sub> with tensor components
 scaled to the working wavelengths by Miller's rule.
 
 ## Why ndispers
@@ -72,7 +72,7 @@ are included under the same interface.
 - Temperature derivatives dn/dT and d²n/dT² are obtained by differentiating
   the symbolic index expressions, not by finite differences.
 - Phase matching: Δk, phase-matching angles, sinc² factor, acceptance widths,
-  QPM period, OPO tuning curves; d_eff with Miller wavelength scaling for
+  QPM period, OPO tuning curves; d<sub>eff</sub> with Miller wavelength scaling for
   every non-centrosymmetric crystal.
 - Several parameterizations of the same crystal are separate classes (LBO has
   five); disagreement between sources is visible rather than hidden behind
@@ -127,7 +127,7 @@ same style of arguments. `help(bbo)` prints the material data and
 references.
 
 Worked examples — dispersion sweeps, phase-matching angles, OPO tuning,
-d_eff — are in the [documentation](https://ndispers.readthedocs.io/en/latest/)
+d<sub>eff</sub> — are in the [documentation](https://ndispers.readthedocs.io/en/latest/)
 and the [tutorial notebook](examples/basic_usage.ipynb).
 
 ## Available media
