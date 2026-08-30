@@ -8,11 +8,18 @@ JOSS 草稿 `paper/`、conda レシピ `docs/dev/conda-forge/meta.yaml`。
 
 1. <https://zenodo.org> に GitHub でログイン
 2. GitHub タブ → リポジトリ一覧で `ndispers` を ON
-3. 次のリリースタグ push で自動的に DOI が発行される
+3. 連携済み（2026-08-30）。次のリリースタグ push で自動的に DOI が発行される
    （既存の v0.19.0 に付けたい場合は GitHub で Release を「編集→保存」し直すと
    Zenodo が拾うことがある。だめなら次リリースからで良い）
 4. 発行された Concept DOI（全バージョン共通の方）を `CITATION.cff` に
    `doi:` として追記し、README のバッジに追加してもよい
+
+## 1.5 RTD リダイレクト（5 分）
+
+llms.txt 規約に従うエージェントはドメイン直下
+`https://ndispers.readthedocs.io/llms.txt` を最初に試す。RTD ダッシュボード →
+プロジェクト → Redirects で `/llms.txt` → `/en/latest/llms.txt` の
+Exact Redirect を 1 本追加（`/llms-full.txt` も同様に）。
 
 ## 2. JOSS 投稿（30 分 + 査読数週間）
 

@@ -28,7 +28,7 @@ NOT_API = {
     'pmAngles_sfg(wl1, wl2,\nT_degC, deg=False)',
     # argument names / builtins / private-but-documented attributes
     'pol', '_d_note', 'n_expr', 'repr(obj)', 'wl_i_max=', 'qpm_period=',
-    'T_degC', 'GVM(wl1, wl2, angle_rad, T_degC, pol1, pol2)',
+    'T_degC', 'GVM(wl1, wl2, angle_rad, T_degC, pol1, pol2)', 'dois',
 }
 
 

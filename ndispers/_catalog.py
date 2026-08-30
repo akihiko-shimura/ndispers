@@ -3,6 +3,8 @@ Machine-readable catalog of every medium, for programmatic (and AI-agent)
 discovery: filter by wavelength range, point group or optical class without
 reading the docs.
 """
+import re
+
 from . import media
 
 
@@ -56,5 +58,7 @@ def catalog():
                 'plane': None if inst.plane == 'arb' else inst.plane,
                 'wl_range': cls._wl_range,
                 'd_components': sorted(getattr(cls, '_d_ref', {})),
+                'dois': sorted(set(re.findall(
+                    r'doi\.org/(10\.\S+?)(?=[\s)>,]|$)', cls.__doc__ or ''))),
             })
     return out

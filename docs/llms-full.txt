@@ -74,7 +74,8 @@ states how well Miller scaling is validated for it.
 - `obj.constants` — the coefficient values.
 - `dir(nd.media.crystals)` / `dir(nd.media.glasses)` — all media.
 - `nd.catalog()` — list of dicts (name, kind, point_group, plane, wl_range,
-  d_components) for programmatic filtering, e.g. media usable at 3 µm.
+  d_components, dois) for programmatic filtering, e.g. media usable at 3 µm;
+  `dois` lists the cited sources, ready for citation.
 - `repr(obj)` states the plane, the angle argument and the validity range.
 - Media are picklable; safe for multiprocessing/joblib.
 
