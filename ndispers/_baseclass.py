@@ -332,7 +332,9 @@ class Medium:
         1.674884049110459
         >>> bbo.n(1.064, 0.3994, 25, pol='e')
         1.63644345403142
-        >>> print(round(bbo.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']['theta'][0], 6))
+        >>> ooe = bbo.pmAngles_sfg(1.064, 1.064, 25, deg=True)['ooe']
+        >>> theta_pm, = ooe['theta']
+        >>> print(round(theta_pm, 6))
         22.884169
         """
         return self._func(self.n_expr, *args, pol=pol)
@@ -644,7 +646,9 @@ class Medium:
         >>> import ndispers as nd
         >>> from math import radians
         >>> bbo = nd.media.crystals.BetaBBO_Tamosauskas2018()
-        >>> th = radians(bbo.pmAngles_sfg(0.8, 0.8, 25, deg=True)['ooe']['theta'][0])
+        >>> ooe = bbo.pmAngles_sfg(0.8, 0.8, 25, deg=True)['ooe']
+        >>> theta_pm, = ooe['theta']
+        >>> th = radians(theta_pm)
         >>> dl = bbo.acceptance_sfg(0.8, 0.8, th, 25, 'o', 'o', 'e', 1.0, 'wl')
         >>> print(round(dl * 1e3, 2))   # µm -> nm; ~5 nm: why fs SHG needs thin BBO
         4.91
