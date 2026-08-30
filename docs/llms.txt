@@ -53,6 +53,15 @@ supports `qpm_period=` for PPLN-style temperature tuning); polarization order
 is (signal, idler, pump), same as SNLO's (red1, red2, blue).
 `GVM(wl1, wl2, angle_rad, T_degC, pol1, pol2)` — group-velocity mismatch
 GD(wl1)−GD(wl2) in fs/mm (positive: wl1 arrives later).
+Conversion efficiency (needs scipy: `pip install ndispers[eff]`):
+`eta_sfg(beam1, beam2, theta_rad, phi_rad, T_degC, pol3, L_mm)` and
+`eta_shg(beam, ...)` with beams as `nd.PulsedBeam(wl_um, E_uJ, w_um, t_fs,
+pol)` / `nd.CWBeam(wl_um, P_W, w_um, pol)` (w = 1/e² radius µm, t = FWHM
+fs; the beam type selects pulsed/cw). Depleted-pump Armstrong solution;
+neglects walk-off/GVM/diffraction/GVD and warns (`ModelValidityWarning`)
+when those are not small. `details=True` returns a dict with photon
+conversions and the neglected-effect ratios. `eta_shg` is Type-I only —
+Type-II SHG = degenerate `eta_sfg`.
 Full signatures (note L is in **mm** while wavelengths are µm; pol1..pol3 are
 positional here, unlike the keyword-only `pol` of dispersion methods):
 `pmFactor_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm)`;

@@ -231,6 +231,23 @@ _d_ref = {"d22": (2.2, 1.064, 1.064)}     # pm/V, for SFG of wl1 and wl2 in µm
   dielectric y and "d31" means d_{c a a}, not d_{z x x}; `Biax_mm2` handles
   the mapping through the crystal's `_mm2_axes`.
 
+### Conversion efficiency (semi-analytical)
+
+Non-centrosymmetric crystals also carry `eta_sfg(beam1, beam2, theta_rad,
+phi_rad, T_degC, pol3, L_mm)` and `eta_shg(beam, ...)` — the Armstrong
+plane-wave solution with pump depletion and phase mismatch, averaged over
+Gaussian profiles. Beam parameters travel in `ndispers.PulsedBeam(wl_um,
+E_uJ, w_um, t_fs, pol)` or `ndispers.CWBeam(wl_um, P_W, w_um, pol)`: the
+beam type selects pulsed (energy) vs cw (power) efficiency, w is the 1/e²
+intensity radius, t the FWHM duration. The model neglects walk-off,
+group-velocity mismatch, diffraction and GVD; when one of those is not
+small a `ndispers.ModelValidityWarning` fires, and `details=True` returns
+the ratios plus per-wave photon conversions. `eta_shg` is type-I only
+(the degeneracy factor differs from SFG); type-II SHG is degenerate SFG of
+the o/e projections — use `eta_sfg`. Requires scipy
+(`pip install ndispers[eff]`). The derivation, checked against Armstrong
+(1962) and Boyd (2020), is `docs/dev/efficiency_theory.tex`.
+
 The derivation and the closed forms per point group are in
 `docs/dev/deff_theory.tex` (and checked numerically in
 `ndispers/tests/test_nonlinear.py`).

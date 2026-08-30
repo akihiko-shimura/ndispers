@@ -132,6 +132,27 @@ each is a property of a source, a convention, or a genuine physical subtlety
 that is easy to trip over. Each is also stated in the docstring of the class it
 affects, so it reaches anyone who runs `help()`.
 
+## Conversion efficiency (semi-analytical)
+
+The `eta_sfg` / `eta_shg` methods implement the Armstrong elliptic solution
+averaged over Gaussian profiles (docs/dev/efficiency_theory.tex, checked
+against Armstrong 1962 §V–VI and Boyd 2020 §2.6–2.7, both read directly).
+During development the degenerate case was also reproduced against an
+independent earlier implementation.
+
+| Check | ndispers | Reference | |
+|---|---|---|---|
+| Matched balanced plane wave | y = K tanh²√K | Armstrong (5.12) | ✓ exact |
+| Undepleted limit | a₂ sinc²(σ/2) | closed formula | ✓ |
+| SHG mismatch turning point | b₁(Δs) | Armstrong (5.21) | ✓ exact |
+| Wave-exchange symmetry (nondegenerate) | invariant to 1e-5 | Manley–Rowe / Armstrong (6.6) | ✓ |
+| Pulsed/cw Gaussian ratio (undepleted) | 1/√2 | analytic | ✓ |
+| β-BBO ns SHG / fs SHG examples | 28 % @ 100 MW/cm²; warning at 100 fs/1 mm | literature ballpark / the thin-crystal rule | ✓ plausibility |
+
+The model neglects walk-off, GVM, diffraction and GVD; `ModelValidityWarning`
+reports the ratios when they are not small — agreement with the plane-wave
+theory validates the transcription, not the neglect of those effects.
+
 ## 1. Zelmon 1997's Table 2 has its column headings interchanged
 
 The printed table of Sellmeier coefficients for 5 mol% MgO:LiNbO₃ heads its

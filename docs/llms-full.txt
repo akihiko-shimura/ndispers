@@ -53,6 +53,15 @@ supports `qpm_period=` for PPLN-style temperature tuning); polarization order
 is (signal, idler, pump), same as SNLO's (red1, red2, blue).
 `GVM(wl1, wl2, angle_rad, T_degC, pol1, pol2)` — group-velocity mismatch
 GD(wl1)−GD(wl2) in fs/mm (positive: wl1 arrives later).
+Conversion efficiency (needs scipy: `pip install ndispers[eff]`):
+`eta_sfg(beam1, beam2, theta_rad, phi_rad, T_degC, pol3, L_mm)` and
+`eta_shg(beam, ...)` with beams as `nd.PulsedBeam(wl_um, E_uJ, w_um, t_fs,
+pol)` / `nd.CWBeam(wl_um, P_W, w_um, pol)` (w = 1/e² radius µm, t = FWHM
+fs; the beam type selects pulsed/cw). Depleted-pump Armstrong solution;
+neglects walk-off/GVM/diffraction/GVD and warns (`ModelValidityWarning`)
+when those are not small. `details=True` returns a dict with photon
+conversions and the neglected-effect ratios. `eta_shg` is Type-I only —
+Type-II SHG = degenerate `eta_sfg`.
 Full signatures (note L is in **mm** while wavelengths are µm; pol1..pol3 are
 positional here, unlike the keyword-only `pol` of dispersion methods):
 `pmFactor_sfg(wl1, wl2, angle_rad, T_degC, pol1, pol2, pol3, L_mm)`;
@@ -368,6 +377,23 @@ _d_ref = {"d22": (2.2, 1.064, 1.064)}     # pm/V, for SFG of wl1 and wl2 in µm
   the dielectric axes are x, y, z = a, −c, b, so the polar axis c is
   dielectric y and "d31" means d_{c a a}, not d_{z x x}; `Biax_mm2` handles
   the mapping through the crystal's `_mm2_axes`.
+
+### Conversion efficiency (semi-analytical)
+
+Non-centrosymmetric crystals also carry `eta_sfg(beam1, beam2, theta_rad,
+phi_rad, T_degC, pol3, L_mm)` and `eta_shg(beam, ...)` — the Armstrong
+plane-wave solution with pump depletion and phase mismatch, averaged over
+Gaussian profiles. Beam parameters travel in `ndispers.PulsedBeam(wl_um,
+E_uJ, w_um, t_fs, pol)` or `ndispers.CWBeam(wl_um, P_W, w_um, pol)`: the
+beam type selects pulsed (energy) vs cw (power) efficiency, w is the 1/e²
+intensity radius, t the FWHM duration. The model neglects walk-off,
+group-velocity mismatch, diffraction and GVD; when one of those is not
+small a `ndispers.ModelValidityWarning` fires, and `details=True` returns
+the ratios plus per-wave photon conversions. `eta_shg` is type-I only
+(the degeneracy factor differs from SFG); type-II SHG is degenerate SFG of
+the o/e projections — use `eta_sfg`. Requires scipy
+(`pip install ndispers[eff]`). The derivation, checked against Armstrong
+(1962) and Boyd (2020), is `docs/dev/efficiency_theory.tex`.
 
 The derivation and the closed forms per point group are in
 `docs/dev/deff_theory.tex` (and checked numerically in

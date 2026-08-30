@@ -151,6 +151,115 @@ class NonlinearGroup(Medium):
             return np.cross(k(a), dk(a), axis=0)
         raise ValueError(f"pol = {pol!r} must be 'o' or 'e'")
 
+    def eta_sfg(self, beam1, beam2, theta_rad, phi_rad, T_degC, pol3, L_mm,
+                deff_pmV=None, dk_offset=0.0, n_grid=50, details=False):
+        """
+        Semi-analytical SFG conversion efficiency with pump depletion.
+
+        Armstrong's plane-wave elliptic solution averaged over the Gaussian
+        profiles of two collimated beams; neglects walk-off, group-velocity
+        mismatch, diffraction and GVD (a ``ModelValidityWarning`` fires when
+        those are not small). Theory: docs/dev/efficiency_theory.pdf.
+        Requires scipy (``pip install ndispers[eff]``).
+
+        Parameters
+        ----------
+        beam1, beam2 : ndispers.PulsedBeam or ndispers.CWBeam
+            The two input beams; wavelength, energy/power, radius, duration
+            and polarization live on the beam. Both must be the same type -
+            it decides pulsed (energy efficiency) vs cw (power efficiency).
+        theta_rad, phi_rad : float or None
+            Propagation angles, as in ``deff_sfg``: n and dk use the
+            varying angle of this medium, d_eff uses both. Pass None for
+            the angle a principal plane fixes; with ``deff_pmV`` given,
+            the azimuth may be None.
+        T_degC : float
+        pol3 : {'o', 'e'}
+            Polarization of the sum-frequency wave.
+        L_mm : float
+            Crystal length.
+        deff_pmV : float, optional
+            Override the Miller-scaled ``deff_sfg`` with a measured value.
+        dk_offset : float, optional
+            Residual phase mismatch added to ``dk_sfg`` (rad/um).
+        n_grid : int, optional
+            Simpson mesh per integration axis. The default resolves equal
+            beams to ~1e-4 relative; strongly unequal beam sizes or
+            durations may need more (the quadrature is normalized to
+            beam 1, so swapping very unequal beams changes the result by
+            the quadrature error, ~3e-3 at the default).
+        details : bool, optional
+            False (default): return the efficiency eta = out/(in1+in2) as a
+            float. True: return a dict with eta, per-wave photon conversion,
+            output energy/power, peak intensities, deff, dk, K1, and the
+            neglected-effect ratios under 'model_ratios'.
+
+        Examples
+        --------
+        Third-harmonic stage of a Q-switched Nd:YAG laser (1064 + 532 ->
+        355 nm, type I, photon-balanced inputs, d_eff Miller-scaled
+        automatically):
+
+        >>> import numpy as np
+        >>> import ndispers as nd
+        >>> bbo = nd.media.crystals.BetaBBO_Tamosauskas2018()
+        >>> ooe = bbo.pmAngles_sfg(1.064, 0.532, 25)['ooe']
+        >>> theta_pm, = ooe['theta']
+        >>> b1 = nd.PulsedBeam(wl_um=1.064, E_uJ=5e3, w_um=1500.0,
+        ...                    t_fs=8e6, pol='o')
+        >>> b2 = nd.PulsedBeam(wl_um=0.532, E_uJ=10e3, w_um=1500.0,
+        ...                    t_fs=8e6, pol='o')
+        >>> eta = bbo.eta_sfg(b1, b2, theta_pm, np.pi/2, 25, 'e', 5.0)
+        >>> print(round(eta, 4))
+        0.1657
+        """
+        from ndispers import _efficiency
+        return _efficiency.eta_sfg(self, beam1, beam2, theta_rad, phi_rad,
+                                   T_degC, pol3, L_mm, deff_pmV=deff_pmV,
+                                   dk_offset=dk_offset, n_grid=n_grid,
+                                   details=details)
+
+    def eta_shg(self, beam, theta_rad, phi_rad, T_degC, pol3, L_mm,
+                deff_pmV=None, dk_offset=0.0, n_grid=50, details=False):
+        """
+        Semi-analytical type-I SHG conversion efficiency with depletion.
+
+        The single-field Armstrong solution (tanh-squared at dk = 0)
+        averaged over one Gaussian beam/pulse; the degeneracy factor is
+        handled here, so this is NOT ``eta_sfg`` called with the same beam
+        twice. Type-II SHG is degenerate SFG of the o- and e-projections of
+        one beam - use ``eta_sfg`` for it. Arguments as in ``eta_sfg`` with
+        a single beam whose ``pol`` is the fundamental polarization; the
+        efficiency is out/in of that beam. Theory:
+        docs/dev/efficiency_theory.pdf. Requires scipy
+        (``pip install ndispers[eff]``).
+
+        Examples
+        --------
+        Doubling a Q-switched Nd:YAG laser (30 mJ, 8 ns, w = 1.5 mm,
+        7 mm crystal - deep depletion):
+
+        >>> import numpy as np
+        >>> import ndispers as nd
+        >>> bbo = nd.media.crystals.BetaBBO_Tamosauskas2018()
+        >>> ooe = bbo.pmAngles_sfg(1.064, 1.064, 25)['ooe']
+        >>> theta_pm, = ooe['theta']
+        >>> b = nd.PulsedBeam(wl_um=1.064, E_uJ=30e3, w_um=1500.0,
+        ...                   t_fs=8e6, pol='o')
+        >>> print(round(bbo.eta_shg(b, theta_pm, np.pi/2, 25, 'e', 7.0), 4))
+        0.2832
+
+        Doubling 100 fs pulses at 800 nm in 1 mm of BBO raises
+        ``ModelValidityWarning``: the group-velocity mismatch (~190 fs/mm)
+        exceeds the pulse duration, which is why femtosecond SHG uses
+        0.1-0.3 mm crystals.
+        """
+        from ndispers import _efficiency
+        return _efficiency.eta_shg(self, beam, theta_rad, phi_rad, T_degC,
+                                   pol3, L_mm, deff_pmV=deff_pmV,
+                                   dk_offset=dk_offset, n_grid=n_grid,
+                                   details=details)
+
     def deff_sfg(self, wl1, wl2, theta_rad, phi_rad, T_degC, pol1, pol2, pol3):
         """
         Effective second-order nonlinear coefficient d_eff (pm/V) for

@@ -49,9 +49,12 @@ dependencies = [
 # symbolic access to the dispersion formulas (n_expr and friends), and
 # evaluating a medium that has no pre-generated module (a user subclass)
 sym = ["sympy"]
+# the semi-analytical conversion-efficiency methods (eta_sfg, eta_shg):
+# scipy provides the Jacobi elliptic sn and Simpson integration
+eff = ["scipy"]
 
 [dependency-groups]
-dev = ["pytest", "sympy"]
+dev = ["pytest", "sympy", "scipy"]
 # for running examples/basic_usage.ipynb and exploring interactively;
 # kept out of dev so CI's uv sync stays lean
 notebook = ["matplotlib", "plotly", "ipython", "jupyterlab", "marimo"]

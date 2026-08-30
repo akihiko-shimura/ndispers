@@ -28,6 +28,7 @@ NOT_API = {
     'pmAngles_sfg(wl1, wl2,\nT_degC, deg=False)',
     # argument names / builtins / private-but-documented attributes
     'pol', '_d_note', 'n_expr', 'repr(obj)', 'wl_i_max=', 'qpm_period=',
+    'pip install ndispers[eff]', 'details=True',
     'T_degC', 'GVM(wl1, wl2, angle_rad, T_degC, pol1, pol2)', 'dois',
 }
 
@@ -87,7 +88,10 @@ def test_llms_full_txt_is_current():
 
 
 def test_doctests():
-    for mod in (ndispers._catalog, nd._baseclass):
+    import warnings
+    import ndispers.groups._base
+    warnings.simplefilter('ignore', nd.ModelValidityWarning)
+    for mod in (ndispers._catalog, nd._baseclass, ndispers.groups._base):
         r = doctest.testmod(mod, verbose=False)
         assert r.failed == 0, f'{mod.__name__}: {r.failed} doctest failures'
 
