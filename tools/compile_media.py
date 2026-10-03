@@ -35,11 +35,24 @@ EXPRS = ["n", "dn_wl", "d2n_wl", "d3n_wl", "GD", "GV", "ng", "GVD", "TOD",
          "woa_theta", "woa_phi", "dndT", "dndT2"]
 
 
+def source_file(cls):
+    """The file that defines cls. crystals/__init__.py re-stamps __module__ on
+    the classes it exports under an alias, so for those cls.__module__ (and
+    with it inspect.getsourcefile) names the package; the defining module is
+    then the submodule that holds the class object."""
+    mod = sys.modules[cls.__module__]
+    if hasattr(mod, "__path__"):
+        mod, = (m for name, m in sys.modules.items()
+                if name.startswith(cls.__module__ + ".")
+                and any(v is cls for v in vars(m).values()))
+    return Path(mod.__file__)
+
+
 def source_hash(cls):
     """Hash of everything the generated code depends on: the medium's own file
     and the source of every *_expr method it inherits (so an edit elsewhere in
     _baseclass.py - a docstring, pmAngles - does not invalidate 60 modules)."""
-    h = hashlib.sha256(Path(sys.modules[cls.__module__].__file__).read_bytes())
+    h = hashlib.sha256(source_file(cls).read_bytes())
     for klass in cls.__mro__[1:]:
         for name, obj in sorted(vars(klass).items()):
             if name.endswith("_expr") or name == "_n_axis":
