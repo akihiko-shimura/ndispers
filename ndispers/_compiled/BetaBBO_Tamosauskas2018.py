@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals.BetaBBO_Tamosauskas2018'
-SOURCE_HASH = '9e280d2022d122bd2ee938f5cd79388c7a42bcc634d5e34faff7712b9d7a4995'
+SOURCE_HASH = '0515e071a3579caef192f232413cf7d330196ee08dee215d3dea8bcd8dc0c888'
 LATEX = {'o': '- 1.66 \\cdot 10^{-5} T + \\sqrt{\\frac{0.90291 \\lambda^{2}}{\\lambda^{2} - 0.003926} + \\frac{0.83155 \\lambda^{2}}{\\lambda^{2} - 0.018786} + \\frac{0.76536 \\lambda^{2}}{\\lambda^{2} - 60.01} + 1.0} + 0.000332', 'e': '\\frac{- 9.3 \\cdot 10^{-6} T + \\sqrt{\\frac{1.151075 \\lambda^{2}}{\\lambda^{2} - 0.007142} + \\frac{0.21803 \\lambda^{2}}{\\lambda^{2} - 0.02259} + \\frac{0.656 \\lambda^{2}}{\\lambda^{2} - 263} + 1.0} + 0.000186}{\\sqrt{\\sin^{2}{\\left(\\theta \\right)} + \\frac{\\left(- 9.3 \\cdot 10^{-6} T + \\sqrt{\\frac{1.151075 \\lambda^{2}}{\\lambda^{2} - 0.007142} + \\frac{0.21803 \\lambda^{2}}{\\lambda^{2} - 0.02259} + \\frac{0.656 \\lambda^{2}}{\\lambda^{2} - 263} + 1.0} + 0.000186\\right)^{2} \\cos^{2}{\\left(\\theta \\right)}}{\\left(- 1.66 \\cdot 10^{-5} T + \\sqrt{\\frac{0.90291 \\lambda^{2}}{\\lambda^{2} - 0.003926} + \\frac{0.83155 \\lambda^{2}}{\\lambda^{2} - 0.018786} + \\frac{0.76536 \\lambda^{2}}{\\lambda^{2} - 60.01} + 1.0} + 0.000332\\right)^{2}}}}'}
 
 def _f0(wl, theta, phi, T):

@@ -496,6 +496,9 @@ def test_compiled_modules_are_current():
     from ndispers._baseclass import _compiled_module
     stale = []
     for cls in _all_media():
+        # the hash must cover the file holding the coefficients, not the
+        # package __init__ that aliased exports report as their __module__
+        assert gen.source_file(cls).name != "__init__.py", cls.__name__
         mod = _compiled_module(cls)
         if mod is None or mod.SOURCE_HASH != gen.source_hash(cls):
             stale.append(cls.__name__)
