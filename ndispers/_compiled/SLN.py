@@ -2,7 +2,7 @@
 from numpy import *  # noqa: F401,F403  (the namespace lambdify evaluates in)
 
 CLASS = 'ndispers.media.crystals._SLN_MgO_doped.SLN'
-SOURCE_HASH = '6f4e2522f2741a5e3a07f48542484e640ce06717b38563c38d15b31729bc13e4'
+SOURCE_HASH = 'b34dfbc3a55b0dff0a2d33ccc8af795a18a8ce91758479d350dc068cc342fe17'
 LATEX = {'e': '\\sqrt{- 0.0159 \\lambda^{2} + 4.677 \\cdot 10^{-6} \\left(T - 24.5\\right) \\left(T + 570.82\\right) + 5.078 + \\frac{7.822 \\cdot 10^{-8} \\left(T - 24.5\\right) \\left(T + 570.82\\right) + 0.0964}{\\lambda^{2} - \\left(- 2.653 \\cdot 10^{-8} \\left(T - 24.5\\right) \\left(T + 570.82\\right) + 0.2065\\right)^{2}} + \\frac{0.0001096 \\left(T - 24.5\\right) \\left(T + 570.82\\right) + 61.16}{\\lambda^{2} - 111.3025}}'}
 
 def _f0(wl, theta, phi, T):
