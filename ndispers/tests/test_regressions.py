@@ -390,7 +390,7 @@ def test_every_dispersion_method_is_wired(name):
 # Sellmeier sets must agree. This is the check that catches swapped o/e
 # columns - Zelmon 1997's Table 2 for MgO:LiNbO3 is printed with its n_e and
 # n_o headings interchanged, which is exactly the transcription trap.
-@pytest.mark.parametrize("name", [n for n in ALL_MEDIA if n != "SLN"])
+@pytest.mark.parametrize("name", [n for n in ALL_MEDIA if n not in ("SLN", "CLN_Jundt1997")])
 def test_optic_sign_matches_docstring(name):
     x = getattr(C, name)()
     doc = type(x).__doc__

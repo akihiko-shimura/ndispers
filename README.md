@@ -135,8 +135,8 @@ and the [tutorial notebook](https://colab.research.google.com/github/akihiko-shi
 ## Available media
 
 Nonlinear crystals: β-BBO, LBO, KTP, BiBO, CLBO, KDP, DKDP, KBBF, RBBF, LB4,
-LiIO₃, ZGP, AgGaS₂, AgGaSe₂, quartz, MgO-doped LiNbO₃ (congruent and
-stoichiometric) and MgO:LiTaO₃. Linear birefringent crystals: α-BBO, calcite,
+LiIO₃, ZGP, AgGaS₂, AgGaSe₂, quartz, LiNbO₃ (undoped congruent, MgO-doped
+congruent and stoichiometric) and MgO:LiTaO₃. Linear birefringent crystals: α-BBO, calcite,
 sapphire, MgF₂, YVO₄. Isotropic media: fused silica, CaF₂, LiF, BaF₂, YAG,
 N-BK7, SF10/11/57, ZnSe, ZnS, Si, Ge, diamond.
 

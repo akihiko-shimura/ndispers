@@ -188,6 +188,7 @@ Non-centrosymmetric; phase matching, acceptance widths and d<sub>eff</sub> are a
 | Silver thiogallate | AGS | AgGaS₂ | 4̄2m | negative uniaxial, mid-infrared |
 | Silver gallium selenide | AGSe | AgGaSe₂ | 4̄2m | negative uniaxial, mid-infrared |
 | α-Quartz | — | SiO₂ | 32 | positive uniaxial |
+| Lithium niobate, undoped congruent | CLN | LiNbO₃ | 3m | negative uniaxial; three sources, one of them e-ray only |
 | Lithium niobate, 5% MgO-doped congruent | MgO:LN | MgO:LiNbO₃ | 3m | negative uniaxial, both rays |
 | Lithium niobate, 1% MgO-doped stoichiometric | MgO:SLN | MgO:LiNbO₃ | 3m | negative uniaxial, e-ray only |
 | Lithium tantalate, 1% MgO-doped stoichiometric | MgO:SLT | MgO:LiTaO₃ | 3m | negative uniaxial |

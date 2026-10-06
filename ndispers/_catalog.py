@@ -39,8 +39,9 @@ def catalog():
     ...  and e['d_components']]  # doctest: +NORMALIZE_WHITESPACE
     ['AGS_Kato1996', 'AGS_Takaoka1999', 'AGSe_Kato2021', 'BetaBBO_KK2010',
      'BetaBBO_Tamosauskas2018', 'BiBO_Miyata2009_xy', 'BiBO_Miyata2009_yz',
-     'BiBO_Miyata2009_zx', 'KTP_xy', 'KTP_yz', 'KTP_zx', 'LiIO3',
-     'MgOLN_Zelmon1997', 'RBBF', 'SLN', 'SLT', 'ZGP_Das2003', 'ZGP_Zelmon2001']
+     'BiBO_Miyata2009_zx', 'CLN_Edwards1984', 'CLN_Jundt1997', 'CLN_Zelmon1997',
+     'KTP_xy', 'KTP_yz', 'KTP_zx', 'LiIO3', 'MgOLN_Zelmon1997', 'RBBF', 'SLN',
+     'SLT', 'ZGP_Das2003', 'ZGP_Zelmon2001']
     """
     out = []
     for kind, pkg in (('crystal', media.crystals), ('glass', media.glasses)):
