@@ -16,7 +16,7 @@ class SLN(Uniax_3m):
 
     Sellmeier equation
     ------------------
-        n(wl) = sqrt(a1_i + b1 * f + (a2_i + b2_i * f)/(wl**2 - (a3_i + b3_i * f)**2) + (a4_i + b4_i * f)/(wl**2 - a5_i**2) - a6_i * wl**2) for i=o,e
+        n_e(wl) = sqrt(a1 + b1 * f + (a2 + b2 * f)/(wl**2 - (a3 + b3 * f)**2) + (a4 + b4 * f)/(wl**2 - a5**2) - a6 * wl**2)
         f = (T - T0) * (T + T0 + 2 * 273.16) with T0 = 24.5 degC
 
     Validity range
@@ -36,6 +36,12 @@ class SLN(Uniax_3m):
     +5e-4 /K at 1.064 µm, an order of magnitude above the accepted ~3e-5 /K for
     LiNbO3. The same holds for the other Gayer sets. Use dndT/dndT2 from this
     class for phase-matching work, not as absolute thermo-optic values.
+
+    The same drift is in every absolute quantity away from 24.5 degC - n, ng,
+    GV, GD: n_e at 1.064 µm rises by 0.115 (5%) between 24.5 and 200 degC,
+    where LiNbO3's rises by about 0.01. What the fit constrains, and what
+    stays physical, is the difference of index between wavelengths: QPM
+    periods, phase-matching wavelengths, GVD.
 
     Ref
     ---
@@ -59,13 +65,15 @@ class SLN(Uniax_3m):
     # Only d33 is usable: this class has no o-ray Sellmeier equation, so the
     # o-ray susceptibilities that Miller scaling of d22 and d31 (and any
     # interaction with an o-wave) would need are not available. For reference,
-    # 5%MgO:LiNbO3 at 1.064 um SHG: d31 = 4.4 pm/V (Shoji et al. 1997),
+    # 1%MgO:LiNbO3 at 1.064 um SHG: d31 = 4.6 pm/V (Shoji et al. 1997),
     # congruent LiNbO3: d22 = 2.1 pm/V, opposite in sign to d31 and d33
     # (Roberts 1992). eee (quasi-phase-matching) works.
-    _d_ref = {"d33": (25.0, 1.064, 1.064)}
-    _d_note = ("Shoji et al. 1997 (5%MgO:LiNbO3, 1.064 um SHG). Only d33 is held, so "
-               "only eee (QPM) can be evaluated: no o-ray Sellmeier equation exists "
-               "for this class. Alford & Smith 2001 find Miller scaling good for LiNbO3.")
+    _d_ref = {"d33": (24.9, 1.064, 1.064)}
+    _d_note = ("Shoji et al. 1997 (1%MgO:LiNbO3, 1.064 um SHG) - the nearest composition "
+               "they measured, not a stoichiometric crystal; 5%MgO:LiNbO3 gave 25.0 and "
+               "congruent LiNbO3 25.2. Only d33 is held, so only eee (QPM) can be "
+               "evaluated: no o-ray Sellmeier equation exists for this class. Alford & "
+               "Smith 2001 find Miller scaling good for LiNbO3.")
 
     _default_pol = 'e'   # no o-ray Sellmeier set exists for SLN
 

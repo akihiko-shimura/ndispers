@@ -127,8 +127,8 @@ Sellmeier 方程式の確認から位相整合曲線までの手順をプロッ�
 ## 収録媒質
 
 非線形結晶: β-BBO, LBO, KTP, BiBO, CLBO, KDP, DKDP, KBBF, RBBF, LB4,
-LiIO₃, ZGP, AgGaS₂, AgGaSe₂, 水晶, MgO 添加 LiNbO₃（コングルエント・
-ストイキオメトリック）, MgO:LiTaO₃。線形複屈折結晶: α-BBO, 方解石,
+LiIO₃, ZGP, AgGaS₂, AgGaSe₂, 水晶, LiNbO₃（無添加コングルエント、MgO 添加の
+コングルエント・ストイキオメトリック）, MgO:LiTaO₃。線形複屈折結晶: α-BBO, 方解石,
 サファイア, MgF₂, YVO₄。等方媒質: 溶融石英, CaF₂, LiF, BaF₂, YAG, N-BK7,
 SF10/11/57, ZnSe, ZnS, Si, Ge, ダイヤモンド。
 

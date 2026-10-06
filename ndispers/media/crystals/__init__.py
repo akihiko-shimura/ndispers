@@ -16,6 +16,9 @@ from ._BiBO_Miyata2009 import BiBO_yz as BiBO_Miyata2009_yz
 from ._BiBO_Miyata2009 import BiBO_zx as BiBO_Miyata2009_zx
 from ._calcite import Calcite
 from ._CLBO import CLBO
+from ._CLN_Edwards1984 import CLN as CLN_Edwards1984
+from ._CLN_Jundt1997 import CLN as CLN_Jundt1997
+from ._CLN_Zelmon1997 import CLN as CLN_Zelmon1997
 from ._DKDP import DKDP
 from ._KBBF_Li2016 import KBBF
 from ._KDP import KDP

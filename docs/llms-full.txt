@@ -98,7 +98,8 @@ and compare a second source; the spread between sources is often the real
 uncertainty. Each docstring's Ref section cites Sellmeier, thermo-optic and
 d coefficients **separately** — they usually come from different papers: AGS_Kato1996, AGS_Takaoka1999, AGSe_Kato2021,
 AlphaBBO, BetaBBO_{Eimerl1987, Ghosh1995, KK2010, Tamosauskas2018},
-BiBO_Miyata2009_{xy,yz,zx}, CLBO, Calcite, DKDP, KBBF, KDP, KTP_{xy,yz,zx},
+BiBO_Miyata2009_{xy,yz,zx}, CLBO, CLN_{Edwards1984, Jundt1997, Zelmon1997}
+(undoped congruent LiNbO3), Calcite, DKDP, KBBF, KDP, KTP_{xy,yz,zx},
 LB4, LBO_{Castech, Ghosh1995, KK1994, KK2018, Newlight}_{xy,yz,zx}, LiIO3,
 MgF2, MgOLN_Zelmon1997 (5%MgO:LiNbO3), Quartz, RBBF, SLN (1%MgO:LiNbO3
 stoichiometric), SLT (0.5%MgO:LiTaO3), Sapphire, YVO4, ZGP_Das2003,
@@ -121,11 +122,13 @@ SF11, SF57, Si, YAG, ZnS, ZnSe.
   (implemented as 0); α-BBO and Calcite have no temperature term. If T matters,
   verify `obj.dndT(...) != 0`.
 - `pol` defaults to 'o', except walk-off methods ('e') and every method of
-  SLN ('e' — its Sellmeier exists only for the e-ray). `pol` is keyword-only.
-- 29 of the 60 media have no temperature term at all (e.g. MgOLN_Zelmon1997,
+  SLN and CLN_Jundt1997 ('e' — their Sellmeier exists only for the e-ray).
+  `pol` is keyword-only.
+- 30 of the 63 media have no temperature term at all (e.g. MgOLN_Zelmon1997,
   fit at 21 °C only): the first call emits `TemperatureWarning` and any T
-  sweep returns constant results. For temperature-tuned PPLN work use SLN or
-  SLT. `_d_note` (public despite the underscore) states per crystal how well
+  sweep returns constant results. For temperature-tuned PPLN work use SLN,
+  SLT or, for undoped congruent LiNbO3, CLN_Jundt1997 (e-ray, to 5 µm);
+  CLN_Edwards1984 is the one with a temperature-dependent o-ray (to 3.4 µm). `_d_note` (public despite the underscore) states per crystal how well
   Miller d-scaling is validated.
 - `catalog()`'s wl_range is Sellmeier validity, NOT the transparency range: a
   crystal can pass a wavelength filter yet absorb there (β-BBO beyond
@@ -420,6 +423,9 @@ The output of `ndispers.catalog()`, one row per medium class.
 | BiBO_Miyata2009_yz | crystal | 2 | yz | 0.326-3.083 | d11, d12, d13, d14 |
 | BiBO_Miyata2009_zx | crystal | 2 | zx | 0.326-3.083 | d11, d12, d13, d14 |
 | CLBO | crystal | 42m | - | 0.1914-2.09 | d36 |
+| CLN_Edwards1984 | crystal | 3m | - | 0.4-3.4 | d22, d31, d33 |
+| CLN_Jundt1997 | crystal | 3m | - | 0.4-5 | d33 |
+| CLN_Zelmon1997 | crystal | 3m | - | 0.4-5 | d22, d31, d33 |
 | Calcite | crystal | - | - | 0.2-3.3 | - |
 | DKDP | crystal | 42m | - | 0.2-1.5 | d36 |
 | KBBF | crystal | 32 | - | 0.15-1.53 | d11 |

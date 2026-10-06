@@ -81,6 +81,24 @@ def test_sln_qpm_matches_gayer_figure4(T_degC, wl_nm):
     assert brentq(mismatch, 1.30, 1.90) * 1000 == pytest.approx(wl_nm, abs=3)
 
 
+def test_sln_third_order_shg_temperature_and_d33():
+    """Gayer 2008, Sec. 4.1, gives one phase-matching point for SLN in numbers:
+    the 19.36 um crystal doubles 1047.5 nm in third order at 166 degC. This
+    equation gives 168 degC; with the pre-erratum b1 it is 94 degC. d33 is
+    Shoji et al. 1997's value for 1%MgO:LiNbO3, the nearest composition they
+    measured (5%MgO:LiNbO3 gave 25.0, which this class held until 0.19)."""
+    from ndispers.helper import brentq
+    sln = C.SLN()
+
+    def mismatch(T_degC):
+        n = lambda w: float(sln.n(w, 0.3, T_degC, pol='e'))
+        period = 19.36 * (1 + 1.54e-5 * (T_degC - 25))
+        return 1.0475 / (2 * (n(1.0475 / 2) - n(1.0475))) - period / 3
+
+    assert brentq(mismatch, 30, 250) == pytest.approx(166, abs=3)
+    assert sln.d_sfg('d33', 1.064, 1.064, 25) == pytest.approx(24.9)
+
+
 @pytest.mark.parametrize("cls", ['CLBO', 'KTP_zx', 'SLN', 'BetaBBO_Eimerl1987'])
 def test_picklable_after_use(cls):
     """lambdify caches made used instances unpicklable, breaking multiprocessing."""
@@ -372,7 +390,7 @@ def test_every_dispersion_method_is_wired(name):
 # Sellmeier sets must agree. This is the check that catches swapped o/e
 # columns - Zelmon 1997's Table 2 for MgO:LiNbO3 is printed with its n_e and
 # n_o headings interchanged, which is exactly the transcription trap.
-@pytest.mark.parametrize("name", [n for n in ALL_MEDIA if n != "SLN"])
+@pytest.mark.parametrize("name", [n for n in ALL_MEDIA if n not in ("SLN", "CLN_Jundt1997")])
 def test_optic_sign_matches_docstring(name):
     x = getattr(C, name)()
     doc = type(x).__doc__

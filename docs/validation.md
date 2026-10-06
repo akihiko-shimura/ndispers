@@ -117,7 +117,8 @@ better than others. This table says which to reach for.
 | `ZGP_Das2003` | **recommended** | its type-I limit, 10.74 µm, matches Kato 1997's 10.78 µm, so it covers the CO₂ line |
 | `ZGP_Zelmon2001` | faithful | valid over its stated 2–9 µm; do not use it near 10.6 µm, where its limit falls 0.2 µm short |
 | `MgOLN_Zelmon1997` | **recommended** for birefringent phase matching | both rays, so ooe/oee d<sub>eff</sub> can be evaluated |
-| `SLN` | **recommended** for quasi-phase matching | *not* superseded by `MgOLN_Zelmon1997`: it is the only LiNbO₃ here with a temperature-dependent index, and the QPM period it gives moves from 7.03 µm at 25 °C to 6.74 µm at 200 °C, where `MgOLN_Zelmon1997` returns 6.995 µm at every temperature. Its *absolute* dn/dT is not physical (see caveat 10); the index *differences* that QPM depends on are what Gayer's coefficients were fitted to |
+| `SLN` | **recommended** for quasi-phase matching | *not* superseded by `MgOLN_Zelmon1997`: it is the only MgO-doped LiNbO₃ here with a temperature-dependent index, and the QPM period it gives moves from 7.03 µm at 25 °C to 6.74 µm at 200 °C, where `MgOLN_Zelmon1997` returns 6.995 µm at every temperature. Its *absolute* dn/dT is not physical (see caveat 10); the index *differences* that QPM depends on are what Gayer's coefficients were fitted to |
+| `CLN_Jundt1997`, `CLN_Edwards1984`, `CLN_Zelmon1997` | all usable, by purpose | undoped congruent LiNbO₃. `Jundt1997` for quasi-phase matching: extraordinary ray with temperature, to 5 µm (6.78 µm for 1064 nm SHG at 25 °C). `Edwards1984` where the ordinary index must move with temperature: both rays, to 3.4 µm; it reproduces the phase-matching temperatures of its own Table II within 0.5 °C, and runs 6 × 10⁻³ above the other two by 5 µm. `Zelmon1997` for both rays at 21 °C, to 5 µm. Between 0.53 and 2 µm the three agree to 5 × 10⁻⁴ |
 | `BetaBBO_*` (four) | all usable | they agree to 0.1° on the 1064 nm SHG angle; `Tamosauskas2018` is closest at 800 nm |
 
 `LBO_EKSMA` was removed in 0.14.0. It had never been exported from
@@ -263,5 +264,5 @@ were not at hand; when they are, the rows go in the tables above.
 
 ---
 
-*Recomputed against ndispers 0.19.0. To reproduce any row, call the method
+*Recomputed against ndispers 0.20.0. To reproduce any row, call the method
 named in it; the package's own test suite pins the values marked "exact".*
