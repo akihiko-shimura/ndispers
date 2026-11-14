@@ -60,9 +60,10 @@ dev = ["pytest", "sympy", "scipy"]
 notebook = ["matplotlib", "plotly", "ipython", "jupyterlab", "marimo"]
 
 [tool.uv.dependency-groups]
-# Pillow >= 13 and tornado >= 6.6 (security fixes) need Python >= 3.11;
-# without this the lock keeps vulnerable versions for 3.10
-notebook = { requires-python = ">=3.11" }
+# Pillow >= 13 and tornado >= 6.6 (security fixes) need Python >= 3.11, and
+# soupsieve >= 4 (security fixes) needs >= 3.11.5; without this the lock keeps
+# vulnerable versions for the older interpreters
+notebook = { requires-python = ">=3.11.5" }
 
 [project.urls]
 Homepage = "https://github.com/akihiko-shimura/ndispers"
