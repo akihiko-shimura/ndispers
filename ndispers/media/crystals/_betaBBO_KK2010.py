@@ -30,7 +30,7 @@ class BetaBBO(Uniax_3m):
     Ref
     ---
     Sellmeier equation and thermo-optic coefficients:
-      Kato, K., Umemura, N., & Mikami, T. (2010). Sellmeier and thermo-optic dispersion formulas for β-BaB2O4 (revisited). Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX, Proc. SPIE, 7582, 75820H.  (not registered with Crossref)
+      Kato, K., Umemura, N., & Mikami, T. (2010). Sellmeier and thermo-optic dispersion formulas for β-BaB2O4 (revisited). Nonlinear Frequency Generation and Conversion: Materials, Devices, and Applications IX, Proc. SPIE, 7582, 75821L. https://doi.org/10.1117/12.841913
 
     Nonlinear optical coefficients:
       Shoji, I., Kondo, T., & Ito, R. (1999). Absolute measurement of second-order nonlinear-optical coefficients of β-BaB2O4 for visible to ultraviolet second-harmonic wavelengths. JOSA B, 16(4), 620-624. https://doi.org/10.1364/josab.16.000620
