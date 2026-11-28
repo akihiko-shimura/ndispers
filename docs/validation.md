@@ -1,3 +1,7 @@
+---
+description: "Which ndispers Sellmeier equations and phase-matching results have been checked against the source papers or independent measurements, with the computed numbers."
+---
+
 # Validation
 
 Every dispersion formula in this package is a transcription of somebody else's
