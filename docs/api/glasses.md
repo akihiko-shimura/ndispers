@@ -1,3 +1,8 @@
+---
+title: "Glasses and isotropic media: Sellmeier equations"
+description: "Sellmeier equations, validity ranges and references for the optically isotropic media in ndispers: fused silica, N-BK7, CaF₂, YAG and others."
+---
+
 # Glasses
 
 Optically isotropic media — glasses and cubic crystals alike. Having one

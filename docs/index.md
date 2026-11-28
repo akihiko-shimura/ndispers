@@ -1,3 +1,8 @@
+---
+title: "Refractive-index dispersion and phase matching in Python"
+description: "Python library for Sellmeier refractive indices, group-velocity dispersion, walk-off, phase matching and d_eff of nonlinear-optics crystals and glasses."
+---
+
 # ndispers
 
 *ndispers* is a Python package for refractive-index dispersion of crystals

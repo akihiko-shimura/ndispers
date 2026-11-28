@@ -1,11 +1,18 @@
 site_name: ndispers
 site_description: Refractive index dispersion of crystals and glasses for nonlinear/ultrafast optics
-site_url: https://ndispers.readthedocs.io/
+# Read the Docs serves each version under /<lang>/<version>/ and passes that
+# base as READTHEDOCS_CANONICAL_URL. A bare domain here makes every canonical
+# link and sitemap entry point at a URL that returns 404.
+site_url: !ENV [READTHEDOCS_CANONICAL_URL, "https://ndispers.readthedocs.io/en/latest/"]
 repo_url: https://github.com/akihiko-shimura/ndispers
 repo_name: akihiko-shimura/ndispers
 copyright: Copyright &copy; 2021–2026 Akihiko Shimura
 
 docs_dir: docs
+# maintainer notes: kept in the repository, not published or indexed
+exclude_docs: |
+  /dev/
+  /RELEASING.md
 
 theme:
   name: material

@@ -1,3 +1,7 @@
+---
+description: "Units, angle and polarization conventions, validity ranges and definitions used by every ndispers method: wavelengths in µm, angles in radians, o/e rays, Δk and d_eff."
+---
+
 # Conventions and definitions
 
 The facts on this page hold across the whole package. Everything here is

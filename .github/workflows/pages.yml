@@ -30,11 +30,19 @@ jobs:
           MARIMO: "0.24.0"
         run: |
           mkdir -p site
-          cp apps/index.html docs/assets/logo.svg site/
+          cp apps/index.html apps/sitemap.xml docs/assets/logo.svg site/
           for app in explorer phasematching; do
             uv run --with "marimo==$MARIMO" marimo export html-wasm "apps/$app.py" \
               -o "site/$app" --mode run
           done
+          # marimo writes the placeholder description "a marimo app" into every
+          # export; search results show that text, so replace it per app
+          describe() {
+            sed -i "s|content=\"a marimo app\"|content=\"$2\"|" "site/$1/index.html"
+            grep -q "name=\"description\" content=\"$2\"" "site/$1/index.html"
+          }
+          describe explorer "Plot refractive index, group index, GVD, TOD, dn/dT and walk-off of nonlinear-optics crystals and glasses against wavelength, temperature or angle, in your browser."
+          describe phasematching "Phase-matching angles, acceptance bandwidths, walk-off and effective nonlinearity for collinear sum-frequency generation in nonlinear crystals, in your browser."
           test -f site/explorer/index.html
           test -f site/phasematching/index.html
 

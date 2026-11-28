@@ -1,3 +1,8 @@
+---
+title: "Crystals: Sellmeier equations and references"
+description: "Sellmeier equations, validity ranges and literature references for β-BBO, LBO, KTP, BiBO, CLBO, KDP, ZnGeP₂, AgGaS₂, LiNbO₃ and the other crystals in ndispers."
+---
+
 # Crystals
 
 Each class carries, in its docstring, the Sellmeier equation it implements,

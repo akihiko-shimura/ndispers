@@ -1,3 +1,8 @@
+---
+title: "Point groups: d tensor, Miller scaling and d_eff"
+description: "How ndispers computes the effective nonlinear coefficient d_eff: point-group classes, d-tensor components and Miller-rule scaling to the working wavelengths."
+---
+
 # Point groups (second-order nonlinearity)
 
 `ndispers.groups` adds Miller-rule scaling of the d tensor and the effective

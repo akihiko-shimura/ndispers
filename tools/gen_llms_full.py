@@ -28,6 +28,8 @@ def catalog_table():
 def build():
     llms = (ROOT / 'docs' / 'llms.txt').read_text()
     conv = (ROOT / 'docs' / 'conventions.md').read_text()
+    if conv.startswith('---\n'):    # drop the mkdocs front matter (page metadata)
+        conv = conv.split('\n---\n', 1)[1].lstrip('\n')
     return (llms
             + '\n\n---\n\n'
             + conv
